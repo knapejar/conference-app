@@ -1,20 +1,10 @@
 <template>
-  <ion-page>
-      <ion-header>
-          <ion-toolbar>
-              <ion-buttons slot="start">
-                  <ion-back-button />
-              </ion-buttons>
-              <ion-title>{{ pageTitle }}</ion-title>
-          </ion-toolbar>
-      </ion-header>
-      <ion-content>
-          <ion-button @click="openModal">Hello</ion-button>
-      </ion-content>
-  </ion-page>
+  <addIcons />
+  <ion-app>
+    <ion-router-outlet />
+  </ion-app>
 </template>
 
-<script>
-export default {
-}
+<script setup lang="ts">
+import { IonApp, IonRouterOutlet } from '@ionic/vue';
 </script>

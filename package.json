@@ -21,9 +21,10 @@
     "@capacitor/status-bar": "latest",
     "@ionic/vue": "^8.0.0",
     "@ionic/vue-router": "^8.0.0",
-    "ionicons": "^7.0.0",
+    "ionicons": "^7.4.0",
     "vue": "^3.3.0",
-    "vue-router": "^4.2.0"
+    "vue-router": "^4.2.0",
+    "vuex": "^4.0.2"
   },
   "devDependencies": {
     "@capacitor/cli": "latest",
