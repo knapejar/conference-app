@@ -7,9 +7,7 @@
             <h2>{{ person.name }}</h2>
             <p>{{ person.role }}</p>
         </ion-label>
-        <ion-button slot="end" fill="clear" :router-link="'/questions/' + person.name" @click.stop>
-            <ion-icon name="chatbubbles-outline"></ion-icon>
-        </ion-button>
+        <QuestionsIconButton :questionsRoom="person.name" />
     </ion-item>
 </template>
 
@@ -24,7 +22,3 @@ export default {
     }
 };
 </script>
-
-<style scoped>
-/* No custom styles needed */
-</style>

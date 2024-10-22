@@ -31,7 +31,7 @@ const store = createStore({
                             "title": "Vize pro rok 2024",
                             "presenter": "Petr Novák",
                             "starred": true,
-                            "questionsLink": ""
+                            "questionsRoom": ""
                         }
                     ]
                 },
@@ -44,7 +44,7 @@ const store = createStore({
                             "title": "Umělá inteligence v reálném čase",
                             "presenter": "Jana Malá",
                             "starred": false,
-                            "questionsLink": "def456"
+                            "questionsRoom": "def456"
                         },
                         {
                             "start": "2024-10-21T10:15:00",
@@ -52,7 +52,7 @@ const store = createStore({
                             "title": "Kvantové výpočty: Kde jsme dnes?",
                             "presenter": "Martin Dvořák",
                             "starred": true,
-                            "questionsLink": "ghi789"
+                            "questionsRoom": "ghi789"
                         }
                     ]
                 },
@@ -65,7 +65,7 @@ const store = createStore({
                             "title": "Návrhové vzory pro velké systémy",
                             "presenter": "Lucie Hrubá",
                             "starred": false,
-                            "questionsLink": "jkl101"
+                            "questionsRoom": "jkl101"
                         },
                         {
                             "start": "2024-10-21T11:15:00",
@@ -73,7 +73,7 @@ const store = createStore({
                             "title": "Efektivní refaktoring v praxi",
                             "presenter": "David Černý",
                             "starred": true,
-                            "questionsLink": ""
+                            "questionsRoom": ""
                         },
                         {
                             "start": "2024-10-21T11:15:00",
@@ -81,7 +81,7 @@ const store = createStore({
                             "title": "Architektura mikroslužeb",
                             "presenter": "Eva Švecová",
                             "starred": false,
-                            "questionsLink": "pqr123"
+                            "questionsRoom": "pqr123"
                         }
                     ]
                 },
@@ -94,7 +94,7 @@ const store = createStore({
                             "title": "Bezpečnostní trendy v IT",
                             "presenter": "Michal Kovář",
                             "starred": false,
-                            "questionsLink": "stu456"
+                            "questionsRoom": "stu456"
                         },
                         {
                             "start": "2024-10-21T13:00:00",
@@ -102,7 +102,7 @@ const store = createStore({
                             "title": "Agilní metodiky v týmech",
                             "presenter": "Karel Veselý",
                             "starred": true,
-                            "questionsLink": "vwx789"
+                            "questionsRoom": "vwx789"
                         }
                     ]
                 },
@@ -115,7 +115,7 @@ const store = createStore({
                             "title": "Diskuse o budoucnosti vývoje software",
                             "presenter": "Panel odborníků",
                             "starred": true,
-                            "questionsLink": "yz1234"
+                            "questionsRoom": "yz1234"
                         }
                     ]
                 }

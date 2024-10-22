@@ -8,48 +8,55 @@
         @openModal="openModal(person)" />
     </ion-list>
 
-    <!-- Modal Component -->
-    <PersonModal 
-      v-if="selectedPerson"
-      :person="selectedPerson"
-      :visible="isModalVisible"
-      @close="closeModal" />
+    <ion-modal 
+      :is-open="isModalVisible" 
+      @didDismiss="closeModal" 
+      :swipeToClose="true" 
+      :presenting-element="presentingElement"
+    >
+      <PersonModal 
+        :person="selectedPerson" 
+        @close="closeModal" 
+      />
+    </ion-modal>
   </ion-content>
 </template>
 
 <script>
-import PeopleListItem from './PeopleListItem.vue'; // Import the child component
-
+import { ref, onMounted } from 'vue';
 export default {
   name: 'PeopleList',
-  components: {
-    PeopleListItem
-  },
   props: {
     people: {
       type: Array,
       required: true
     }
   },
-  data() {
-    return {
-      selectedPerson: null,
-      isModalVisible: false
+  setup() {
+    const selectedPerson = ref(null);
+    const isModalVisible = ref(false);
+    const presentingElement = ref(null);
+
+    const openModal = (person) => {
+      selectedPerson.value = person;
+      isModalVisible.value = true;
     };
-  },
-  methods: {
-    openModal(person) {
-      this.selectedPerson = person;
-      this.isModalVisible = true;
-    },
-    closeModal() {
-      this.selectedPerson = null;
-      this.isModalVisible = false;
-    }
+
+    const closeModal = () => {
+      isModalVisible.value = false;
+    };
+
+    onMounted(() => {
+      presentingElement.value = document.querySelector('ion-content');
+    });
+
+    return {
+      selectedPerson,
+      isModalVisible,
+      openModal,
+      closeModal,
+      presentingElement
+    };
   }
 };
 </script>
-
-<style scoped>
-/* No custom styles needed */
-</style>

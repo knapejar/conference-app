@@ -3,13 +3,11 @@
     <ion-card-header>
       <ion-card-title>{{ block.blockName }}</ion-card-title>
       <ion-card-subtitle>
-        <!-- Zobrazí čas prvního a posledního bloku -->
         {{ blockTime(block) }}
       </ion-card-subtitle>
     </ion-card-header>
 
     <ion-card-content>
-      <!-- Iterujeme přes prezentace v rámci bloku -->
       <ion-list>
         <PresentationItem
           v-for="(presentation, index) in block.presentations"

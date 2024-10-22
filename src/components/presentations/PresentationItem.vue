@@ -1,7 +1,7 @@
 <template>
-    <ion-item>
-        <ion-icon :name="presentation.starred ? 'star' : 'star-outline'" slot="start" @click="toggleStar" />
-        <ion-button v-if="presentation.questionsLink" slot="end" :router-link="'/questions/' + presentation.questionsLink" size="large">
+    <ion-item @click="toggleStar">
+        <ion-icon :name="presentation.starred ? 'star' : 'star-outline'" slot="start" />
+        <ion-button v-if="presentation.questionsRoom" slot="end" :router-link="'/questions/' + presentation.questionsRoom" size="large">
             <ion-icon name="chatbubbles-outline"></ion-icon>
         </ion-button>
         <ion-label>
@@ -14,6 +14,8 @@
 </template>
 
 <script>
+import QuestionsIconButton from '../questions/QuestionsIconButton.vue';
+
 export default {
     props: {
         presentation: {

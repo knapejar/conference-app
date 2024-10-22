@@ -1,5 +1,4 @@
 <template>
-    <UseStore />
     <MainLayout :pageTitle="store.state.conferenceName">
         <ion-img :src="store.state.welcomeImage" class="image-responsive" />
         <ion-card>
