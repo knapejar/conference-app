@@ -3,6 +3,7 @@ import { RouteRecordRaw } from 'vue-router';
 import Program from '../views/Program.vue'
 import Home from '../views/Home.vue'
 import People from '../views/People.vue'
+import Questions from '../views/Questions.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -15,7 +16,7 @@ const routes: Array<RouteRecordRaw> = [
   }, {
     path: '/questions/:id',
     name: 'Questions',
-    component: () => import('../views/Questions.vue')
+    component: Questions
   }, {
     path: '/home',
     name: 'Home',
