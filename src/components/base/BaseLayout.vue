@@ -1,10 +1,12 @@
 <template>
-    <ion-page>
+    <MainLayoutNotificationsMenu />
+    <ion-page id="main-content" v-bind="$attrs">
         <ion-header>
             <ion-toolbar>
                 <ion-buttons slot="start">
                     <ion-back-button />
                 </ion-buttons>
+                <slot name="header" />
                 <ion-title>{{ pageTitle }}</ion-title>
             </ion-toolbar>
         </ion-header>
@@ -18,6 +20,8 @@
 </template>
 
 <script>
+import MainLayoutNotificationsMenu from '../MainLayout/notificationsMenu/MainLayoutNotificationsMenu.vue';
+
 export default {
     props: {
         pageTitle: {

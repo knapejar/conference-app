@@ -2,7 +2,7 @@
 </template>
 <script>
 import { addIcons } from "ionicons";
-import { heart, star, thumbsUp, starOutline, cashOutline, arrowForwardOutline, pencil, chatbubblesOutline, home, calendar, people } from "ionicons/icons";
+import { heart, star, thumbsUp, starOutline, cashOutline, arrowForwardOutline, pencil, chatbubblesOutline, home, calendar, people, notifications, close } from "ionicons/icons";
 
 addIcons({
     "heart": heart,
@@ -15,6 +15,8 @@ addIcons({
     "chatbubbles-outline": chatbubblesOutline,
     "home": home,
     "calendar": calendar,
-    "people": people
+    "people": people,
+    "notifications": notifications,
+    "close": close
 });
 </script>

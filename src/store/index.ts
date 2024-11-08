@@ -9,16 +9,31 @@ const store = createStore({
             "welcomeImage": "/assets/conference.jpg",
             "announcements": [
                 {
-                    "date": "2024-10-21T09:00:00",
-                    "message": "Vítejte na konferenci! Zahajovací blok začíná v 9:30."
+                    id: 1,
+                    title: "Welcome Message",
+                    message: "Vítejte na konferenci! Zahajovací blok začíná v 9:30.",
+                    date: "2024-10-21T09:00:00",
+                    category: "info",
+                    type: "info",
+                    read: false
                 },
                 {
-                    "date": "2024-10-21T12:00:00",
-                    "message": "Obědový bufet je připraven v hlavním foyer."
+                    id: 2,
+                    title: "Lunch Announcement",
+                    message: "Obědový bufet je připraven v hlavním foyer.",
+                    date: "2024-10-21T12:00:00",
+                    category: "update",
+                    type: "info",
+                    read: false
                 },
                 {
-                    "date": "2024-10-21T17:00:00",
-                    "message": "Den končí uzavřením diskusního panelu ve Velkém sále."
+                    id: 3,
+                    title: "Closing Panel",
+                    message: "Den končí uzavřením diskusního panelu ve Velkém sále.",
+                    date: "2024-10-21T17:00:00",
+                    category: "system",
+                    type: "info",
+                    read: false
                 }
             ],
             "blocks": [

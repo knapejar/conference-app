@@ -11,7 +11,6 @@
         </ion-card>
 
         <div class="ion-padding"></div>
-        <AnnouncementsBlocks :blocks="store.state.announcements" />
     </MainLayout>
 </template>
 
