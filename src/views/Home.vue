@@ -10,11 +10,14 @@
             </ion-card-content>
         </ion-card>
 
+        <PromptUserToInstallButton />
+
         <div class="ion-padding"></div>
     </MainLayout>
 </template>
 
 <script lang="ts">
+import PromptUserToInstallButton from '@/pwa/PromptUserToInstallButton.vue';
 import { defineComponent } from 'vue';
 import { useStore } from 'vuex';
 
