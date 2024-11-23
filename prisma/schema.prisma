@@ -1,0 +1,80 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Announcement {
+  id       Int      @id @default(autoincrement())
+  title    String
+  message  String
+  date     DateTime
+  category String
+  type     String
+  read     Boolean
+}
+
+model Block {
+  id            Int            @id @default(autoincrement())
+  blockName     String
+  presentations Presentation[]
+}
+
+model Presentation {
+  id             Int       @id @default(autoincrement())
+  start          DateTime
+  end            DateTime
+  title          String
+  starred        Boolean
+  questionsRoom  String
+  blockId        Int
+  block          Block      @relation(fields: [blockId], references: [id])
+  questions      Question[]
+  presenters     Presenter[]
+  starrers       User[]     @relation("PresentationStarrers")
+}
+
+model Question {
+  id             Int       @id @default(autoincrement())
+  content        String
+  presentationId Int
+  presentation   Presentation @relation(fields: [presentationId], references: [id])
+  author         User      @relation(fields: [authorId], references: [id])
+  authorId       Int
+  likers         User[]    @relation("QuestionLikers")
+}
+
+model Presenter {
+  id             Int    @id @default(autoincrement())
+  name           String
+  role           String
+  imageURL       String
+  presentationId Int
+  presentation   Presentation @relation(fields: [presentationId], references: [id])
+}
+
+model User {
+  id                    Int    @id @default(autoincrement())
+  name                  String
+  starredPresentations  Presentation[] @relation("PresentationStarrers")
+  authoredQuestions     Question[]
+  likedQuestions        Question[]    @relation("QuestionLikers")
+  devices               Device[]
+}
+
+model Device {
+  id       Int    @id @default(autoincrement())
+  token    String @unique
+  userId   Int
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+model Conference {
+  id             Int    @id @default(autoincrement())
+  name           String
+  description    String
+  welcomeImage   String
+}

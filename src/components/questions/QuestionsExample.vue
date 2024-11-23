@@ -8,15 +8,14 @@
 </template>
 
 <script>
+import { fetchQuestions, postQuestion, onNewQuestion } from '@/api';
 
 export default {
     data() {
         return {
-            messages: [
-                { id: 1, user: 'Petr Novák', text: 'Kdy začíná přednáška?', likes: 0 },
-                { id: 2, user: 'Daniela Svobodová', text: 'Co bude na oběd?', likes: 0 }
-            ],
-            nextId: 3
+            messages: [],
+            nextId: 1, // No longer needed, IDs come from the backend
+            presentationId: null, // To track which presentation's questions are being fetched
         };
     },
     computed: {
@@ -25,15 +24,52 @@ export default {
         }
     },
     methods: {
-        sendQuestion(newQuestion) {
-            this.messages.push({ id: this.nextId++, user: 'Já', text: newQuestion, likes: 0 });
+        async sendQuestion(newQuestion) {
+            // Send question to the backend
+            const postedQuestion = await postQuestion({
+                content: newQuestion,
+                presentationId: this.presentationId,
+                user: 'Já', // Replace with the actual user later
+            });
+
+            // Optimistically add the question locally (already updated via WebSocket)
+            this.messages.push({
+                id: postedQuestion.id,
+                user: postedQuestion.user,
+                text: postedQuestion.content,
+                likes: 0,
+            });
         },
         likeMessage(id) {
-            const message = this.messages.find(message => message.id === id);
+            const message = this.messages.find((message) => message.id === id);
             if (message) {
                 message.likes++;
             }
-        }
-    }
+        },
+    },
+    async created() {
+        // Extract presentationId from route params
+        this.presentationId = parseInt(this.$route.params.id, 10);
+
+        // Fetch initial list of questions
+        this.messages = (await fetchQuestions(this.presentationId)).map((question) => ({
+            id: question.id,
+            user: question.user,
+            text: question.content,
+            likes: 0, // Add a `likes` property for local use
+        }));
+
+        // Listen for real-time updates via WebSocket
+        onNewQuestion((newQuestion) => {
+            if (newQuestion.presentationId === this.presentationId) {
+                this.messages.push({
+                    id: newQuestion.id,
+                    user: newQuestion.user,
+                    text: newQuestion.content,
+                    likes: 0,
+                });
+            }
+        });
+    },
 };
 </script>

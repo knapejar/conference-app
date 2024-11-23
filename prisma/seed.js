@@ -1,0 +1,111 @@
+// prisma/seed.ts
+
+import { PrismaClient } from '@prisma/client';
+import { faker } from '@faker-js/faker';
+
+const prisma = new PrismaClient();
+
+async function main() {
+  await prisma.$transaction([
+    prisma.conference.deleteMany(),
+    prisma.question.deleteMany(),
+    prisma.presenter.deleteMany(),
+    prisma.presentation.deleteMany(),
+    prisma.block.deleteMany(),
+    prisma.user.deleteMany(),
+    prisma.device.deleteMany(),
+    prisma.announcement.deleteMany(),
+  ]);
+
+  const blocks = await Promise.all(
+    Array.from({ length: 5 }, (_, i) =>
+      prisma.block.create({
+        data: { blockName: `Block ${i + 1}` },
+      })
+    )
+  );
+
+  const conference = await Promise.all(
+    Array.from({ length: 1 }, () =>
+      prisma.conference.create({
+        data: {
+          name: 'Mobile World Congress',
+          description: 'The world’s most influential event for the connectivity industry.',
+          welcomeImage: './assets/conference.jpg',
+        },
+      })
+    )
+  );
+
+  const presentations = await Promise.all(
+    blocks.flatMap(block =>
+      Array.from({ length: 3 }, (_, i) =>
+        prisma.presentation.create({
+          data: {
+            start: faker.date.future(),
+            end: faker.date.future(),
+            title: `Presentation ${i + 1}`,
+            starred: faker.datatype.boolean(),
+            questionsRoom: `Room ${Math.floor(Math.random() * 10) + 1}`,
+            block: { connect: { id: block.id } },
+          },
+        })
+      )
+    )
+  );
+
+  const presenters = await Promise.all(
+    presentations.flatMap(presentation =>
+      Array.from({ length: Math.floor(Math.random() * 3) + 1 }, (_, i) =>
+        prisma.presenter.create({
+          data: {
+            name: faker.person.fullName(),
+            role: faker.person.jobTitle(),
+            imageURL: faker.image.avatar(),
+            presentation: { connect: { id: presentation.id } },
+          },
+        })
+      )
+    )
+  );
+
+  const users = await Promise.all(
+    Array.from({ length: 20 }, () =>
+      prisma.user.create({
+        data: {
+          name: faker.person.fullName(),
+          starredPresentations: { connect: presentations.slice(0, Math.min(presentations.length, 3)).map(p => ({ id: p.id })) },
+          authoredQuestions: { create: [] },
+          devices: { create: [{ token: faker.string.uuid() }] },
+        },
+      })
+    )
+  );
+
+  await Promise.all(
+    Array.from({ length: 5 }, () =>
+      prisma.announcement.create({
+        data: {
+          title: faker.lorem.sentence(),
+          message: faker.lorem.paragraph(),
+          date: faker.date.recent(),
+          category: 'General',
+          type: 'Important',
+          read: false,
+        },
+      })
+    )
+  );
+
+  console.log('Database seeded successfully!');
+}
+
+main()
+  .then(async () => {
+    await prisma.$disconnect();
+  })
+  .catch(async (e) => {
+    console.error(e);
+    await prisma.$disconnect();
+    process.exit(1);
+  });
