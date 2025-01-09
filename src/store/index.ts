@@ -1,19 +1,20 @@
 import { createStore } from 'vuex';
-import axios from 'axios';
+import { ref } from 'vue'
 import { getDebugToken, getInitialUpdate } from '@/api';
 
 const store = createStore({
     state: {
         deviceToken: '',
+        userId: -1,
         conference: {
             id: -1,
             name: "",
             description: "",
             welcomeImage: "",
         },
-        announcements: [],
-        blocks: [],
-        presenters: []
+        announcements: ref([]),
+        blocks: ref([]),
+        presenters: ref([]),
     },
     getters: {
         conference(state) {
@@ -27,7 +28,7 @@ const store = createStore({
         },
         presenters(state) {
             return state.presenters;
-        }
+        },
     },
     actions: {
         async initializeApp({ commit }) {

@@ -1,6 +1,6 @@
 <template>
-  <MainLayout :pageTitle="store.state.conferenceName">
-    <PresentationBlocks :blocks="store.state.blocks" />
+  <MainLayout :pageTitle=store.state.conference.name>
+    <PresentationBlocks :blocks=store.state.blocks />
   </MainLayout>
 </template>
 

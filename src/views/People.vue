@@ -1,6 +1,6 @@
 <template>
-    <MainLayout :pageTitle="store.state.conferenceName">
-        <PeopleList :people="store.state.presenters" />
+    <MainLayout :pageTitle=store.state.conference.name>
+        <PeopleList :people=store.state.presenters />
     </MainLayout>
 </template>
 

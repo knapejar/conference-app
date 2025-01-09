@@ -1,7 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { getQuestions, postQuestion } from './questions.js';
+import { setupSocketHandlers } from './questions.js';
 import { getInitialUpdate } from './initialUpdate.js';
 import { debugGetTestToken } from './debug.js';
 import cors from 'cors';
@@ -9,12 +9,15 @@ import cors from 'cors';
 const app = express();
 const server = createServer(app);
 app.use(cors());
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+      origin: "*",
+      methods: ["GET", "POST"]
+    }
+  });
 
 app.use(express.json());
 
-app.get('/presentations/:id/questions', getQuestions);
-app.post('/questions', postQuestion);
 app.get('/initial-update', async (req, res) => {
     const deviceToken = req.query.deviceToken;
     if (!deviceToken) {
@@ -33,10 +36,13 @@ app.get('/debug-get-test-token', async(req, res) => {
 });
 
 io.on('connection', (socket) => {
-    console.log('A user connected');
+    console.log('A user connected:', socket.id, socket.handshake.query.deviceToken);
+    // TODO Validate device token here
+    
+    setupSocketHandlers(io, socket);
 
     socket.on('disconnect', () => {
-        console.log('User disconnected');
+        console.log('User disconnected:', socket.id);
     });
 });
 

@@ -1,7 +1,7 @@
 <template>
     <ion-item @click="toggleStar">
         <ion-icon :name="presentation.starred ? 'star' : 'star-outline'" slot="start" />
-        <ion-button v-if="presentation.questionsRoom" slot="end" :router-link="'/questions/' + presentation.questionsRoom" size="large">
+        <ion-button v-if="presentation.questionsRoom" slot="end" :router-link="'/questions/' + presentation.id" size="large">
             <ion-icon name="chatbubbles-outline"></ion-icon>
         </ion-button>
         <ion-label>

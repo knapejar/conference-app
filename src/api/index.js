@@ -1,19 +1,26 @@
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-const API_BASE = 'http://localhost:3000';
-//const socket = io(API_BASE);
+const API_BASE = process.env.API_BASE || 'http://localhost:3000';
+
+axios.defaults.baseURL = API_BASE;
+axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
+axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+
+const socket = io(API_BASE, {
+    query: { deviceToken: localStorage.getItem('deviceToken') || '' }
+});
+  
 
 export const init = async() => {
-    axios.defaults.baseURL = 'http://localhost:3000';
-    axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
-    axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 };
 
 export const getDebugToken = async() => {
     const response = await axios.get('http://localhost:3000/debug-get-test-token');
+    localStorage.setItem('deviceToken', response.data.token);
     return response.data.token;
 };
+
 export const getInitialUpdate = async(deviceToken) => {
     const response = await axios.get('http://localhost:3000/initial-update', {
         params: {
@@ -23,15 +30,8 @@ export const getInitialUpdate = async(deviceToken) => {
     return response.data;
 };
 
-
-export const fetchQuestions = async (presentationId) => {
-    const response = await axios.get(`${API_BASE}/presentations/${presentationId}/questions`);
-    return response.data;
-};
-
 export const postQuestion = async (question) => {
-    const response = await axios.post(`${API_BASE}/questions`, question);
-    return response.data;
+    socket.emit('newQuestion', question);
 };
 
 export const onNewQuestion = (callback) => {

@@ -8,61 +8,44 @@
 </template>
 
 <script>
-import { fetchQuestions, postQuestion, onNewQuestion } from '@/api';
+import { ref, computed, onMounted, watch } from 'vue';
+import { postQuestion, onNewQuestion } from '@/api';
+import { useStore } from '@/composables/useVuexStore.js';
+import { useRoute } from 'vue-router';
 
 export default {
-    data() {
-        return {
-            messages: [],
-            nextId: 1, // No longer needed, IDs come from the backend
-            presentationId: null, // To track which presentation's questions are being fetched
-        };
-    },
-    computed: {
-        sortedMessages() {
-            return this.messages.slice().sort((a, b) => b.likes - a.likes);
-        }
-    },
-    methods: {
-        async sendQuestion(newQuestion) {
-            // Send question to the backend
-            const postedQuestion = await postQuestion({
-                content: newQuestion,
-                presentationId: this.presentationId,
-                user: 'Já', // Replace with the actual user later
-            });
+    setup() {
+        const store = useStore();
+        const route = useRoute();
+        const messages = ref([]); // Make messages reactive
+        const presentationId = ref(route.params.id); // Make presentationId reactive
 
-            // Optimistically add the question locally (already updated via WebSocket)
-            this.messages.push({
-                id: postedQuestion.id,
-                user: postedQuestion.user,
-                text: postedQuestion.content,
-                likes: 0,
-            });
-        },
-        likeMessage(id) {
-            const message = this.messages.find((message) => message.id === id);
-            if (message) {
-                message.likes++;
-            }
-        },
-    },
-    async created() {
-        // Extract presentationId from route params
-        this.presentationId = parseInt(this.$route.params.id, 10);
+        // Watch for changes to blocks in the store
+        watch(
+            () => store.state.blocks,
+            (blocks) => {
+                console.log('Blocks changed', blocks);
+                console.log('Presentation ID', presentationId.value);
+                console.log('Messages', messages.value);
+                if (blocks && blocks.length) {
+                    const presentation = blocks
+                        .flatMap((block) => block.presentations)
+                        .find((presentation) => presentation.id === presentationId.value);
+                    if (presentation && presentation.questions) {
+                        messages.value = presentation.questions.map((q) => ({
+                            ...q,
+                            likes: 0, // Default to 0 likes if not already present
+                        }));
+                    }
+                }
+            },
+            { deep: true, immediate: true }
+        );
 
-        // Fetch initial list of questions
-        this.messages = (await fetchQuestions(this.presentationId)).map((question) => ({
-            id: question.id,
-            user: question.user,
-            text: question.content,
-            likes: 0, // Add a `likes` property for local use
-        }));
-
-        // Listen for real-time updates via WebSocket
+        // WebSocket listener for new questions
         onNewQuestion((newQuestion) => {
-            if (newQuestion.presentationId === this.presentationId) {
-                this.messages.push({
+            if (newQuestion.presentationId === presentationId.value) {
+                messages.value.push({
                     id: newQuestion.id,
                     user: newQuestion.user,
                     text: newQuestion.content,
@@ -70,6 +53,33 @@ export default {
                 });
             }
         });
+
+        const sortedMessages = computed(() => {
+            return [...messages.value].sort((a, b) => b.likes - a.likes);
+        });
+
+        const sendQuestion = async (newQuestion) => {
+            const postedQuestion = await postQuestion({
+                content: newQuestion,
+                presentationId: presentationId.value,
+                token: store.state.deviceToken,
+            });
+            console.log('Posted question', postedQuestion);
+        };
+
+        const likeMessage = (id) => {
+            const message = messages.value.find((message) => message.id === id);
+            if (message) {
+                message.likes++;
+            }
+        };
+
+        return {
+            messages,
+            sortedMessages,
+            sendQuestion,
+            likeMessage,
+        };
     },
 };
 </script>

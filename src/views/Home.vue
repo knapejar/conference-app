@@ -1,6 +1,6 @@
 <template>
-    <MainLayout :pageTitle="store.state.conference.name">
-        <ion-img :src="store.state.conference.welcomeImage" class="image-responsive" />
+    <MainLayout :pageTitle=store.state.conference.name>
+        <ion-img :src=store.state.conference.welcomeImage class="image-responsive" />
         <ion-card>
             <ion-card-header>
                 <ion-card-title>Welcome to {{ store.state.conference.name }}</ion-card-title>
