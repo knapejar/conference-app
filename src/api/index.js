@@ -30,10 +30,26 @@ export const getInitialUpdate = async(deviceToken) => {
     return response.data;
 };
 
+export const requestQuestions = async (presentationId) => {
+    return new Promise((resolve) => {
+        socket.emit('requestQuestions', {
+            presentationId,
+            deviceToken: localStorage.getItem('deviceToken')
+        });
+        socket.once('questions', (questions) => {
+            resolve(questions);
+        });
+    });
+};
 export const postQuestion = async (question) => {
     socket.emit('newQuestion', question);
 };
-
 export const onNewQuestion = (callback) => {
-    //socket.on('newQuestion', callback);
+    socket.on('newQuestion', callback);
 };
+export const likeQuestion = async (questionId) => {
+    socket.emit('likeQuestion', {
+        questionId,
+        deviceToken: localStorage.getItem('deviceToken')
+    });
+}

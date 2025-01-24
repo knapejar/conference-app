@@ -1,6 +1,6 @@
 <template>
     <BaseLayout :pageTitle="'Otázky ' + $route.params.id">
-        <QuestionsList :messages="sortedMessages" @like="likeMessage" />
+        <QuestionsList :questions="sortedQuestions" @like="likeQuestion" />
         <template v-slot:footer>
             <QuestionsFooterSendQuestion @send="sendQuestion" />
         </template>
@@ -9,7 +9,7 @@
 
 <script>
 import { ref, computed, onMounted, watch } from 'vue';
-import { postQuestion, onNewQuestion } from '@/api';
+import { requestQuestions, postQuestion, onNewQuestion } from '@/api';
 import { useStore } from '@/composables/useVuexStore.js';
 import { useRoute } from 'vue-router';
 
@@ -17,22 +17,21 @@ export default {
     setup() {
         const store = useStore();
         const route = useRoute();
-        const messages = ref([]); // Make messages reactive
-        const presentationId = ref(route.params.id); // Make presentationId reactive
+        const questions = ref([]);
+        const presentationId = ref(route.params.id);
 
-        // Watch for changes to blocks in the store
         watch(
             () => store.state.blocks,
             (blocks) => {
                 console.log('Blocks changed', blocks);
                 console.log('Presentation ID', presentationId.value);
-                console.log('Messages', messages.value);
+                console.log('Questions', questions.value);
                 if (blocks && blocks.length) {
                     const presentation = blocks
                         .flatMap((block) => block.presentations)
                         .find((presentation) => presentation.id === presentationId.value);
                     if (presentation && presentation.questions) {
-                        messages.value = presentation.questions.map((q) => ({
+                        questions.value = presentation.questions.map((q) => ({
                             ...q,
                             likes: 0, // Default to 0 likes if not already present
                         }));
@@ -42,43 +41,48 @@ export default {
             { deep: true, immediate: true }
         );
 
-        // WebSocket listener for new questions
         onNewQuestion((newQuestion) => {
-            if (newQuestion.presentationId === presentationId.value) {
-                messages.value.push({
-                    id: newQuestion.id,
-                    user: newQuestion.user,
-                    text: newQuestion.content,
+            console.log('New question', newQuestion);
+            if (newQuestion.presentationId == presentationId.value) {
+                questions.value.push({
+                    ...newQuestion,
                     likes: 0,
                 });
             }
         });
 
-        const sortedMessages = computed(() => {
-            return [...messages.value].sort((a, b) => b.likes - a.likes);
+        onMounted(async () => {
+            const fetchedQuestions = await requestQuestions(presentationId.value);
+            questions.value = fetchedQuestions.map((q) => ({
+                ...q,
+                likes: q.likes || 0, // Default to 0 likes if not already present
+            }));
+        });
+
+        const sortedQuestions = computed(() => {
+            return [...questions.value].sort((a, b) => b.likes - a.likes);
         });
 
         const sendQuestion = async (newQuestion) => {
-            const postedQuestion = await postQuestion({
+            await postQuestion({
                 content: newQuestion,
                 presentationId: presentationId.value,
                 token: store.state.deviceToken,
             });
-            console.log('Posted question', postedQuestion);
         };
 
-        const likeMessage = (id) => {
-            const message = messages.value.find((message) => message.id === id);
-            if (message) {
-                message.likes++;
+        const likeQuestion = (id) => {
+            const question = questions.value.find((question) => question.id === id);
+            if (question) {
+                question.likes++;
             }
         };
 
         return {
-            messages,
-            sortedMessages,
+            questions,
+            sortedQuestions,
             sendQuestion,
-            likeMessage,
+            likeQuestion,
         };
     },
 };

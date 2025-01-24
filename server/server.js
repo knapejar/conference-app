@@ -1,7 +1,7 @@
 import express from 'express';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
-import { setupSocketHandlers } from './questions.js';
+import { registerQuestions } from './questions.js';
 import { getInitialUpdate } from './initialUpdate.js';
 import { debugGetTestToken } from './debug.js';
 import cors from 'cors';
@@ -39,7 +39,7 @@ io.on('connection', (socket) => {
     console.log('A user connected:', socket.id, socket.handshake.query.deviceToken);
     // TODO Validate device token here
     
-    setupSocketHandlers(io, socket);
+    registerQuestions(app, io, socket);
 
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);
