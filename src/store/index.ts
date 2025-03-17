@@ -32,10 +32,10 @@ const store = createStore({
     },
     actions: {
         async initializeApp({ commit }) {
-            const deviceToken = await getDebugToken();
-            this.state.deviceToken = deviceToken
 
             try {
+                const deviceToken = await getDebugToken();
+                this.state.deviceToken = deviceToken
                 const { announcements, blocks, conference, presenters } = await getInitialUpdate(this.state.deviceToken);
                 commit('setAnnouncements', announcements);
                 commit('setBlocks', blocks);
@@ -43,6 +43,9 @@ const store = createStore({
                 commit('setPresenters', presenters);
             } catch (error) {
                 console.error('Error initializing app:', error);
+                // Redirect to /welcome page
+                const router = document.querySelector('ion-router');
+                router.push('/welcome');
             }
         }
     },

@@ -4,6 +4,7 @@ import Program from '../views/Program.vue'
 import Home from '../views/Home.vue'
 import People from '../views/People.vue'
 import Questions from '../views/Questions.vue'
+import Welcome from '../views/Welcome.vue'
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -25,7 +26,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/people',
     name: 'People',
     component: People
-  },
+  }, {
+    path: '/welcome',
+    name: 'Welcome',
+    component: Welcome
+  }
 ]
 
 const router = createRouter({
