@@ -71,11 +71,9 @@ export default {
             });
         };
 
-        const likeQuestion = (id) => {
-            const question = questions.value.find((question) => question.id === id);
-            if (question) {
-                question.likes++;
-            }
+        const likeQuestion = async (id) => {
+            await likeQuestion(id);
+            // The likes count will be updated through the onNewQuestion handler
         };
 
         return {
