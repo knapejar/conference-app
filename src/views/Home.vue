@@ -15,12 +15,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, onMounted } from 'vue';
 import { useStore } from '@/composables/useVuexStore.js';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   setup() {
     const store = useStore();
+    const route = useRoute();
+    
+    onMounted(() => {
+      if (route.query.i) {
+        store.login(route.query.i as string);
+      }
+    });
 
     return {
       store,

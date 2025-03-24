@@ -28,10 +28,17 @@ export const registerQuestions = (app, io, socket) => {
                     presentationId: parseInt(presentationId, 10)
                 },
                 include: {
-                    author: true
+                    author: true,
+                    _count: {
+                        select: { likers: true }
+                    }
                 }
             });
-            io.emit('questions', questions);
+            const questionsWithLikes = questions.map((question) => ({
+                ...question,
+                likes: question._count.likers
+            }));
+            io.emit('questions', questionsWithLikes);
         } catch (error) {
             console.error('Error handling requestQuestions event:', error);
         }

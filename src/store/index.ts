@@ -59,7 +59,7 @@ const store = createStore({
         setPresenters(state, presenters) {
             state.presenters = presenters;
         },
-    }
+    },
 });
 
 export default store;

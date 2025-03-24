@@ -24,17 +24,18 @@ model Block {
 }
 
 model Presentation {
-  id             Int       @id @default(autoincrement())
-  start          DateTime
-  end            DateTime
-  title          String
-  starred        Boolean
-  questionsRoom  String
-  blockId        Int
-  block          Block      @relation(fields: [blockId], references: [id])
-  questions      Question[]
-  presenters     Presenter[]
-  starrers       User[]     @relation("PresentationStarrers")
+  id              Int       @id @default(autoincrement())
+  start           DateTime
+  end             DateTime
+  title           String
+  starred         Boolean
+  questionsRoom   String
+  moderationToken String
+  blockId         Int
+  block           Block      @relation(fields: [blockId], references: [id])
+  questions       Question[]
+  presenters      Presenter[]
+  starrers        User[]     @relation("PresentationStarrers")
 }
 
 model Question {
@@ -59,6 +60,10 @@ model Presenter {
 model User {
   id                    Int    @id @default(autoincrement())
   name                  String
+  inviteToken           String
+  email                 String
+  social                String?
+  photoURL              String?
   starredPresentations  Presentation[] @relation("PresentationStarrers")
   authoredQuestions     Question[]
   likedQuestions        Question[]    @relation("QuestionLikers")

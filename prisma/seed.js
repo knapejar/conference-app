@@ -1,5 +1,3 @@
-// prisma/seed.ts
-
 import { PrismaClient } from '@prisma/client';
 import { faker } from '@faker-js/faker';
 
@@ -48,6 +46,7 @@ async function main() {
             starred: faker.datatype.boolean(),
             questionsRoom: `Room ${Math.floor(Math.random() * 10) + 1}`,
             block: { connect: { id: block.id } },
+            moderationToken: faker.string.uuid(),
           },
         })
       )
@@ -77,6 +76,9 @@ async function main() {
           starredPresentations: { connect: presentations.slice(0, Math.min(presentations.length, 3)).map(p => ({ id: p.id })) },
           authoredQuestions: { create: [] },
           devices: { create: [{ token: faker.string.uuid() }] },
+          inviteToken: faker.string.uuid(),
+          photoURL: faker.image.avatar(),
+          social: { create: { twitter: faker.internet.userName(), linkedin: faker.internet.userName() } },
         },
       })
     )

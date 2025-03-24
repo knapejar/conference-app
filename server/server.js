@@ -3,7 +3,7 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { registerQuestions } from './questions.js';
 import { getInitialUpdate } from './initialUpdate.js';
-import { debugGetTestToken } from './debug.js';
+import { debugGetTestToken } from './testPrisma.js';
 import cors from 'cors';
 
 const app = express();

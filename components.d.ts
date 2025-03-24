@@ -8,6 +8,9 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     AddIcons: typeof import('./src/components/icons/AddIcons.vue')['default']
+    AdminPanel: typeof import('./src/components/admin/AdminPanel.vue')['default']
+    AdminPanelLogin: typeof import('./src/components/admin/AdminPanelLogin.vue')['default']
+    AdminPanelSettings: typeof import('./src/components/admin/AdminPanelSettings.vue')['default']
     AnnouncementsBlock: typeof import('./src/components/announcements/AnnouncementsBlock.vue')['default']
     AnnouncementsBlocks: typeof import('./src/components/announcements/AnnouncementsBlocks.vue')['default']
     BaseLayout: typeof import('./src/components/base/BaseLayout.vue')['default']
@@ -33,6 +36,7 @@ declare module 'vue' {
     IonImg: typeof import('@ionic/vue')['IonImg']
     IonInput: typeof import('@ionic/vue')['IonInput']
     IonItem: typeof import('@ionic/vue')['IonItem']
+    IonItemDivider: typeof import('@ionic/vue')['IonItemDivider']
     IonLabel: typeof import('@ionic/vue')['IonLabel']
     IonList: typeof import('@ionic/vue')['IonList']
     IonMenu: typeof import('@ionic/vue')['IonMenu']
@@ -46,9 +50,10 @@ declare module 'vue' {
     IonTabButton: typeof import('@ionic/vue')['IonTabButton']
     IonTabs: typeof import('@ionic/vue')['IonTabs']
     IonText: typeof import('@ionic/vue')['IonText']
+    IonTextarea: typeof import('@ionic/vue')['IonTextarea']
     IonTitle: typeof import('@ionic/vue')['IonTitle']
     IonToolbar: typeof import('@ionic/vue')['IonToolbar']
-    MainLayout: typeof import('./src/components/base/MainLayout.vue')['default']
+    MainLayout: typeof import('./src/components/MainLayout/MainLayout.vue')['default']
     MainLayoutHeaderToolbarBell: typeof import('./src/components/MainLayout/headerToolbar/MainLayoutHeaderToolbarBell.vue')['default']
     MainLayoutNotificationsMenu: typeof import('./src/components/MainLayout/notificationsMenu/MainLayoutNotificationsMenu.vue')['default']
     MenuLayoutFooterToolbar: typeof import('./src/components/MainLayout/footerToolbar/MenuLayoutFooterToolbar.vue')['default']
@@ -65,7 +70,9 @@ declare module 'vue' {
     QuestionsIconButton: typeof import('./src/components/questions/QuestionsIconButton.vue')['default']
     QuestionsList: typeof import('./src/components/questions/QuestionsList.vue')['default']
     QuestionsListItem: typeof import('./src/components/questions/QuestionsListItem.vue')['default']
+    Registration: typeof import('./src/components/registration/Registration.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UserRegistration: typeof import('./src/components/registration/UserRegistration.vue')['default']
   }
 }

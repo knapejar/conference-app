@@ -33,7 +33,6 @@ export default {
                     if (presentation && presentation.questions) {
                         questions.value = presentation.questions.map((q) => ({
                             ...q,
-                            likes: 0, // Default to 0 likes if not already present
                         }));
                     }
                 }
@@ -44,10 +43,19 @@ export default {
         onNewQuestion((newQuestion) => {
             console.log('New question', newQuestion);
             if (newQuestion.presentationId == presentationId.value) {
+            const existingQuestionIndex = questions.value.findIndex(q => q.id === newQuestion.id);
+            if (existingQuestionIndex !== -1) {
+                // Update existing question
+                questions.value[existingQuestionIndex] = {
+                ...questions.value[existingQuestionIndex],
+                ...newQuestion
+                };
+            } else {
+                // Add new question
                 questions.value.push({
-                    ...newQuestion,
-                    likes: 0,
+                ...newQuestion,
                 });
+            }
             }
         });
 
@@ -55,7 +63,7 @@ export default {
             const fetchedQuestions = await requestQuestions(presentationId.value);
             questions.value = fetchedQuestions.map((q) => ({
                 ...q,
-                likes: q.likes || 0, // Default to 0 likes if not already present
+                likes: q.likes,
             }));
         });
 
