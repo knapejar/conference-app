@@ -1,6 +1,9 @@
 # Step 1: Build the Ionic Vue app in production mode
 FROM node:18-alpine AS build
 
+# Install OpenSSL dependencies
+RUN apk add --no-cache openssl
+
 # Set the working directory inside the container
 WORKDIR /app
 
@@ -19,6 +22,9 @@ RUN npm run build
 
 # Step 2: Create a new stage for the application
 FROM node:18-alpine AS app
+
+# Install OpenSSL dependencies
+RUN apk add --no-cache openssl
 
 WORKDIR /app
 

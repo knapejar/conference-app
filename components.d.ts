@@ -14,8 +14,6 @@ declare module 'vue' {
     AnnouncementsBlock: typeof import('./src/components/announcements/AnnouncementsBlock.vue')['default']
     AnnouncementsBlocks: typeof import('./src/components/announcements/AnnouncementsBlocks.vue')['default']
     BaseLayout: typeof import('./src/components/base/BaseLayout.vue')['default']
-    copy: typeof import('./src/components/questions/QuestionsExample copy.vue')['default']
-    IonApp: typeof import('@ionic/vue')['IonApp']
     IonAvatar: typeof import('@ionic/vue')['IonAvatar']
     IonBackButton: typeof import('@ionic/vue')['IonBackButton']
     IonBadge: typeof import('@ionic/vue')['IonBadge']
@@ -36,7 +34,6 @@ declare module 'vue' {
     IonImg: typeof import('@ionic/vue')['IonImg']
     IonInput: typeof import('@ionic/vue')['IonInput']
     IonItem: typeof import('@ionic/vue')['IonItem']
-    IonItemDivider: typeof import('@ionic/vue')['IonItemDivider']
     IonLabel: typeof import('@ionic/vue')['IonLabel']
     IonList: typeof import('@ionic/vue')['IonList']
     IonMenu: typeof import('@ionic/vue')['IonMenu']
@@ -64,7 +61,6 @@ declare module 'vue' {
     PresentationBlocks: typeof import('./src/components/presentations/PresentationBlocks.vue')['default']
     PresentationItem: typeof import('./src/components/presentations/PresentationItem.vue')['default']
     QuestionsExample: typeof import('./src/components/questions/QuestionsExample.vue')['default']
-    QuestionsExampleNoApi: typeof import('./src/components/questions/QuestionsExampleNoApi.vue')['default']
     QuestionsExampleNoBackend: typeof import('./src/components/questions/QuestionsExampleNoBackend.vue')['default']
     QuestionsFooterSendQuestion: typeof import('./src/components/questions/QuestionsFooterSendQuestion.vue')['default']
     QuestionsIconButton: typeof import('./src/components/questions/QuestionsIconButton.vue')['default']
@@ -73,6 +69,5 @@ declare module 'vue' {
     Registration: typeof import('./src/components/registration/Registration.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    UserRegistration: typeof import('./src/components/registration/UserRegistration.vue')['default']
   }
 }

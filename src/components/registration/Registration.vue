@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import BaseLayout from '../base/BaseLayout.vue';
+import { ref } from 'vue';
 
+const email = ref<string>('');
+const verificationCode = ref<string>('');
+
+const sendEmail = async (): Promise<void> => {
+    // TODO: Implement email sending logic
+};
+
+const login = async (): Promise<void> => {
+    // TODO: Implement login logic
+};
 </script>
 
 <template>
