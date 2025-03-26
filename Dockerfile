@@ -11,10 +11,33 @@ RUN npm install
 # Copy the rest of the application files
 COPY . .
 
+# Generate Prisma Client
+RUN npx prisma generate
+
 # Build the app for production
 RUN npm run build
 
-# Step 2: Serve the app using Nginx
+# Step 2: Create a new stage for the application
+FROM node:18-alpine AS app
+
+WORKDIR /app
+
+# Copy necessary files from build stage
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/node_modules ./node_modules
+COPY --from=build /app/package*.json ./
+COPY --from=build /app/prisma ./prisma
+
+# Generate Prisma Client in the final stage
+RUN npx prisma generate
+
+# Expose port 3000 for the API
+EXPOSE 3000
+
+# Start the application
+CMD ["npm", "start"]
+
+# Step 3: Serve the app using Nginx
 FROM nginx:stable-alpine
 
 # Copy the built app to the Nginx HTML directory

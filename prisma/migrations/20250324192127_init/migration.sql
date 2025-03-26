@@ -23,6 +23,7 @@ CREATE TABLE "Presentation" (
     "title" TEXT NOT NULL,
     "starred" BOOLEAN NOT NULL,
     "questionsRoom" TEXT NOT NULL,
+    "moderationToken" TEXT NOT NULL,
     "blockId" INTEGER NOT NULL,
     CONSTRAINT "Presentation_blockId_fkey" FOREIGN KEY ("blockId") REFERENCES "Block" ("id") ON DELETE RESTRICT ON UPDATE CASCADE
 );
@@ -50,7 +51,11 @@ CREATE TABLE "Presenter" (
 -- CreateTable
 CREATE TABLE "User" (
     "id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-    "name" TEXT NOT NULL
+    "name" TEXT NOT NULL,
+    "inviteToken" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
+    "social" TEXT,
+    "photoURL" TEXT
 );
 
 -- CreateTable

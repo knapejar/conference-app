@@ -6,6 +6,7 @@ const prisma = new PrismaClient();
 export const debugGetTestToken = async (req, res) => {
     try {
         const device = await prisma.device.findFirst()
+        console.log("Development test token:", device.token);
         res.json({token: device.token});
     } catch (error) {
         console.error(error);

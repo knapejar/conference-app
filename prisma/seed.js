@@ -5,14 +5,14 @@ const prisma = new PrismaClient();
 
 async function main() {
   await prisma.$transaction([
-    prisma.conference.deleteMany(),
+    prisma.announcement.deleteMany(),
     prisma.question.deleteMany(),
     prisma.presenter.deleteMany(),
     prisma.presentation.deleteMany(),
     prisma.block.deleteMany(),
-    prisma.user.deleteMany(),
     prisma.device.deleteMany(),
-    prisma.announcement.deleteMany(),
+    prisma.user.deleteMany(),
+    prisma.conference.deleteMany(),
   ]);
 
   const blocks = await Promise.all(
@@ -28,7 +28,7 @@ async function main() {
       prisma.conference.create({
         data: {
           name: 'Mobile World Congress',
-          description: 'The world’s most influential event for the connectivity industry.',
+          description: "The world's most influential event for the connectivity industry.",
           welcomeImage: './assets/conference.jpg',
         },
       })
