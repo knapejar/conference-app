@@ -1,56 +1,44 @@
 # Step 1: Build the Ionic Vue app in production mode
 FROM node:18-alpine AS build
 
-# Install OpenSSL dependencies
-RUN apk add --no-cache openssl
-
-# Set the working directory inside the container
 WORKDIR /app
 
-# Copy the package files and install dependencies
+# Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
 
-# Copy the rest of the application files
+# Copy the full app
 COPY . .
 
-# Generate Prisma Client
-RUN npx prisma generate
-
-# Build the app for production
+# Build the client
 RUN npm run build
 
-# Step 2: Create a new stage for the application
-FROM node:18-alpine AS app
 
-# Install OpenSSL dependencies
-RUN apk add --no-cache openssl
+# Step 2: Final image with Node.js server + Nginx
+FROM node:18-alpine
 
+# Install Nginx and supervisor
+RUN apk add --no-cache nginx supervisor
+
+# Create app directory
 WORKDIR /app
 
-# Copy necessary files from build stage
-COPY --from=build /app/dist ./dist
-COPY --from=build /app/node_modules ./node_modules
-COPY --from=build /app/package*.json ./
-COPY --from=build /app/prisma ./prisma
+# Copy the full project from the build stage
+COPY --from=build /app /app
 
-# Generate Prisma Client in the final stage
-RUN npx prisma generate
+# Copy built frontend to Nginx html folder
+RUN mkdir -p /var/www && cp -r /app/dist/* /var/www/
 
-# Expose port 3000 for the API
+# Nginx config
+RUN mkdir -p /run/nginx
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Supervisor config
+COPY supervisord.conf /etc/supervisord.conf
+
+# Expose backend and frontend ports
+EXPOSE 80
 EXPOSE 3000
 
-# Start the application
-CMD ["npm", "start"]
-
-# Step 3: Serve the app using Nginx
-FROM nginx:stable-alpine
-
-# Copy the built app to the Nginx HTML directory
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Expose port 80 for HTTP
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+# Run both Node server and Nginx via supervisor
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
