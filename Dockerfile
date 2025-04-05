@@ -3,6 +3,9 @@ FROM node:18-alpine AS build
 
 WORKDIR /app
 
+# Install OpenSSL for Prisma
+RUN apk add --no-cache openssl
+
 # Copy package files and install dependencies
 COPY package*.json ./
 RUN npm install
@@ -13,18 +16,27 @@ COPY . .
 # Build the client
 RUN npm run build
 
+# Generate Prisma Client
+RUN npx prisma generate
 
 # Step 2: Final image with Node.js server + Nginx
 FROM node:18-alpine
 
-# Install Nginx and supervisor
-RUN apk add --no-cache nginx supervisor
+# Install Nginx, supervisor and OpenSSL
+RUN apk add --no-cache nginx supervisor openssl
 
 # Create app directory
 WORKDIR /app
 
+# Copy package files and install dependencies
+COPY package*.json ./
+RUN npm install
+
 # Copy the full project from the build stage
-COPY --from=build /app /app
+COPY --from=build /app/dist /app/dist
+COPY --from=build /app/server /app/server
+COPY --from=build /app/node_modules/.prisma /app/node_modules/.prisma
+COPY --from=build /app/node_modules/@prisma /app/node_modules/@prisma
 
 # Copy built frontend to Nginx html folder
 RUN mkdir -p /var/www && cp -r /app/dist/* /var/www/
