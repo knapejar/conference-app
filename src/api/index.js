@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { io } from 'socket.io-client';
 
-const API_BASE = process.env.API_BASE || 'http://localhost:3000';
+const API_BASE = process.env.API_BASE || 'https://konference.jk9.eu/server';
 
 axios.defaults.baseURL = API_BASE;
 axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
@@ -16,13 +16,13 @@ export const init = async() => {
 };
 
 export const getDebugToken = async() => {
-    const response = await axios.get('http://localhost:3000/debug-get-test-token');
+    const response = await axios.get(API_BASE + '/debug-get-test-token');
     localStorage.setItem('deviceToken', response.data.token);
     return response.data.token;
 };
 
 export const getInitialUpdate = async(deviceToken) => {
-    const response = await axios.get('http://localhost:3000/initial-update', {
+    const response = await axios.get(API_BASE + '/initial-update', {
         params: {
             deviceToken: deviceToken
         }
