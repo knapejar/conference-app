@@ -73,12 +73,13 @@ async function main() {
       prisma.user.create({
         data: {
           name: faker.person.fullName(),
+          email: faker.internet.email(),
           starredPresentations: { connect: presentations.slice(0, Math.min(presentations.length, 3)).map(p => ({ id: p.id })) },
           authoredQuestions: { create: [] },
           devices: { create: [{ token: faker.string.uuid() }] },
           inviteToken: faker.string.uuid(),
           photoURL: faker.image.avatar(),
-          social: { create: { twitter: faker.internet.userName(), linkedin: faker.internet.userName() } },
+          social: faker.internet.userName(),
         },
       })
     )

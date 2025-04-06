@@ -56,6 +56,6 @@
     "vue-tsc": "^2.0.22"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.js"
+    "seed": "node --loader ts-node/esm prisma/seed.ts"
   }
 }
