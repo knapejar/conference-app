@@ -2,142 +2,138 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-const getUserByToken = async (deviceToken) => {
-    return await prisma.user.findFirst({
-        where: {
-            devices: {
-                some: { token: deviceToken }
-            }
-        },
-        include: { starredPresentations: true }
-    });
+export const getQuestions = async (presentationId) => {
+    if (!presentationId) {
+        throw new Error("Presentation ID is required.");
+    }
+    const presId = parseInt(presentationId, 10);
+    if (isNaN(presId)) {
+        throw new Error("Invalid presentation ID provided.");
+    }
+    try {
+        // Verify that the presentation exists
+        const presentation = await prisma.presentation.findUnique({
+            where: { id: presId }
+        });
+        if (!presentation) {
+            throw new Error(`Presentation with ID ${presId} not found.`);
+        }
+
+        const questions = await prisma.question.findMany({
+            where: { presentationId: presId }
+        });
+        return questions;
+    } catch (error) {
+        console.error("Error in getQuestions:", error);
+        throw error;
+    }
 };
 
-const getPresentationById = async (presentationId) => {
-    return await prisma.presentation.findUnique({
-        where: { id: parseInt(presentationId, 10) }
-    });
+export const createQuestion = async (presentationId, content) => {
+    if (!presentationId) {
+        throw new Error("Presentation ID is required.");
+    }
+    if (!content || typeof content !== 'string') {
+        throw new Error("Valid content is required to create a question.");
+    }
+    const presId = parseInt(presentationId, 10);
+    if (isNaN(presId)) {
+        throw new Error("Invalid presentation ID provided.");
+    }
+    try {
+        // Verify that the presentation exists
+        const presentation = await prisma.presentation.findUnique({
+            where: { id: presId }
+        });
+        if (!presentation) {
+            throw new Error(`Presentation with ID ${presId} not found.`);
+        }
+        // Create the question with likes defaulting to 0
+        await prisma.question.create({
+            data: {
+                content,
+                author: "Anonymous",
+                authorToken: "Anonymous",
+                likes: 0,
+                presentation: { connect: { id: presId } }
+            }
+        });
+        return getQuestions(presId);
+    } catch (error) {
+        console.error("Error in createQuestion:", error);
+        throw error;
+    }
 };
 
-export const registerQuestions = (app, io, socket) => {
-    socket.on('requestQuestions', async (params) => {
-        const { deviceToken, presentationId } = params;
-        try {
-            const questions = await prisma.question.findMany({
-                where: {
-                    presentationId: parseInt(presentationId, 10)
-                },
-                include: {
-                    author: true,
-                    _count: {
-                        select: { likers: true }
-                    }
-                }
-            });
-            const questionsWithLikes = questions.map((question) => ({
-                ...question,
-                likes: question._count.likers
-            }));
-            io.emit('questions', questionsWithLikes);
-        } catch (error) {
-            console.error('Error handling requestQuestions event:', error);
+export const likeQuestion = async (questionId) => {
+    if (!questionId) {
+        throw new Error("Question ID is required.");
+    }
+    const qId = parseInt(questionId, 10);
+    if (isNaN(qId)) {
+        throw new Error("Invalid question ID provided.");
+    }
+    try {
+        const question = await prisma.question.findUnique({ where: { id: qId } });
+        if (!question) {
+            throw new Error(`Question with ID ${qId} not found.`);
         }
-    });
-    socket.on('newQuestion', async (params) => {
-        const { content, presentationId, deviceToken } = params;
+        await prisma.question.update({
+            where: { id: qId },
+            data: { likes: question.likes + 1 }
+        });
+        return getQuestions(question.presentationId);
+    } catch (error) {
+        console.error("Error in likeQuestion:", error);
+        throw error;
+    }
+};
 
-        try {
-            const user = await getUserByToken(deviceToken);
-            const presentation = await getPresentationById(presentationId);
-
-            if (!user) {
-                console.error('User not found for token:', deviceToken);
-                return;
-            }
-
-            if (!presentation) {
-                console.error('Presentation not found for ID:', presentationId);
-                return;
-            }
-
-            var newQuestion = await prisma.question.create({
-                data: {
-                    content,
-                    presentation: { connect: { id: presentation.id } },
-                    author: { connect: { id: user.id } }
-                },
-                include: {
-                    author: true
-                }
-            });
-            newQuestion.likes = 0;
-
-            io.emit('newQuestion', newQuestion);
-        } catch (error) {
-            console.error('Error handling newQuestion event:', error);
+export const unlikeQuestion = async (questionId) => {
+    if (!questionId) {
+        throw new Error("Question ID is required.");
+    }
+    const qId = parseInt(questionId, 10);
+    if (isNaN(qId)) {
+        throw new Error("Invalid question ID provided.");
+    }
+    try {
+        const question = await prisma.question.findUnique({ where: { id: qId } });
+        if (!question) {
+            throw new Error(`Question with ID ${qId} not found.`);
         }
-    });
-    socket.on('likeQuestion', async (params) => {
-        const { questionId, deviceToken } = params;
+        const updatedLikes = question.likes > 0 ? question.likes - 1 : 0;
+        await prisma.question.update({
+            where: { id: qId },
+            data: { likes: updatedLikes }
+        });
+        return getQuestions(question.presentationId);
+    } catch (error) {
+        console.error("Error in unlikeQuestion:", error);
+        throw error;
+    }
+};
 
-        console.log('Like question:', questionId, 'from user:', deviceToken);
-
-        try {
-            const user = await getUserByToken(deviceToken);
-            if (!user) {
-                console.error('User not found for token:', deviceToken);
-                return;
-            }
-
-            const question = await prisma.question.findUnique({
-                where: { id: parseInt(questionId, 10) },
-                include: { likers: true }
-            });
-
-            if (!question) {
-                console.error('Question not found for ID:', questionId);
-                return;
-            }
-
-            const likedByUser = question.likers.some((liker) => liker.id === user.id);
-            if (likedByUser) { // Unlike the question
-                await prisma.question.update({
-                    where: { id: question.id },
-                    data: {
-                        likers: {
-                            disconnect: { id: user.id }
-                        }
-                    }
-                });
-            } else { // Like the question
-                await prisma.question.update({
-                    where: { id: question.id },
-                    data: {
-                        likers: {
-                            connect: { id: user.id }
-                        }
-                    }
-                });
-            }
-
-            const updatedQuestion = await prisma.question.findUnique({
-                where: { id: question.id },
-                include: {
-                    author: true,
-                    _count: {
-                        select: { likers: true }
-                    }
-                }
-            });
-
-            const response = {
-                ...updatedQuestion,
-                likes: updatedQuestion._count.likers
-            };
-
-            io.emit('newQuestion', response);
-        } catch (error) {
-            console.error('Error handling likeQuestion event:', error);
+export const deleteQuestion = async (questionId) => {
+    if (!questionId) {
+        throw new Error("Question ID is required.");
+    }
+    const qId = parseInt(questionId, 10);
+    if (isNaN(qId)) {
+        throw new Error("Invalid question ID provided.");
+    }
+    try {
+        // Verify that the question exists before deletion
+        const question = await prisma.question.findUnique({ where: { id: qId } });
+        if (!question) {
+            throw new Error(`Question with ID ${qId} not found.`);
         }
-    });
-}
+        await prisma.question.delete({
+            where: { id: qId }
+        });
+        return getQuestions(question.presentationId);
+    } catch (error) {
+        console.error("Error in deleteQuestion:", error);
+        throw error;
+    }
+};

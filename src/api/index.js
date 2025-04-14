@@ -1,56 +1,91 @@
 import axios from 'axios';
-import { io } from 'socket.io-client';
 
-const API_BASE = process.env.API_BASE || 'https://konference.jk9.eu/server';
+const API_BASE = process.env.API_BASE || 'http://localhost:3000'; //'https://konference.jk9.eu/server';
 
 axios.defaults.baseURL = API_BASE;
-axios.defaults.headers.post['Content-Type'] ='application/json;charset=utf-8';
+axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
-const socket = io(API_BASE, {
-    path: '/server/socket.io',
-    query: { deviceToken: localStorage.getItem('deviceToken') || '' }
-});
-  
-
-export const init = async() => {
+export const init = async () => {
+    // Initialization code if needed.
 };
 
-export const getDebugToken = async() => {
-    const response = await axios.get(API_BASE + '/debug-get-test-token');
-    localStorage.setItem('deviceToken', response.data.token);
-    return response.data.token;
-};
-
-export const getInitialUpdate = async(deviceToken) => {
-    const response = await axios.get(API_BASE + '/initial-update', {
-        params: {
-            deviceToken: deviceToken
-        }
+export const getInitialUpdate = async () => {
+    const response = await axios.get('/initial-update', {
+        params: { }
     });
     return response.data;
 };
 
-export const requestQuestions = async (presentationId) => {
-    return new Promise((resolve) => {
-        socket.emit('requestQuestions', {
+export const getQuestions = async (presentationId) => {
+    if (!presentationId) {
+        throw new Error('Presentation ID is required.');
+    }
+    try {
+        const response = await axios.get('/questions', {
+            params: { presentationId }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in getQuestions:', error);
+        throw error;
+    }
+};
+
+export const createQuestion = async (presentationId, content) => {
+    if (!presentationId) {
+        throw new Error('Presentation ID is required.');
+    }
+    if (!content || typeof content !== 'string') {
+        throw new Error('Valid content is required to create a question.');
+    }
+    try {
+        const response = await axios.post('/questions', {
             presentationId,
-            deviceToken: localStorage.getItem('deviceToken')
+            content
         });
-        socket.once('questions', (questions) => {
-            resolve(questions);
-        });
-    });
+        return response.data;
+    } catch (error) {
+        console.error('Error in createQuestion:', error);
+        throw error;
+    }
 };
-export const postQuestion = async (question) => {
-    socket.emit('newQuestion', question);
-};
-export const onNewQuestion = (callback) => {
-    socket.on('newQuestion', callback);
-};
+
 export const likeQuestion = async (questionId) => {
-    socket.emit('likeQuestion', {
-        questionId,
-        deviceToken: localStorage.getItem('deviceToken')
-    });
-}
+    if (!questionId) {
+        throw new Error('Question ID is required.');
+    }
+    try {
+        const response = await axios.post(`/questions/${questionId}/like`);
+        return response.data;
+    } catch (error) {
+        console.error('Error in likeQuestion:', error);
+        throw error;
+    }
+};
+
+export const unlikeQuestion = async (questionId) => {
+    if (!questionId) {
+        throw new Error('Question ID is required.');
+    }
+    try {
+        const response = await axios.post(`/questions/${questionId}/unlike`);
+        return response.data;
+    } catch (error) {
+        console.error('Error in unlikeQuestion:', error);
+        throw error;
+    }
+};
+
+export const deleteQuestion = async (questionId) => {
+    if (!questionId) {
+        throw new Error('Question ID is required.');
+    }
+    try {
+        const response = await axios.delete(`/questions/${questionId}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error in deleteQuestion:', error);
+        throw error;
+    }
+};

@@ -28,24 +28,22 @@ model Presentation {
   start           DateTime
   end             DateTime
   title           String
-  starred         Boolean
-  questionsRoom   String
-  moderationToken String
+  description     String
   blockId         Int
   block           Block      @relation(fields: [blockId], references: [id])
+  questionsRoom   Boolean
   questions       Question[]
   presenters      Presenter[]
-  starrers        User[]     @relation("PresentationStarrers")
 }
 
 model Question {
   id             Int       @id @default(autoincrement())
   content        String
+  author         String
+  authorToken    String
+  likes          Int
   presentationId Int
   presentation   Presentation @relation(fields: [presentationId], references: [id])
-  author         User      @relation(fields: [authorId], references: [id])
-  authorId       Int
-  likers         User[]    @relation("QuestionLikers")
 }
 
 model Presenter {
@@ -55,26 +53,6 @@ model Presenter {
   imageURL       String
   presentationId Int
   presentation   Presentation @relation(fields: [presentationId], references: [id])
-}
-
-model User {
-  id                    Int    @id @default(autoincrement())
-  name                  String
-  inviteToken           String
-  email                 String
-  social                String?
-  photoURL              String?
-  starredPresentations  Presentation[] @relation("PresentationStarrers")
-  authoredQuestions     Question[]
-  likedQuestions        Question[]    @relation("QuestionLikers")
-  devices               Device[]
-}
-
-model Device {
-  id       Int    @id @default(autoincrement())
-  token    String @unique
-  userId   Int
-  user     User   @relation(fields: [userId], references: [id])
 }
 
 model Conference {

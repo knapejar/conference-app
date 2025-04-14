@@ -3,17 +3,19 @@
         <ion-badge>{{ question.likes }}</ion-badge>
         <div style="width: 16px;"></div>
         <ion-label>
-            <h2>{{ question.author.name }}</h2>
-            <p>{{ question.content }}</p>
+            <h2>{{ question.content }}</h2>
+            <p>{{ question.author }}</p>
         </ion-label>
         <ion-button @click="likeQuestion" fill="clear" slot="end">
-            <ion-icon name="thumbs-up" style="font-size: 24px;"></ion-icon>
+            <ion-icon
+                name="thumbs-up"
+                :style="{ fontSize: '24px', color: question.isLiked ? 'blue' : 'gray' }">
+            </ion-icon>
         </ion-button>
     </ion-item>
 </template>
 
 <script>
-import { likeQuestion } from '@/api';
 export default {
     props: {
         question: {
@@ -23,7 +25,7 @@ export default {
     },
     methods: {
         likeQuestion() {
-            likeQuestion(this.question.id);
+            this.$emit('like', this.question.id);
         }
     }
 }

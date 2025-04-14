@@ -1,6 +1,7 @@
 import { createStore } from 'vuex';
 import { ref } from 'vue'
 import { getDebugToken, getInitialUpdate } from '@/api';
+import questions from './modules/questions';
 
 const store = createStore({
     state: {
@@ -32,11 +33,8 @@ const store = createStore({
     },
     actions: {
         async initializeApp({ commit }) {
-            const deviceToken = await getDebugToken();
-            this.state.deviceToken = deviceToken
-
             try {
-                const { announcements, blocks, conference, presenters } = await getInitialUpdate(this.state.deviceToken);
+                const { announcements, blocks, conference, presenters } = await getInitialUpdate();
                 commit('setAnnouncements', announcements);
                 commit('setBlocks', blocks);
                 commit('setConference', { conference });
@@ -59,6 +57,9 @@ const store = createStore({
         setPresenters(state, presenters) {
             state.presenters = presenters;
         },
+    },
+    modules: {
+        questions,
     },
 });
 

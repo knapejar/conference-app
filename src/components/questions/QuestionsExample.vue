@@ -1,6 +1,10 @@
 <template>
     <BaseLayout :pageTitle="'Otázky ' + $route.params.id">
-        <QuestionsList :questions="sortedQuestions" @like="likeQuestion" />
+        <QuestionsList 
+            :questions="sortedQuestions" 
+            @like="likeQuestion" 
+            @delete="deleteQuestionHandler" 
+        />
         <template v-slot:footer>
             <QuestionsFooterSendQuestion @send="sendQuestion" />
         </template>
@@ -8,8 +12,7 @@
 </template>
 
 <script>
-import { ref, computed, onMounted, watch } from 'vue';
-import { requestQuestions, postQuestion, onNewQuestion } from '@/api';
+import { computed, onMounted, watch } from 'vue';
 import { useStore } from '@/composables/useVuexStore.js';
 import { useRoute } from 'vue-router';
 
@@ -17,80 +20,79 @@ export default {
     setup() {
         const store = useStore();
         const route = useRoute();
-        const questions = ref([]);
-        const presentationId = ref(route.params.id);
+        const presentationId = route.params.id;
 
+        // Watch store blocks to update questions if needed
         watch(
             () => store.state.blocks,
             (blocks) => {
-                console.log('Blocks changed', blocks);
-                console.log('Presentation ID', presentationId.value);
-                console.log('Questions', questions.value);
                 if (blocks && blocks.length) {
                     const presentation = blocks
                         .flatMap((block) => block.presentations)
-                        .find((presentation) => presentation.id === presentationId.value);
+                        .find((presentation) => presentation.id === presentationId);
                     if (presentation && presentation.questions) {
-                        questions.value = presentation.questions.map((q) => ({
-                            ...q,
-                        }));
+                        store.commit('questions/setQuestions', presentation.questions);
                     }
                 }
             },
             { deep: true, immediate: true }
         );
 
-        onNewQuestion((newQuestion) => {
-            console.log('New question', newQuestion);
-            if (newQuestion.presentationId == presentationId.value) {
-            const existingQuestionIndex = questions.value.findIndex(q => q.id === newQuestion.id);
-            if (existingQuestionIndex !== -1) {
-                // Update existing question
-                questions.value[existingQuestionIndex] = {
-                ...questions.value[existingQuestionIndex],
-                ...newQuestion
-                };
-            } else {
-                // Add new question
-                questions.value.push({
-                ...newQuestion,
-                });
-            }
-            }
+        // Fetch questions on component mount
+        onMounted(async () => {
+            await refreshQuestions();
         });
 
-        onMounted(async () => {
-            const fetchedQuestions = await requestQuestions(presentationId.value);
-            questions.value = fetchedQuestions.map((q) => ({
-                ...q,
-                likes: q.likes,
-            }));
-        });
+        const refreshQuestions = async () => {
+            try {
+                await store.dispatch('questions/fetchQuestions', presentationId);
+            } catch (error) {
+                console.error('Failed to refresh questions:', error);
+            }
+        };
 
         const sortedQuestions = computed(() => {
-            return [...questions.value].sort((a, b) => b.likes - a.likes);
+            const questions = store.getters['questions/getQuestions'];
+            return [...questions].sort((a, b) => b.likes - a.likes);
         });
 
         const sendQuestion = async (newQuestion) => {
-            await postQuestion({
-                content: newQuestion,
-                presentationId: presentationId.value,
-                token: store.state.deviceToken,
-            });
+            try {
+                await store.dispatch('questions/createNewQuestion', {
+                    presentationId,
+                    question: newQuestion
+                });
+            } catch (error) {
+                console.error('Error sending question:', error);
+            }
         };
 
-        const likeQuestion = (id) => {
-            const question = questions.value.find((question) => question.id === id);
-            if (question) {
-                question.likes++;
+        const likeQuestion = async (id) => {
+            try {
+                await store.dispatch('questions/toggleLike', id);
+            } catch (error) {
+                console.error('Error toggling like:', error);
+            }
+        };
+
+        const deleteQuestionHandler = async (id) => {
+            const question = store.getters['questions/getQuestions'].find(q => q.id === id);
+            if (question && question.owned) {
+                try {
+                    await store.dispatch('questions/deleteQuestion', id);
+                } catch (error) {
+                    console.error('Error deleting question:', error);
+                }
+            } else {
+                console.warn('Deletion is allowed for your own questions only.');
             }
         };
 
         return {
-            questions,
             sortedQuestions,
             sendQuestion,
             likeQuestion,
+            deleteQuestionHandler,
         };
     },
 };

@@ -10,8 +10,6 @@ async function main() {
     prisma.presenter.deleteMany(),
     prisma.presentation.deleteMany(),
     prisma.block.deleteMany(),
-    prisma.device.deleteMany(),
-    prisma.user.deleteMany(),
     prisma.conference.deleteMany(),
   ]);
 
@@ -43,10 +41,9 @@ async function main() {
             start: faker.date.future(),
             end: faker.date.future(),
             title: `Presentation ${i + 1}`,
-            starred: faker.datatype.boolean(),
-            questionsRoom: `Room ${Math.floor(Math.random() * 10) + 1}`,
+            description: faker.lorem.paragraph(),
+            questionsRoom: Math.random() < 0.5,
             block: { connect: { id: block.id } },
-            moderationToken: faker.string.uuid(),
           },
         })
       )
@@ -65,23 +62,6 @@ async function main() {
           },
         })
       )
-    )
-  );
-
-  const users = await Promise.all(
-    Array.from({ length: 20 }, () =>
-      prisma.user.create({
-        data: {
-          name: faker.person.fullName(),
-          email: faker.internet.email(),
-          starredPresentations: { connect: presentations.slice(0, Math.min(presentations.length, 3)).map(p => ({ id: p.id })) },
-          authoredQuestions: { create: [] },
-          devices: { create: [{ token: faker.string.uuid() }] },
-          inviteToken: faker.string.uuid(),
-          photoURL: faker.image.avatar(),
-          social: faker.internet.userName(),
-        },
-      })
     )
   );
 

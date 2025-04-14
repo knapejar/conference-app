@@ -1,21 +1,19 @@
 import express from 'express';
 import { createServer } from 'http';
-import { Server } from 'socket.io';
-import { registerQuestions } from './questions.js';
 import { getInitialUpdate } from './initialUpdate.js';
 import { debugGetTestToken } from './testPrisma.js';
+import {
+    getQuestions,
+    createQuestion,
+    likeQuestion,
+    unlikeQuestion,
+    deleteQuestion
+} from './questions.js';
 import cors from 'cors';
 
 const app = express();
 const server = createServer(app);
 app.use(cors());
-const io = new Server(server, {
-    cors: {
-        origin: "*",
-        methods: ["GET", "POST"]
-    }
-});
-
 app.use(express.json());
 
 app.get('/', (req, res) => {
@@ -23,31 +21,91 @@ app.get('/', (req, res) => {
 });
 
 app.get('/initial-update', async (req, res) => {
-    const deviceToken = req.query.deviceToken;
-    if (!deviceToken) {
-        return res.status(400).json({ error: 'Device token is required' });
-    }
-
     try {
-        await getInitialUpdate(req, res, deviceToken);
+        await getInitialUpdate(req, res);
     } catch (error) {
         console.error('Error fetching initial update:', error);
         res.status(500).json({ error: 'Failed to fetch initial update' });
     }
 });
+
 app.get('/debug-get-test-token', async (req, res) => {
     await debugGetTestToken(req, res);
 });
 
-io.on('connection', (socket) => {
-    console.log('A user connected:', socket.id, socket.handshake.query.deviceToken);
-    // TODO Validate device token here
+// GET questions for a given presentationId
+app.get('/questions', async (req, res) => {
+    const { presentationId } = req.query;
+    if (!presentationId) {
+        return res.status(400).json({ error: 'Presentation ID is required' });
+    }
+    try {
+        const questions = await getQuestions(presentationId);
+        res.json(questions);
+    } catch (error) {
+        console.error('Error retrieving questions:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
-    registerQuestions(app, io, socket);
+// POST to create a new question
+app.post('/questions', async (req, res) => {
+    const { presentationId, content } = req.body;
+    if (!presentationId || !content) {
+        return res.status(400).json({ error: 'Presentation ID and content are required' });
+    }
+    try {
+        const questions = await createQuestion(presentationId, content);
+        res.json(questions);
+    } catch (error) {
+        console.error('Error creating question:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
-    socket.on('disconnect', () => {
-        console.log('User disconnected:', socket.id);
-    });
+// POST to like a question
+app.post('/questions/:id/like', async (req, res) => {
+    const questionId = req.params.id;
+    if (!questionId) {
+        return res.status(400).json({ error: 'Question ID is required' });
+    }
+    try {
+        const questions = await likeQuestion(questionId);
+        res.json(questions);
+    } catch (error) {
+        console.error('Error liking question:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// POST to unlike a question
+app.post('/questions/:id/unlike', async (req, res) => {
+    const questionId = req.params.id;
+    if (!questionId) {
+        return res.status(400).json({ error: 'Question ID is required' });
+    }
+    try {
+        const questions = await unlikeQuestion(questionId);
+        res.json(questions);
+    } catch (error) {
+        console.error('Error unliking question:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// DELETE a question
+app.delete('/questions/:id', async (req, res) => {
+    const questionId = req.params.id;
+    if (!questionId) {
+        return res.status(400).json({ error: 'Question ID is required' });
+    }
+    try {
+        const questions = await deleteQuestion(questionId);
+        res.json(questions);
+    } catch (error) {
+        console.error('Error deleting question:', error);
+        res.status(500).json({ error: error.message });
+    }
 });
 
 const PORT = 3000;
