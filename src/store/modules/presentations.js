@@ -6,11 +6,23 @@ function loadStarredPresentations() {
   return stored ? new Set(JSON.parse(stored)) : new Set();
 }
 
+// Helper function to load presentations from localStorage
+function loadPresentations() {
+  const stored = localStorage.getItem('presentations');
+  return stored ? JSON.parse(stored) : [];
+}
+
+// Helper function to load blocks from localStorage
+function loadBlocks() {
+  const stored = localStorage.getItem('blocks');
+  return stored ? JSON.parse(stored) : [];
+}
+
 export default {
   namespaced: true,
   state: {
-    blocks: [],
-    presentations: [],
+    blocks: loadBlocks(),
+    presentations: loadPresentations(),
     starredPresentations: loadStarredPresentations(),
     loading: false,
     error: null
@@ -18,15 +30,24 @@ export default {
   mutations: {
     setBlocks(state, blocks) {
       state.blocks = blocks;
+      localStorage.setItem('blocks', JSON.stringify(blocks));
     },
     setPresentations(state, presentations) {
       state.presentations = presentations;
+      localStorage.setItem('presentations', JSON.stringify(presentations));
     },
     setLoading(state, loading) {
       state.loading = loading;
     },
     setError(state, error) {
-      state.error = error;
+      // Only set error if we don't have any cached data
+      if (state.presentations.length === 0) {
+        state.error = error;
+      } else {
+        // Just log the error to console but don't show it to the user
+        console.error('Network error, using cached data:', error);
+        state.error = null;
+      }
     },
     toggleStarredPresentation(state, presentationId) {
       if (state.starredPresentations.has(presentationId)) {
@@ -39,8 +60,11 @@ export default {
     }
   },
   actions: {
-    async fetchPresentations({ commit }) {
-      commit('setLoading', true);
+    async fetchPresentations({ commit, state }) {
+      // Only set loading if we don't have any data yet
+      if (state.presentations.length === 0) {
+        commit('setLoading', true);
+      }
       commit('setError', null);
       
       try {
@@ -65,14 +89,21 @@ export default {
           console.log('Stored presentations:', allPresentations);
         } else {
           console.warn('No blocks data received');
-          commit('setBlocks', []);
-          commit('setPresentations', []);
+          // Don't clear data if we have cached data
+          if (state.presentations.length === 0) {
+            commit('setBlocks', []);
+            commit('setPresentations', []);
+          }
         }
       } catch (error) {
         console.error('Error fetching presentations:', error);
-        commit('setError', error.message || 'Failed to fetch presentations');
-        commit('setBlocks', []);
-        commit('setPresentations', []);
+        // Only set error if we don't have any cached data
+        if (state.presentations.length === 0) {
+          commit('setError', error.message || 'Failed to fetch presentations');
+        } else {
+          // Just log the error to console but don't show it to the user
+          console.error('Network error, using cached data:', error);
+        }
       } finally {
         commit('setLoading', false);
       }

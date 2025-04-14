@@ -3,8 +3,8 @@
     <ion-card-header>
         <ion-card-title>Mé prezentace</ion-card-title>
     </ion-card-header>
-    <div v-if="loading">Loading...</div>
-    <div v-else-if="error">Error: {{ error }}</div>
+    <div v-if="loading && !hasCachedData">Loading...</div>
+    <div v-else-if="error && !hasCachedData">Error: {{ error }}</div>
     <div v-else-if="starredPresentations.length === 0">
       <ion-item>
         <ion-label>Pro přidání prezentace klikněte na hvězdičku u prezentace</ion-label>
@@ -47,10 +47,15 @@ export default {
       return store.getters['presentations/getError'];
     });
     
+    const hasCachedData = computed(() => {
+      return store.getters['presentations/getPresentations'].length > 0;
+    });
+    
     return {
       starredPresentations,
       loading,
-      error
+      error,
+      hasCachedData
     };
   }
 };

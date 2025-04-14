@@ -1,7 +1,7 @@
 <template>
   <MainLayout :pageTitle="conferenceData.name">
-    <div v-if="loading">Loading...</div>
-    <div v-else-if="error">Error: {{ error }}</div>
+    <div v-if="loading && !hasCachedData">Loading...</div>
+    <div v-else-if="error && !hasCachedData">Error: {{ error }}</div>
     <div v-else>
       <ion-segment v-model="activeSegment">
         <ion-segment-button value="all">
@@ -40,6 +40,7 @@ export default defineComponent({
     const blocks = computed(() => store.getters['presentations/getBlocks']);
     const loading = computed(() => store.getters['presentations/isLoading']);
     const error = computed(() => store.getters['presentations/getError']);
+    const hasCachedData = computed(() => blocks.value && blocks.value.length > 0);
 
     onMounted(() => {
       console.log('Program view mounted');
@@ -52,7 +53,8 @@ export default defineComponent({
       blocks,
       loading,
       error,
-      activeSegment
+      activeSegment,
+      hasCachedData
     };
   },
 });

@@ -1,26 +1,43 @@
 import { getInitialUpdate } from '@/api';
 
+// Helper function to load people from localStorage
+function loadPeople() {
+  const stored = localStorage.getItem('people');
+  return stored ? JSON.parse(stored) : [];
+}
+
 export default {
   namespaced: true,
   state: {
-    people: [],
+    people: loadPeople(),
     loading: false,
     error: null
   },
   mutations: {
     setPeople(state, people) {
       state.people = people;
+      localStorage.setItem('people', JSON.stringify(people));
     },
     setLoading(state, loading) {
       state.loading = loading;
     },
     setError(state, error) {
-      state.error = error;
+      // Only set error if we don't have any cached data
+      if (state.people.length === 0) {
+        state.error = error;
+      } else {
+        // Just log the error to console but don't show it to the user
+        console.error('Network error, using cached people:', error);
+        state.error = null;
+      }
     }
   },
   actions: {
-    async fetchPeople({ commit }) {
-      commit('setLoading', true);
+    async fetchPeople({ commit, state }) {
+      // Only set loading if we don't have any data yet
+      if (state.people.length === 0) {
+        commit('setLoading', true);
+      }
       commit('setError', null);
       
       try {
@@ -42,12 +59,20 @@ export default {
           commit('setPeople', transformedPresenters);
         } else {
           console.warn('No presenters data received');
-          commit('setPeople', []);
+          // Don't clear data if we have cached data
+          if (state.people.length === 0) {
+            commit('setPeople', []);
+          }
         }
       } catch (error) {
         console.error('Error fetching people:', error);
-        commit('setError', error.message || 'Failed to fetch people');
-        commit('setPeople', []);
+        // Only set error if we don't have any cached data
+        if (state.people.length === 0) {
+          commit('setError', error.message || 'Failed to fetch people');
+        } else {
+          // Just log the error to console but don't show it to the user
+          console.error('Network error, using cached people:', error);
+        }
       } finally {
         commit('setLoading', false);
       }

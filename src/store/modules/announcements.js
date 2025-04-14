@@ -22,7 +22,14 @@ export default {
       state.loading = loading;
     },
     setError(state, error) {
-      state.error = error;
+      // Only set error if we don't have any cached data
+      if (state.announcements.length === 0) {
+        state.error = error;
+      } else {
+        // Just log the error to console but don't show it to the user
+        console.error('Network error, using cached announcements:', error);
+        state.error = null;
+      }
     },
     markAnnouncementAsRead(state, announcementId) {
       const announcement = state.announcements.find(a => a.id === announcementId);
@@ -33,8 +40,11 @@ export default {
     }
   },
   actions: {
-    async fetchAnnouncements({ commit }) {
-      commit('setLoading', true);
+    async fetchAnnouncements({ commit, state }) {
+      // Only set loading if we don't have any data yet
+      if (state.announcements.length === 0) {
+        commit('setLoading', true);
+      }
       commit('setError', null);
       
       try {
@@ -45,12 +55,20 @@ export default {
           commit('setAnnouncements', data.announcements);
         } else {
           console.warn('No announcements data received');
-          commit('setAnnouncements', []);
+          // Don't clear data if we have cached data
+          if (state.announcements.length === 0) {
+            commit('setAnnouncements', []);
+          }
         }
       } catch (error) {
         console.error('Error fetching announcements:', error);
-        commit('setError', error.message || 'Failed to fetch announcements');
-        commit('setAnnouncements', []);
+        // Only set error if we don't have any cached data
+        if (state.announcements.length === 0) {
+          commit('setError', error.message || 'Failed to fetch announcements');
+        } else {
+          // Just log the error to console but don't show it to the user
+          console.error('Network error, using cached announcements:', error);
+        }
       } finally {
         commit('setLoading', false);
       }

@@ -36,12 +36,15 @@ export default {
                     }
                 }
             },
-            { deep: true, immediate: true }
+            { deep: true }
         );
 
-        // Fetch questions on component mount
+        // Only fetch questions if we don't have them yet
         onMounted(async () => {
-            await refreshQuestions();
+            const currentQuestions = store.state.questions.questions;
+            if (!currentQuestions || currentQuestions.length === 0) {
+                await refreshQuestions();
+            }
         });
 
         const refreshQuestions = async () => {
