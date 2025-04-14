@@ -1,9 +1,9 @@
 <template>
-  <ion-content>
+  <div>
     <ion-list>
       <PeopleListItem 
         v-for="person in people" 
-        :key="person.name" 
+        :key="person.id" 
         :person="person" 
         @openModal="openModal(person)" />
     </ion-list>
@@ -19,11 +19,11 @@
         @close="closeModal" 
       />
     </ion-modal>
-  </ion-content>
+  </div>
 </template>
 
 <script>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, watch } from 'vue';
 export default {
   name: 'PeopleList',
   props: {
@@ -32,7 +32,7 @@ export default {
       required: true
     }
   },
-  setup() {
+  setup(props) {
     const selectedPerson = ref(null);
     const isModalVisible = ref(false);
     const presentingElement = ref(null);
@@ -48,7 +48,12 @@ export default {
 
     onMounted(() => {
       presentingElement.value = document.querySelector('ion-content');
+      console.log('PeopleList mounted with people:', props.people);
     });
+
+    watch(() => props.people, (newPeople) => {
+      console.log('People prop changed:', newPeople);
+    }, { immediate: true });
 
     return {
       selectedPerson,

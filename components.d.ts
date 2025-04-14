@@ -52,6 +52,7 @@ declare module 'vue' {
     IonToolbar: typeof import('@ionic/vue')['IonToolbar']
     MainLayout: typeof import('./src/components/MainLayout/MainLayout.vue')['default']
     MainLayoutHeaderToolbarBell: typeof import('./src/components/MainLayout/headerToolbar/MainLayoutHeaderToolbarBell.vue')['default']
+    MainLayoutHeaderToolbarSettings: typeof import('./src/components/MainLayout/headerToolbar/MainLayoutHeaderToolbarSettings.vue')['default']
     MainLayoutNotificationsMenu: typeof import('./src/components/MainLayout/notificationsMenu/MainLayoutNotificationsMenu.vue')['default']
     MenuLayoutFooterToolbar: typeof import('./src/components/MainLayout/footerToolbar/MenuLayoutFooterToolbar.vue')['default']
     PeopleList: typeof import('./src/components/people/PeopleList.vue')['default']
@@ -69,5 +70,6 @@ declare module 'vue' {
     Registration: typeof import('./src/components/registration/Registration.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    Settings: typeof import('./src/components/settings/Settings.vue')['default']
   }
 }

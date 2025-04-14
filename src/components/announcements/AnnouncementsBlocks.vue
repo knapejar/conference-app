@@ -13,7 +13,8 @@
 		props: {
 			blocks: {
 				type: Array,
-				required: true
+				required: false,
+				default: () => []
 			}
 		}
 	}

@@ -6,6 +6,7 @@ import People from '../views/People.vue'
 import Questions from '../views/Questions.vue'
 import Admin from '../views/Admin.vue'
 import Registration from '@/components/registration/Registration.vue';
+import Settings from '@/components/settings/Settings.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -35,6 +36,10 @@ const routes: Array<RouteRecordRaw> = [
     path: '/admin',
     name: 'Admin',
     component: Admin
+  }, {
+    path: '/settings',
+    name: 'Settings',
+    component: Settings
   }
 ]
 

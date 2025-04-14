@@ -1,12 +1,12 @@
 <template>
-    <MainLayout :pageTitle=store.state.conference.name>
-        <ion-img :src=store.state.conference.welcomeImage class="image-responsive" />
+    <MainLayout :pageTitle="conference.name">
+        <ion-img :src="conference.welcomeImage" class="image-responsive" />
         <ion-card>
             <ion-card-header>
-                <ion-card-title>Welcome to {{ store.state.conference.name }}</ion-card-title>
+                <ion-card-title>Welcome to {{ conference.name }}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-                <p class="justified-content">{{ store.state.conference.description }}</p>
+                <p class="justified-content">{{ conference.description }}</p>
             </ion-card-content>
         </ion-card>
 
@@ -15,7 +15,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from 'vue';
+import { defineComponent, onMounted, computed } from 'vue';
 import { useStore } from '@/composables/useVuexStore.js';
 import { useRoute } from 'vue-router';
 
@@ -24,14 +24,17 @@ export default defineComponent({
     const store = useStore();
     const route = useRoute();
     
+    const conference = computed(() => store.state.conference);
+    
     onMounted(() => {
       if (route.query.i) {
-        store.login(route.query.i as string);
+        store.dispatch('conference/login', route.query.i as string);
       }
     });
 
     return {
       store,
+      conference
     };
   },
 });

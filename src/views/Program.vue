@@ -1,19 +1,37 @@
 <template>
-  <MainLayout :pageTitle=store.state.conference.name>
-    <PresentationBlocks :blocks=store.state.blocks />
+  <MainLayout :pageTitle="conferenceData.name">
+    <div v-if="loading">Loading...</div>
+    <div v-else-if="error">Error: {{ error }}</div>
+    <div v-else>
+      <PresentationBlocks :blocks="blocks" />
+    </div>
   </MainLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent, computed, onMounted } from 'vue';
+import { useStore } from '@/composables/useVuexStore';
 
 export default defineComponent({
   setup() {
     const store = useStore();
+    
+    const conferenceData = computed(() => store.getters['conference/getConferenceData']);
+    const blocks = computed(() => store.getters['presentations/getBlocks']);
+    const loading = computed(() => store.getters['presentations/isLoading']);
+    const error = computed(() => store.getters['presentations/getError']);
+
+    onMounted(() => {
+      console.log('Program view mounted');
+      console.log('Conference data:', conferenceData.value);
+      console.log('Blocks:', blocks.value);
+    });
 
     return {
-      store,
+      conferenceData,
+      blocks,
+      loading,
+      error
     };
   },
 });
