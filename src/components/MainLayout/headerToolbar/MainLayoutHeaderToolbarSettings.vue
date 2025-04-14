@@ -1,7 +1,7 @@
 <template>
-  <ion-buttons slot="end">
+  <ion-buttons slot="start">
     <ion-button @click="navigateToSettings">
-      <ion-icon name="settings-outline"></ion-icon>
+      <ion-icon name="person-circle"></ion-icon>
     </ion-button>
   </ion-buttons>
 </template>

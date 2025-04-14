@@ -2,7 +2,7 @@
 </template>
 <script>
 import { addIcons } from "ionicons";
-import { heart, star, thumbsUp, starOutline, cashOutline, arrowForwardOutline, pencil, chatbubblesOutline, home, calendar, people, notifications, close, settingsOutline } from "ionicons/icons";
+import { heart, star, thumbsUp, starOutline, cashOutline, arrowForwardOutline, pencil, chatbubblesOutline, home, calendar, people, notifications, close, settingsOutline, personCircle } from "ionicons/icons";
 
 addIcons({
     "heart": heart,
@@ -18,6 +18,7 @@ addIcons({
     "people": people,
     "notifications": notifications,
     "close": close,
-    "settings-outline": settingsOutline
+    "settings-outline": settingsOutline,
+    "person-circle": personCircle
 });
 </script>

@@ -1,10 +1,17 @@
 import { getInitialUpdate } from '@/api';
 
+// Helper function to load starred presentations from localStorage
+function loadStarredPresentations() {
+  const stored = localStorage.getItem('starredPresentations');
+  return stored ? new Set(JSON.parse(stored)) : new Set();
+}
+
 export default {
   namespaced: true,
   state: {
     blocks: [],
     presentations: [],
+    starredPresentations: loadStarredPresentations(),
     loading: false,
     error: null
   },
@@ -20,6 +27,15 @@ export default {
     },
     setError(state, error) {
       state.error = error;
+    },
+    toggleStarredPresentation(state, presentationId) {
+      if (state.starredPresentations.has(presentationId)) {
+        state.starredPresentations.delete(presentationId);
+      } else {
+        state.starredPresentations.add(presentationId);
+      }
+      // Save to localStorage
+      localStorage.setItem('starredPresentations', JSON.stringify([...state.starredPresentations]));
     }
   },
   actions: {
@@ -60,6 +76,9 @@ export default {
       } finally {
         commit('setLoading', false);
       }
+    },
+    toggleStar({ commit }, presentationId) {
+      commit('toggleStarredPresentation', presentationId);
     }
   },
   getters: {
@@ -67,6 +86,8 @@ export default {
     getPresentations: state => state.presentations,
     getPresentationById: state => id => state.presentations.find(p => p.id === id),
     getPresentationsByBlockId: state => blockId => state.presentations.filter(p => p.blockId === blockId),
+    isPresentationStarred: state => id => state.starredPresentations.has(id),
+    getStarredPresentations: state => state.presentations.filter(p => state.starredPresentations.has(p.id)),
     isLoading: state => state.loading,
     getError: state => state.error
   }

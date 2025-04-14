@@ -3,18 +3,37 @@
     <div v-if="loading">Loading...</div>
     <div v-else-if="error">Error: {{ error }}</div>
     <div v-else>
-      <PresentationBlocks :blocks="blocks" />
+      <ion-segment v-model="activeSegment">
+        <ion-segment-button value="all">
+          <ion-label>All Presentations</ion-label>
+        </ion-segment-button>
+        <ion-segment-button value="starred">
+          <ion-label>Starred</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+      
+      <div v-if="activeSegment === 'all'">
+        <PresentationBlocks :blocks="blocks" />
+      </div>
+      <div v-else>
+        <StarredPresentations />
+      </div>
     </div>
   </MainLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted } from 'vue';
+import { defineComponent, computed, onMounted, ref } from 'vue';
 import { useStore } from '@/composables/useVuexStore';
+import StarredPresentations from '@/components/presentations/StarredPresentations.vue';
 
 export default defineComponent({
+  components: {
+    StarredPresentations
+  },
   setup() {
     const store = useStore();
+    const activeSegment = ref('all');
     
     const conferenceData = computed(() => store.getters['conference/getConferenceData']);
     const blocks = computed(() => store.getters['presentations/getBlocks']);
@@ -31,7 +50,8 @@ export default defineComponent({
       conferenceData,
       blocks,
       loading,
-      error
+      error,
+      activeSegment
     };
   },
 });

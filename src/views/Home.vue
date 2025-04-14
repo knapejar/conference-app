@@ -3,12 +3,14 @@
         <ion-img :src="conference.welcomeImage" class="image-responsive" />
         <ion-card>
             <ion-card-header>
-                <ion-card-title>Welcome to {{ conference.name }}</ion-card-title>
+                <ion-card-title>{{ conference.name }}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
                 <p class="justified-content">{{ conference.description }}</p>
             </ion-card-content>
         </ion-card>
+
+        <StarredPresentations />
 
         <div class="ion-padding"></div>
     </MainLayout>

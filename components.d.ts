@@ -36,6 +36,7 @@ declare module 'vue' {
     IonItem: typeof import('@ionic/vue')['IonItem']
     IonLabel: typeof import('@ionic/vue')['IonLabel']
     IonList: typeof import('@ionic/vue')['IonList']
+    IonListHeader: typeof import('@ionic/vue')['IonListHeader']
     IonMenu: typeof import('@ionic/vue')['IonMenu']
     IonMenuToggle: typeof import('@ionic/vue')['IonMenuToggle']
     IonModal: typeof import('@ionic/vue')['IonModal']
@@ -43,6 +44,8 @@ declare module 'vue' {
     IonPage: typeof import('@ionic/vue')['IonPage']
     IonRouterOutlet: typeof import('@ionic/vue')['IonRouterOutlet']
     IonRow: typeof import('@ionic/vue')['IonRow']
+    IonSegment: typeof import('@ionic/vue')['IonSegment']
+    IonSegmentButton: typeof import('@ionic/vue')['IonSegmentButton']
     IonTabBar: typeof import('@ionic/vue')['IonTabBar']
     IonTabButton: typeof import('@ionic/vue')['IonTabButton']
     IonTabs: typeof import('@ionic/vue')['IonTabs']
@@ -53,6 +56,7 @@ declare module 'vue' {
     MainLayout: typeof import('./src/components/MainLayout/MainLayout.vue')['default']
     MainLayoutHeaderToolbarBell: typeof import('./src/components/MainLayout/headerToolbar/MainLayoutHeaderToolbarBell.vue')['default']
     MainLayoutHeaderToolbarSettings: typeof import('./src/components/MainLayout/headerToolbar/MainLayoutHeaderToolbarSettings.vue')['default']
+    MainLayoutHeaderToolbarUserSettings: typeof import('./src/components/MainLayout/headerToolbar/MainLayoutHeaderToolbarUserSettings.vue')['default']
     MainLayoutNotificationsMenu: typeof import('./src/components/MainLayout/notificationsMenu/MainLayoutNotificationsMenu.vue')['default']
     MenuLayoutFooterToolbar: typeof import('./src/components/MainLayout/footerToolbar/MenuLayoutFooterToolbar.vue')['default']
     PeopleList: typeof import('./src/components/people/PeopleList.vue')['default']
@@ -71,5 +75,6 @@ declare module 'vue' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Settings: typeof import('./src/components/settings/Settings.vue')['default']
+    StarredPresentations: typeof import('./src/components/presentations/StarredPresentations.vue')['default']
   }
 }

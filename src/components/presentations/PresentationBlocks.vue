@@ -1,12 +1,12 @@
 <template>
     <div>
-      <ion-list :inset="true">
+      <div :inset="true">
         <PresentationBlock
           v-for="(block, index) in blocks"
           :key="index"
           :block="block"
         />
-      </ion-list>
+      </div>
     </div>
   </template>
   
