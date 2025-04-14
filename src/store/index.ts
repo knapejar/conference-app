@@ -9,6 +9,8 @@ import conference from './modules/conference'
 import presentations from './modules/presentations'
 // @ts-ignore
 import people from './modules/people'
+// @ts-ignore
+import announcements from './modules/announcements'
 
 export default createStore({
   modules: {
@@ -16,6 +18,7 @@ export default createStore({
     settings,
     conference,
     presentations,
-    people
+    people,
+    announcements
   }
 })

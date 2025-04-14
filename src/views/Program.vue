@@ -24,6 +24,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted, ref } from 'vue';
+// @ts-ignore
 import { useStore } from '@/composables/useVuexStore';
 import StarredPresentations from '@/components/presentations/StarredPresentations.vue';
 

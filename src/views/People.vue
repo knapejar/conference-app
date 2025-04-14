@@ -10,6 +10,7 @@
 
 <script lang="ts">
 import { defineComponent, computed, onMounted } from 'vue';
+// @ts-ignore
 import { useStore } from '@/composables/useVuexStore';
 
 export default defineComponent({

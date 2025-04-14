@@ -13,6 +13,7 @@
 
 <script>
 import { computed, onMounted, watch } from 'vue';
+// @ts-ignore
 import { useStore } from '@/composables/useVuexStore.js';
 import { useRoute } from 'vue-router';
 
