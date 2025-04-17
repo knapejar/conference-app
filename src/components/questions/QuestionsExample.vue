@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { computed, onMounted, watch } from 'vue';
+import { computed, onMounted, onUnmounted, watch } from 'vue';
 // @ts-ignore
 import { useStore } from '@/composables/useVuexStore.js';
 import { useRoute } from 'vue-router';
@@ -22,6 +22,7 @@ export default {
         const store = useStore();
         const route = useRoute();
         const presentationId = route.params.id;
+        let refreshInterval;
 
         // Watch store blocks to update questions if needed
         watch(
@@ -32,20 +33,15 @@ export default {
                         .flatMap((block) => block.presentations)
                         .find((presentation) => presentation.id === presentationId);
                     if (presentation && presentation.questions) {
-                        store.commit('questions/setQuestions', presentation.questions);
+                        store.commit('questions/setQuestions', { 
+                            presentationId, 
+                            questions: presentation.questions 
+                        });
                     }
                 }
             },
             { deep: true }
         );
-
-        // Only fetch questions if we don't have them yet
-        onMounted(async () => {
-            const currentQuestions = store.state.questions.questions;
-            if (!currentQuestions || currentQuestions.length === 0) {
-                await refreshQuestions();
-            }
-        });
 
         const refreshQuestions = async () => {
             try {
@@ -55,8 +51,23 @@ export default {
             }
         };
 
+        // Only fetch questions if we don't have them yet
+        onMounted(async () => {
+            // Always fetch fresh questions when entering the chatroom
+            await refreshQuestions();
+            
+            // Set up periodic refresh every 5 seconds
+            refreshInterval = setInterval(refreshQuestions, 5000);
+        });
+
+        onUnmounted(() => {
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+        });
+
         const sortedQuestions = computed(() => {
-            const questions = store.getters['questions/getQuestions'];
+            const questions = store.getters['questions/getQuestions'](presentationId);
             return [...questions].sort((a, b) => b.likes - a.likes);
         });
 
@@ -80,7 +91,8 @@ export default {
         };
 
         const deleteQuestionHandler = async (id) => {
-            const question = store.getters['questions/getQuestions'].find(q => q.id === id);
+            const questions = store.getters['questions/getQuestions'](presentationId);
+            const question = questions.find(q => q.id === id);
             if (question && question.owned) {
                 try {
                     await store.dispatch('questions/deleteQuestion', id);

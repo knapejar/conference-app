@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE = process.env.API_BASE || 'https://konference.jk9.eu/server'; //'https://konference.jk9.eu/server';
+const API_BASE = process.env.VITE_API_BASE || 'https://konference.jk9.eu/server'; //'https://konference.jk9.eu/server';
 
 axios.defaults.baseURL = API_BASE;
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';

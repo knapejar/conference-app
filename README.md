@@ -5,7 +5,6 @@ A modern conference management application built with Vue.js, Ionic, and Node.js
 ## Features
 
 - Modern UI built with Ionic Vue
-- Real-time updates using Socket.IO
 - RESTful API backend with Express
 - PostgreSQL database with Prisma ORM
 - Docker containerization for easy deployment
@@ -17,6 +16,18 @@ A modern conference management application built with Vue.js, Ionic, and Node.js
 - PostgreSQL database
 
 ## Installation
+
+### Environment variables
+
+```
+DATABASE_URL='postgresql://user:password@host/dbname'
+VITE_API_BASE='http://localhost:3000'
+```
+
+#### DATABASE_URL
+Specify the connection string for your PostgreSQL database. Make sure to replace `user`, `password`, `host`, and `dbname` with your actual database credentials.
+#### VITE_API_BASE
+Configure client-side API base URL. For production Docker build, specify `https://your-url.com/server` - the `/server` is being redirected to the backend server in the Dockerfile.
 
 ### 1. Clone the repository
 
@@ -32,6 +43,16 @@ npm install
 ```
 
 ### 3. Setup the database
+
+Run database container
+```bash
+docker run --name konference-dev-postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -d postgres
+Connection string will be postgresql://postgres:password@postgres/konference
+
+Run adminer
+```bash
+docker run --name adminer -p 8081:8080 -d adminer
+```
 
 ```bash
 npx prisma generate
@@ -71,6 +92,8 @@ Or use the provided batch script:
 ```bash
 run_docker.bat
 ```
+
+3. Specify environment variables in .env file or pass them directly
 
 ## Available Scripts
 
