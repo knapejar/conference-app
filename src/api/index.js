@@ -10,13 +10,6 @@ export const init = async () => {
     // Initialization code if needed.
 };
 
-export const getInitialUpdate = async () => {
-    const response = await axios.get('/initial-update', {
-        params: { }
-    });
-    return response.data;
-};
-
 export const getQuestions = async (presentationId) => {
     if (!presentationId) {
         throw new Error('Presentation ID is required.');
@@ -93,6 +86,46 @@ export const deleteQuestion = async (questionId, authorToken) => {
         return response.data;
     } catch (error) {
         console.error('Error in deleteQuestion:', error);
+        throw error;
+    }
+};
+
+export const getPresentations = async () => {
+    try {
+        const response = await axios.get('/presentations');
+        return response.data;
+    } catch (error) {
+        console.error('Error in getPresentations:', error);
+        throw error;
+    }
+};
+
+export const getAnnouncements = async () => {
+    try {
+        const response = await axios.get('/announcements');
+        return response.data;
+    } catch (error) {
+        console.error('Error in getAnnouncements:', error);
+        throw error;
+    }
+};
+
+export const getPeople = async () => {
+    try {
+        const response = await axios.get('/people');
+        return response.data;
+    } catch (error) {
+        console.error('Error in getPeople:', error);
+        throw error;
+    }
+};
+
+export const getConference = async () => {
+    try {
+        const response = await axios.get('/conference');
+        return response.data;
+    } catch (error) {
+        console.error('Error in getConference:', error);
         throw error;
     }
 };

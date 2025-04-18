@@ -1,4 +1,4 @@
-import { getInitialUpdate } from '@/api';
+import { getConference } from '@/api';
 
 export default {
   namespaced: true,
@@ -50,11 +50,11 @@ export default {
       commit('setError', null);
       
       try {
-        const data = await getInitialUpdate();
-        if (data && data.conference) {
-          commit('setConferenceData', data.conference);
+        const conference = await getConference();
+        if (conference) {
+          commit('setConferenceData', conference);
           // Save to localStorage
-          localStorage.setItem('conferenceData', JSON.stringify(data.conference));
+          localStorage.setItem('conferenceData', JSON.stringify(conference));
         }
       } catch (error) {
         console.error('Error fetching conference data:', error);

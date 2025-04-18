@@ -4,7 +4,7 @@
 			<ion-card-title class="ion-text-wrap">
 				<ion-icon :icon="getNotificationIcon" :color="getIconColor" size="large"></ion-icon>
 				<span>{{ block.title }}</span>
-				<ion-icon :icon="close" @click="markAsRead" color="primary"
+				<ion-icon icon="close" @click="markAsRead" color="primary"
 					class="mark-as-read-icon"></ion-icon>
 			</ion-card-title>
 		</ion-card-header>
@@ -30,8 +30,7 @@
 import {
 	informationCircleOutline,
 	warningOutline,
-	alertCircleOutline,
-	closeOutline
+	alertCircleOutline
 } from 'ionicons/icons';
 
 export default {

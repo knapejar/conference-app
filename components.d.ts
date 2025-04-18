@@ -64,6 +64,7 @@ declare module 'vue' {
     PresentationBlock: typeof import('./src/components/presentations/PresentationBlock.vue')['default']
     PresentationBlocks: typeof import('./src/components/presentations/PresentationBlocks.vue')['default']
     PresentationItem: typeof import('./src/components/presentations/PresentationItem.vue')['default']
+    QuestionsComponent: typeof import('./src/components/questions/QuestionsComponent.vue')['default']
     QuestionsExample: typeof import('./src/components/questions/QuestionsExample.vue')['default']
     QuestionsExampleNoBackend: typeof import('./src/components/questions/QuestionsExampleNoBackend.vue')['default']
     QuestionsFooterSendQuestion: typeof import('./src/components/questions/QuestionsFooterSendQuestion.vue')['default']

@@ -1,6 +1,6 @@
 import { createStore } from 'vuex';
 import { ref } from 'vue'
-import { getDebugToken, getInitialUpdate } from '@/api';
+import { getDebugToken, getPresentations, getAnnouncements, getConference, getPeople } from '@/api';
 import questions from './modules/questions';
 
 const store = createStore({
@@ -34,7 +34,12 @@ const store = createStore({
     actions: {
         async initializeApp({ commit }) {
             try {
-                const { announcements, blocks, conference, presenters } = await getInitialUpdate();
+                const [announcements, blocks, conference, presenters] = await Promise.all([
+                    getAnnouncements(),
+                    getPresentations(),
+                    getConference(),
+                    getPeople()
+                ]);
                 commit('setAnnouncements', announcements);
                 commit('setBlocks', blocks);
                 commit('setConference', { conference });

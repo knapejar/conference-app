@@ -100,11 +100,7 @@ export default {
                 }
                 commit('setQuestions', { presentationId, questions });
                 commit('addMyQuestion', questions[questions.length - 1].id);
-
-                // test print all my questions
-                console.log('My Questions:', [...this.state.questions.myQuestions]);
-                // test print all liked questions
-                console.log('Liked Questions:', [...this.state.questions.likedQuestions]);
+                
                 return questions;
             } catch (error) {
                 console.error('Error creating question:', error);

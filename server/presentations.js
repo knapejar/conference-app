@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
-export const getInitialUpdate = async (req, res) => {
+export const getPresentations = async () => {
     try {
         const blocks = await prisma.block.findMany({
             include: {
@@ -21,18 +21,9 @@ export const getInitialUpdate = async (req, res) => {
             }))
         }));
 
-        const announcements = await prisma.announcement.findMany();
-        const conference = await prisma.conference.findFirst();
-        const presenters = await prisma.presenter.findMany();
-
-        res.json({
-            announcements: announcements,
-            blocks: blocksWithPresentations,
-            conference: conference,
-            presenters: presenters,
-        });
+        return blocksWithPresentations;
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Internal Server Error' });
+        console.error("Error in getPresentations:", error);
+        throw error;
     }
-};
+}; 

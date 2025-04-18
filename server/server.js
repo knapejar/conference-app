@@ -1,6 +1,5 @@
 import express from 'express';
 import { createServer } from 'http';
-import { getInitialUpdate } from './initialUpdate.js';
 import { debugGetTestToken } from './testPrisma.js';
 import {
     getQuestions,
@@ -9,6 +8,10 @@ import {
     unlikeQuestion,
     deleteQuestion
 } from './questions.js';
+import { getPresentations } from './presentations.js';
+import { getAnnouncements } from './announcements.js';
+import { getPeople } from './people.js';
+import { getConference } from './conference.js';
 import cors from 'cors';
 
 const app = express();
@@ -18,15 +21,6 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
-});
-
-app.get('/initial-update', async (req, res) => {
-    try {
-        await getInitialUpdate(req, res);
-    } catch (error) {
-        console.error('Error fetching initial update:', error);
-        res.status(500).json({ error: 'Failed to fetch initial update' });
-    }
 });
 
 app.get('/debug-get-test-token', async (req, res) => {
@@ -108,6 +102,50 @@ app.delete('/questions/:id', async (req, res) => {
         res.json(questions);
     } catch (error) {
         console.error('Error deleting question:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET presentations
+app.get('/presentations', async (req, res) => {
+    try {
+        const presentations = await getPresentations();
+        res.json(presentations);
+    } catch (error) {
+        console.error('Error retrieving presentations:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET announcements
+app.get('/announcements', async (req, res) => {
+    try {
+        const announcements = await getAnnouncements();
+        res.json(announcements);
+    } catch (error) {
+        console.error('Error retrieving announcements:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET people
+app.get('/people', async (req, res) => {
+    try {
+        const people = await getPeople();
+        res.json(people);
+    } catch (error) {
+        console.error('Error retrieving people:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// GET conference
+app.get('/conference', async (req, res) => {
+    try {
+        const conference = await getConference();
+        res.json(conference);
+    } catch (error) {
+        console.error('Error retrieving conference:', error);
         res.status(500).json({ error: error.message });
     }
 });

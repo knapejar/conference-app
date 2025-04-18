@@ -6,16 +6,16 @@
             <h2>{{ question.content }}</h2>
             <p>{{ question.author }}</p>
         </ion-label>
-        <ion-button @click="likeQuestion" fill="clear" slot="end">
-            <ion-icon
-                name="thumbs-up"
-                :style="{ fontSize: '24px', color: question.isLiked ? 'blue' : 'gray' }">
-            </ion-icon>
-        </ion-button>
         <ion-button v-if="question.owned" @click="deleteQuestion" fill="clear" slot="end">
             <ion-icon
                 name="trash"
                 :style="{ fontSize: '24px', color: 'red' }">
+            </ion-icon>
+        </ion-button>
+        <ion-button @click="likeQuestion" fill="clear" slot="end">
+            <ion-icon
+                name="thumbs-up"
+                :style="{ fontSize: '24px', color: question.isLiked ? 'blue' : 'gray' }">
             </ion-icon>
         </ion-button>
     </ion-item>
