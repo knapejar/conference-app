@@ -11,7 +11,6 @@ export const getQuestions = async (presentationId) => {
         throw new Error("Invalid presentation ID provided.");
     }
     try {
-        // Verify that the presentation exists
         const presentation = await prisma.presentation.findUnique({
             where: { id: presId }
         });
@@ -20,7 +19,10 @@ export const getQuestions = async (presentationId) => {
         }
 
         const questions = await prisma.question.findMany({
-            where: { presentationId: presId }
+            where: { 
+                presentationId: presId,
+                state: "CREATED"
+            }
         });
         return questions;
     } catch (error) {
@@ -41,14 +43,13 @@ export const createQuestion = async (presentationId, content, author = "Anonymou
         throw new Error("Invalid presentation ID provided.");
     }
     try {
-        // Verify that the presentation exists
         const presentation = await prisma.presentation.findUnique({
             where: { id: presId }
         });
         if (!presentation) {
             throw new Error(`Presentation with ID ${presId} not found.`);
         }
-        // Create the question with likes defaulting to 0
+        // Create the question with likes defaulting to 0. The state will default to CREATED as per the schema.
         await prisma.question.create({
             data: {
                 content,
@@ -133,8 +134,9 @@ export const deleteQuestion = async (questionId, authorToken) => {
         if (question.authorToken !== authorToken) {
             throw new Error("Unauthorized: Invalid author token.");
         }
-        await prisma.question.delete({
-            where: { id: qId }
+        await prisma.question.update({
+            where: { id: qId },
+            data: { state: "DELETED" }
         });
         return getQuestions(question.presentationId);
     } catch (error) {

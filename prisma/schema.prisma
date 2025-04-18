@@ -36,8 +36,15 @@ model Presentation {
   presenters      Presenter[]
 }
 
+enum QuestionState {
+  CREATED
+  ANSWERED
+  DELETED
+}
+
 model Question {
   id             Int       @id @default(autoincrement())
+  state          QuestionState @default(CREATED)
   content        String
   author         String
   authorToken    String
