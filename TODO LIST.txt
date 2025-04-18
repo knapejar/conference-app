@@ -2,9 +2,6 @@ TODO LIST
 
 APP
 
-Vyřešit .env načítání v developmentu
-Obnovit seznam otázek při příchodu na stránku
-Hezký popup když chybí internetové připojení
 Mazání mých otázek
 Hezčí notifikace
 Přidat detail prezentace
@@ -12,6 +9,7 @@ Prezentující by se měli ukazovat u prezentací
 Detail prezentujícího - vyhodit dotazy na prezentujícího
 Normální ukázková data v aplikaci, aby se to dalo použít
 Vyřešit automatické obnovování třeba co 10 sekund
+Hezký popup když chybí internetové připojení
 
 
 PWA
@@ -30,3 +28,10 @@ Vyřešit odesílání notifikací
 Vyřešit následné příjmutí notifikací a push na klientu
 
 Admin - modifikace prezentačních bloků, prezentací a prezentujících
+
+
+
+HOTOVO
+Vyřešit .env načítání v developmentu
+Obnovit seznam otázek při příchodu na stránku
+

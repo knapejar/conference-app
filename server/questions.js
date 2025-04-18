@@ -29,7 +29,7 @@ export const getQuestions = async (presentationId) => {
     }
 };
 
-export const createQuestion = async (presentationId, content) => {
+export const createQuestion = async (presentationId, content, author = "Anonymous", authorToken = "Anonymous") => {
     if (!presentationId) {
         throw new Error("Presentation ID is required.");
     }
@@ -52,8 +52,8 @@ export const createQuestion = async (presentationId, content) => {
         await prisma.question.create({
             data: {
                 content,
-                author: "Anonymous",
-                authorToken: "Anonymous",
+                author,
+                authorToken,
                 likes: 0,
                 presentation: { connect: { id: presId } }
             }

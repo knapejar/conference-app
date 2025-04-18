@@ -50,12 +50,12 @@ app.get('/questions', async (req, res) => {
 
 // POST to create a new question
 app.post('/questions', async (req, res) => {
-    const { presentationId, content } = req.body;
+    const { presentationId, content, author, authorToken } = req.body;
     if (!presentationId || !content) {
         return res.status(400).json({ error: 'Presentation ID and content are required' });
     }
     try {
-        const questions = await createQuestion(presentationId, content);
+        const questions = await createQuestion(presentationId, content, author, authorToken);
         res.json(questions);
     } catch (error) {
         console.error('Error creating question:', error);

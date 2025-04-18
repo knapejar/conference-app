@@ -3,7 +3,8 @@ const state = {
     name: '',
     email: '',
     phone: '',
-    linkedinUrl: ''
+    linkedinUrl: '',
+    authorToken: null
   }
 }
 
@@ -13,13 +14,15 @@ const mutations = {
   },
   UPDATE_USER_SETTING(state, { key, value }) {
     state.userSettings[key] = value
+  },
+  SET_AUTHOR_TOKEN(state, token) {
+    state.userSettings.authorToken = token
   }
 }
 
 const actions = {
   updateUserSettings({ commit }, settings) {
     commit('SET_USER_SETTINGS', settings)
-    // Here you would typically also save to localStorage or backend
     localStorage.setItem('userSettings', JSON.stringify(settings))
   },
   updateUserSetting({ commit, state }, { key, value }) {
@@ -32,11 +35,22 @@ const actions = {
     if (savedSettings) {
       commit('SET_USER_SETTINGS', JSON.parse(savedSettings))
     }
+  },
+  generateAuthorToken({ commit, state }) {
+    if (!state.userSettings.authorToken) {
+      const token = Math.random().toString(36).substring(2) + Date.now().toString(36)
+      commit('SET_AUTHOR_TOKEN', token)
+      const updatedSettings = { ...state.userSettings }
+      localStorage.setItem('userSettings', JSON.stringify(updatedSettings))
+      return token
+    }
+    return state.userSettings.authorToken
   }
 }
 
 const getters = {
-  getUserSettings: state => state.userSettings
+  getUserSettings: state => state.userSettings,
+  getAuthorToken: state => state.userSettings.authorToken
 }
 
 export default {

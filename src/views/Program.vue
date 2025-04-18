@@ -3,15 +3,17 @@
     <div v-if="loading && !hasCachedData">Loading...</div>
     <div v-else-if="error && !hasCachedData">Error: {{ error }}</div>
     <div v-else>
-      <ion-segment v-model="activeSegment">
-        <ion-segment-button value="all">
-          <ion-label>All Presentations</ion-label>
-        </ion-segment-button>
-        <ion-segment-button value="starred">
-          <ion-label>Starred</ion-label>
-        </ion-segment-button>
-      </ion-segment>
-      
+      <div class="segment-sticky ion-no-border">
+        <ion-segment v-model="activeSegment">
+          <ion-segment-button value="all">
+            <ion-label>All Presentations</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="starred">
+            <ion-label>Starred</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </div>
+
       <div v-if="activeSegment === 'all'">
         <PresentationBlocks :blocks="blocks" />
       </div>
@@ -59,3 +61,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.segment-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--ion-background-color, #fff);
+}
+</style>

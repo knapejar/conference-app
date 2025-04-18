@@ -74,9 +74,13 @@ export default {
                 throw error;
             }
         },
-        async createNewQuestion({ commit }, { presentationId, question }) {
+        async createNewQuestion({ commit, rootState }, { presentationId, question }) {
             try {
-                const questions = await createQuestion(presentationId, question);
+                // Generate or get existing author token
+                const authorToken = await this.dispatch('settings/generateAuthorToken', null, { root: true });
+                const author = rootState.settings.userSettings.name || 'Anonymous';
+                
+                const questions = await createQuestion(presentationId, question, author, authorToken);
                 if (!Array.isArray(questions)) {
                     throw new Error('Received questions is not an array');
                 }

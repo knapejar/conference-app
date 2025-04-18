@@ -1,11 +1,11 @@
 <template>
-	<ion-list :inset="true">
+	<div>
 		<AnnouncementsBlock
 			v-for="(block, index) in blocks"
 			:key="index"
 			:block="block"
 		/>
-	</ion-list>
+	</div>
 </template>
 	
 <script>

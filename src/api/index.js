@@ -32,7 +32,7 @@ export const getQuestions = async (presentationId) => {
     }
 };
 
-export const createQuestion = async (presentationId, content) => {
+export const createQuestion = async (presentationId, content, author = "Anonymous", authorToken = "Anonymous") => {
     if (!presentationId) {
         throw new Error('Presentation ID is required.');
     }
@@ -42,7 +42,9 @@ export const createQuestion = async (presentationId, content) => {
     try {
         const response = await axios.post('/questions', {
             presentationId,
-            content
+            content,
+            author,
+            authorToken
         });
         return response.data;
     } catch (error) {
