@@ -24,31 +24,29 @@ export default {
         const presentationId = route.params.id;
         let refreshInterval;
 
+        const getPresentationFromBlocks = (blocks) => {
+            if (!blocks || !blocks.length) return null;
+            return blocks
+                .flatMap((block) => block.presentations)
+                .find((presentation) => presentation.id === presentationId);
+        };
+
         const presentationTitle = computed(() => {
-            const blocks = store.state.blocks;
-            if (blocks && blocks.length) {
-                const presentation = blocks
-                    .flatMap((block) => block.presentations)
-                    .find((presentation) => presentation.id === presentationId);
-                console.log('Found presentation:', presentation);
-                return presentation ? presentation.title : '';
-            }
-            return '';
+            const blocks = store.getters['presentations/getBlocks'];
+            const presentation = getPresentationFromBlocks(blocks);
+            console.log('Presentation:', presentation);
+            return presentation ? presentation.title : '';
         });
 
         watch(
-            () => store.state.blocks,
+            () => store.getters['presentations/getBlocks'],
             (blocks) => {
-                if (blocks && blocks.length) {
-                    const presentation = blocks
-                        .flatMap((block) => block.presentations)
-                        .find((presentation) => presentation.id === presentationId);
-                    if (presentation && presentation.questions) {
-                        store.commit('questions/setQuestions', { 
-                            presentationId, 
-                            questions: presentation.questions 
-                        });
-                    }
+                const presentation = getPresentationFromBlocks(blocks);
+                if (presentation && presentation.questions) {
+                    store.commit('questions/setQuestions', { 
+                        presentationId, 
+                        questions: presentation.questions 
+                    });
                 }
             },
             { deep: true }

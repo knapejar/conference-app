@@ -1,17 +1,16 @@
 <template>
 	<ion-card class="notification-card" :class="{ unread: !block.read }">
-		<ion-card-header>
+		<ion-card-header class="card-header">
 			<ion-card-title class="ion-text-wrap">
 				<ion-icon :icon="getNotificationIcon" :color="getIconColor" size="large"></ion-icon>
 				<span>{{ block.title }}</span>
-				<ion-icon icon="close" @click="markAsRead" color="primary"
-					class="mark-as-read-icon"></ion-icon>
 			</ion-card-title>
+			<ion-icon icon="close" @click="markAsRead" color="primary"
+				class="mark-as-read-icon"></ion-icon>
 		</ion-card-header>
 
 		<ion-card-content>
 			<div class="notification-details">
-
 				<div class="notification-meta">
 					<ion-note color="medium">
 						{{ getRelativeTime }}</ion-note>
@@ -106,5 +105,17 @@ export default {
 .notification-card {
 	margin: 1rem 0;
 	border-left: 4px solid var(--ion-color-primary);
+}
+
+.card-header {
+	position: relative;
+}
+
+.mark-as-read-icon {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	cursor: pointer;
+	font-size: 1.5rem;
 }
 </style>

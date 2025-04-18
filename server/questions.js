@@ -24,7 +24,7 @@ export const getQuestions = async (presentationId) => {
                 state: "CREATED"
             }
         });
-        return questions;
+        return questions.map(({ state, ...rest }) => rest);
     } catch (error) {
         console.error("Error in getQuestions:", error);
         throw error;
