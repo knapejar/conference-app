@@ -99,8 +99,12 @@ app.delete('/questions/:id', async (req, res) => {
     if (!questionId) {
         return res.status(400).json({ error: 'Question ID is required' });
     }
+    const authorToken = req.body.authorToken;
+    if (!authorToken) {
+        return res.status(400).json({ error: 'Author token is required' });
+    }
     try {
-        const questions = await deleteQuestion(questionId);
+        const questions = await deleteQuestion(questionId, authorToken);
         res.json(questions);
     } catch (error) {
         console.error('Error deleting question:', error);

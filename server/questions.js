@@ -114,19 +114,24 @@ export const unlikeQuestion = async (questionId) => {
     }
 };
 
-export const deleteQuestion = async (questionId) => {
+export const deleteQuestion = async (questionId, authorToken) => {
     if (!questionId) {
         throw new Error("Question ID is required.");
+    }
+    if (!authorToken) {
+        throw new Error("Author token is required for deletion.");
     }
     const qId = parseInt(questionId, 10);
     if (isNaN(qId)) {
         throw new Error("Invalid question ID provided.");
     }
     try {
-        // Verify that the question exists before deletion
         const question = await prisma.question.findUnique({ where: { id: qId } });
         if (!question) {
             throw new Error(`Question with ID ${qId} not found.`);
+        }
+        if (question.authorToken !== authorToken) {
+            throw new Error("Unauthorized: Invalid author token.");
         }
         await prisma.question.delete({
             where: { id: qId }

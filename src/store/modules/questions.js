@@ -17,12 +17,18 @@ function loadLikedQuestions() {
     return stored ? new Set(JSON.parse(stored)) : new Set();
 }
 
+function loadMyQuestions() {
+    const stored = localStorage.getItem('myQuestions');
+    return stored ? new Set(JSON.parse(stored)) : new Set();
+}
+
 export default {
     namespaced: true,
     state: {
         likedQuestions: ref(loadLikedQuestions()),
         questions: ref(loadQuestions()),
         currentPresentationId: ref(null),
+        myQuestions: loadMyQuestions()
     },
     getters: {
         getQuestions: (state) => (presentationId) => {
@@ -33,6 +39,7 @@ export default {
             return questions.map(question => ({
                 ...question,
                 isLiked: state.likedQuestions.has(question.id),
+                owned: state.myQuestions.has(question.id)
             }));
         },
         isQuestionLiked: (state) => (questionId) => state.likedQuestions.has(questionId),
@@ -59,6 +66,14 @@ export default {
             }
             localStorage.setItem('likedQuestions', JSON.stringify([...state.likedQuestions]));
         },
+        addMyQuestion(state, questionId) {
+            state.myQuestions.add(questionId);
+            localStorage.setItem('myQuestions', JSON.stringify([...state.myQuestions]));
+        },
+        removeMyQuestion(state, questionId) {
+            state.myQuestions.delete(questionId);
+            localStorage.setItem('myQuestions', JSON.stringify([...state.myQuestions]));
+        }
     },
     actions: {
         async fetchQuestions({ commit }, presentationId) {
@@ -76,7 +91,6 @@ export default {
         },
         async createNewQuestion({ commit, rootState }, { presentationId, question }) {
             try {
-                // Generate or get existing author token
                 const authorToken = await this.dispatch('settings/generateAuthorToken', null, { root: true });
                 const author = rootState.settings.userSettings.name || 'Anonymous';
                 
@@ -85,6 +99,12 @@ export default {
                     throw new Error('Received questions is not an array');
                 }
                 commit('setQuestions', { presentationId, questions });
+                commit('addMyQuestion', questions[questions.length - 1].id);
+
+                // test print all my questions
+                console.log('My Questions:', [...this.state.questions.myQuestions]);
+                // test print all liked questions
+                console.log('Liked Questions:', [...this.state.questions.likedQuestions]);
                 return questions;
             } catch (error) {
                 console.error('Error creating question:', error);
@@ -113,17 +133,16 @@ export default {
                 throw error;
             }
         },
-        async deleteQuestion({ commit, state }, questionId) {
+        async deleteQuestion({ commit, state }, { questionId, authorToken }) {
             try {
-                const questions = await deleteQuestion(questionId);
-                if (!Array.isArray(questions)) {
-                    throw new Error('Received questions is not an array');
-                }
+                await deleteQuestion(questionId, authorToken);
+                commit('removeMyQuestion', questionId);
+                const questions = state.questions[state.currentPresentationId].filter(q => q.id !== questionId);
                 commit('setQuestions', { 
                     presentationId: state.currentPresentationId, 
                     questions 
                 });
-                return questions;
+                return questionId;
             } catch (error) {
                 console.error('Error deleting question:', error);
                 throw error;

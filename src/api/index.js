@@ -79,12 +79,17 @@ export const unlikeQuestion = async (questionId) => {
     }
 };
 
-export const deleteQuestion = async (questionId) => {
+export const deleteQuestion = async (questionId, authorToken) => {
     if (!questionId) {
         throw new Error('Question ID is required.');
     }
+    if (!authorToken) {
+        throw new Error('Author token is required.');
+    }
     try {
-        const response = await axios.delete(`/questions/${questionId}`);
+        const response = await axios.delete(`/questions/${questionId}`, {
+            data: { authorToken }
+        });
         return response.data;
     } catch (error) {
         console.error('Error in deleteQuestion:', error);

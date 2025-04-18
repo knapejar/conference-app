@@ -95,7 +95,11 @@ export default {
             const question = questions.find(q => q.id === id);
             if (question && question.owned) {
                 try {
-                    await store.dispatch('questions/deleteQuestion', id);
+                    const authorToken = await store.dispatch('settings/generateAuthorToken', null, { root: true });
+                    await store.dispatch('questions/deleteQuestion', { 
+                        questionId: id, 
+                        authorToken 
+                    });
                 } catch (error) {
                     console.error('Error deleting question:', error);
                 }

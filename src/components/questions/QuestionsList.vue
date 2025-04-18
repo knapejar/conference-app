@@ -1,7 +1,7 @@
 <template>
     <ion-list>
         <QuestionsListItem v-for="question in questions" :key="question.id" :question="question"
-            @like="likeQuestion(question.id)" />
+            @like="likeQuestion(question.id)" @delete="deleteQuestion(question.id)" />
     </ion-list>
 </template>
 
@@ -16,6 +16,9 @@ export default {
     methods: {
         likeQuestion(id) {
             this.$emit('like', id);
+        },
+        deleteQuestion(id) {
+            this.$emit('delete', id);
         }
     }
 };
