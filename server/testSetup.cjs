@@ -25,4 +25,4 @@ beforeEach(() => {
 });
 
 // Export the mocked Prisma client for use in tests
-export const prisma = mockPrismaClient; 
+module.exports = { prisma: mockPrismaClient }; 

@@ -15,6 +15,16 @@ import { getConference } from './conference.js';
 import { HttpError } from './errors.js';
 import cors from 'cors';
 
+import { updateConference } from './protected/conference.js';
+import { createAnnouncement, updateAnnouncement, deleteAnnouncement } from './protected/announcements.js';
+import { 
+    createBlock, updateBlock, deleteBlock,
+    createPresentation, updatePresentation, deletePresentation
+} from './protected/presentations.js';
+import { createPerson, updatePerson, deletePerson } from './protected/people.js';
+import { createQuestion as adminCreateQuestion, updateQuestion, deleteQuestion as adminDeleteQuestion } from './protected/questions.js';
+import { requireAdmin } from './middleware/auth.js';
+
 const app = express();
 const server = createServer(app);
 app.use(cors());
@@ -37,7 +47,7 @@ app.get('/debug-get-test-token', async (req, res) => {
     await debugGetTestToken(req, res);
 });
 
-// GET questions for a given presentationId
+// Public routes
 app.get('/questions', async (req, res, next) => {
     const { presentationId } = req.query;
     if (!presentationId) {
@@ -51,7 +61,6 @@ app.get('/questions', async (req, res, next) => {
     }
 });
 
-// POST to create a new question
 app.post('/questions', async (req, res, next) => {
     const { presentationId, content, author, authorToken } = req.body;
     if (!presentationId || !content) {
@@ -65,7 +74,6 @@ app.post('/questions', async (req, res, next) => {
     }
 });
 
-// POST to like a question
 app.post('/questions/:id/like', async (req, res, next) => {
     const questionId = req.params.id;
     if (!questionId) {
@@ -79,7 +87,6 @@ app.post('/questions/:id/like', async (req, res, next) => {
     }
 });
 
-// POST to unlike a question
 app.post('/questions/:id/unlike', async (req, res, next) => {
     const questionId = req.params.id;
     if (!questionId) {
@@ -93,7 +100,6 @@ app.post('/questions/:id/unlike', async (req, res, next) => {
     }
 });
 
-// DELETE a question
 app.delete('/questions/:id', async (req, res, next) => {
     const questionId = req.params.id;
     if (!questionId) {
@@ -111,7 +117,6 @@ app.delete('/questions/:id', async (req, res, next) => {
     }
 });
 
-// GET presentations
 app.get('/presentations', async (req, res, next) => {
     try {
         const presentations = await getPresentations();
@@ -121,7 +126,6 @@ app.get('/presentations', async (req, res, next) => {
     }
 });
 
-// GET announcements
 app.get('/announcements', async (req, res, next) => {
     try {
         const announcements = await getAnnouncements();
@@ -131,7 +135,6 @@ app.get('/announcements', async (req, res, next) => {
     }
 });
 
-// GET people
 app.get('/people', async (req, res, next) => {
     try {
         const people = await getPeople();
@@ -141,11 +144,155 @@ app.get('/people', async (req, res, next) => {
     }
 });
 
-// GET conference
 app.get('/conference', async (req, res, next) => {
     try {
         const conference = await getConference();
         res.json(conference);
+    } catch (error) {
+        next(error);
+    }
+});
+
+// Protected routes
+app.put('/conference/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const conference = await updateConference(req.params.id, req.body);
+        res.json(conference);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/announcements', requireAdmin, async (req, res, next) => {
+    try {
+        const announcement = await createAnnouncement(req.body);
+        res.json(announcement);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/announcements/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const announcement = await updateAnnouncement(req.params.id, req.body);
+        res.json(announcement);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.delete('/announcements/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const result = await deleteAnnouncement(req.params.id);
+        res.json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/blocks', requireAdmin, async (req, res, next) => {
+    try {
+        const block = await createBlock(req.body);
+        res.json(block);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/blocks/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const block = await updateBlock(req.params.id, req.body);
+        res.json(block);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.delete('/blocks/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const result = await deleteBlock(req.params.id);
+        res.json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/presentations', requireAdmin, async (req, res, next) => {
+    try {
+        const presentation = await createPresentation(req.body);
+        res.json(presentation);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/presentations/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const presentation = await updatePresentation(req.params.id, req.body);
+        res.json(presentation);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.delete('/presentations/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const result = await deletePresentation(req.params.id);
+        res.json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/people', requireAdmin, async (req, res, next) => {
+    try {
+        const person = await createPerson(req.body);
+        res.json(person);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/people/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const person = await updatePerson(req.params.id, req.body);
+        res.json(person);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.delete('/people/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const result = await deletePerson(req.params.id);
+        res.json(result);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.post('/admin/questions', requireAdmin, async (req, res, next) => {
+    try {
+        const question = await adminCreateQuestion(req.body);
+        res.json(question);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.put('/admin/questions/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const question = await updateQuestion(req.params.id, req.body);
+        res.json(question);
+    } catch (error) {
+        next(error);
+    }
+});
+
+app.delete('/admin/questions/:id', requireAdmin, async (req, res, next) => {
+    try {
+        const result = await adminDeleteQuestion(req.params.id);
+        res.json(result);
     } catch (error) {
         next(error);
     }

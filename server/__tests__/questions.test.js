@@ -1,4 +1,4 @@
-const { prisma } = require('../testSetup');
+const { prisma } = require('../testSetup.cjs');
 const { getQuestions, createQuestion, likeQuestion, unlikeQuestion, deleteQuestion } = require('../questions.js');
 const { HttpError } = require('../errors.js');
 

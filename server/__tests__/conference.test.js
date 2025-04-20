@@ -1,0 +1,86 @@
+const { prisma } = require('../testSetup.cjs');
+const { getConference } = require('../conference.cjs');
+const { updateConference } = require('../protected/conference.cjs');
+const { HttpError } = require('../errors.cjs');
+
+describe('Conference Module', () => {
+    const mockConference = {
+        id: 1,
+        name: 'Test Conference',
+        description: 'Test Description',
+        welcomeImage: 'test-image.jpg'
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    describe('getConference', () => {
+        it('should return conference data', async () => {
+            prisma.conference.findFirst.mockResolvedValue(mockConference);
+
+            const result = await getConference();
+            expect(result).toEqual(mockConference);
+            expect(prisma.conference.findFirst).toHaveBeenCalled();
+        });
+
+        it('should throw error when no conference exists', async () => {
+            prisma.conference.findFirst.mockResolvedValue(null);
+            await expect(getConference()).rejects.toThrow('No conference found');
+        });
+    });
+
+    describe('updateConference', () => {
+        it('should update conference successfully', async () => {
+            const updateData = {
+                name: 'Updated Conference',
+                description: 'Updated Description',
+                welcomeImage: 'updated-image.jpg'
+            };
+
+            prisma.conference.findUnique.mockResolvedValue(mockConference);
+            prisma.conference.update.mockResolvedValue({
+                ...mockConference,
+                ...updateData
+            });
+
+            const result = await updateConference('1', updateData);
+            expect(result).toEqual({
+                ...mockConference,
+                ...updateData
+            });
+            expect(prisma.conference.update).toHaveBeenCalledWith({
+                where: { id: 1 },
+                data: updateData
+            });
+        });
+
+        it('should throw error for invalid conference ID', async () => {
+            await expect(updateConference('invalid', {
+                name: 'Test',
+                description: 'Test',
+                welcomeImage: 'test.jpg'
+            })).rejects.toThrow('Invalid conference ID');
+        });
+
+        it('should throw error for non-existent conference', async () => {
+            prisma.conference.findUnique.mockResolvedValue(null);
+            await expect(updateConference('1', {
+                name: 'Test',
+                description: 'Test',
+                welcomeImage: 'test.jpg'
+            })).rejects.toThrow('Conference not found');
+        });
+
+        it('should throw error for missing required fields', async () => {
+            prisma.conference.findUnique.mockResolvedValue(mockConference);
+            const invalidData = {
+                name: '',
+                description: '',
+                welcomeImage: ''
+            };
+
+            await expect(updateConference('1', invalidData)).rejects.toThrow('Name, description, and welcomeImage are required');
+        });
+    });
+}); 

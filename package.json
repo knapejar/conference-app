@@ -65,20 +65,18 @@
   "jest": {
     "testEnvironment": "node",
     "transform": {
-      "^.+\\.tsx?$": "ts-jest"
+      "^.+\\.js$": "babel-jest"
     },
     "moduleFileExtensions": [
+      "js",
+      "mjs",
+      "cjs",
+      "jsx",
       "ts",
       "tsx",
-      "js",
-      "jsx",
       "json",
       "node"
     ],
-    "extensionsToTreatAsEsm": [".ts"],
-    "moduleNameMapper": {
-      "^(\\.{1,2}/.*)\\.js$": "$1"
-    },
     "transformIgnorePatterns": [
       "node_modules/(?!(prisma)/)"
     ]
