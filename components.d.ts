@@ -14,6 +14,7 @@ declare module 'vue' {
     AnnouncementsBlock: typeof import('./src/components/announcements/AnnouncementsBlock.vue')['default']
     AnnouncementsBlocks: typeof import('./src/components/announcements/AnnouncementsBlocks.vue')['default']
     BaseLayout: typeof import('./src/components/base/BaseLayout.vue')['default']
+    InstallationScreen: typeof import('./src/components/welcome/InstallationScreen.vue')['default']
     IonAvatar: typeof import('@ionic/vue')['IonAvatar']
     IonBackButton: typeof import('@ionic/vue')['IonBackButton']
     IonBadge: typeof import('@ionic/vue')['IonBadge']
@@ -64,6 +65,7 @@ declare module 'vue' {
     PresentationBlock: typeof import('./src/components/presentations/PresentationBlock.vue')['default']
     PresentationBlocks: typeof import('./src/components/presentations/PresentationBlocks.vue')['default']
     PresentationItem: typeof import('./src/components/presentations/PresentationItem.vue')['default']
+    ProfileSetupScreen: typeof import('./src/components/welcome/ProfileSetupScreen.vue')['default']
     QuestionsComponent: typeof import('./src/components/questions/QuestionsComponent.vue')['default']
     QuestionsExample: typeof import('./src/components/questions/QuestionsExample.vue')['default']
     QuestionsExampleNoBackend: typeof import('./src/components/questions/QuestionsExampleNoBackend.vue')['default']
@@ -76,6 +78,6 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Settings: typeof import('./src/components/settings/Settings.vue')['default']
     StarredPresentations: typeof import('./src/components/presentations/StarredPresentations.vue')['default']
-    WelcomeScreen: typeof import('./src/components/WelcomeScreen.vue')['default']
+    WelcomeScreen: typeof import('./src/components/welcome/WelcomeScreen.vue')['default']
   }
 }

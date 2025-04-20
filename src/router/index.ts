@@ -7,7 +7,7 @@ import Questions from '../views/Questions.vue'
 import Admin from '../views/Admin.vue'
 import Registration from '@/components/registration/Registration.vue';
 import Settings from '@/components/settings/Settings.vue';
-import WelcomeScreen from '@/components/WelcomeScreen.vue';
+import WelcomeScreen from '@/components/welcome/WelcomeScreen.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
