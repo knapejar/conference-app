@@ -1,21 +1,22 @@
 import { PrismaClient } from '@prisma/client';
+import { createError, HttpError } from './errors.js';
 
 const prisma = new PrismaClient();
 
 export const getQuestions = async (presentationId) => {
     if (!presentationId) {
-        throw new Error("Presentation ID is required.");
+        throw createError("Presentation ID is required.", 400);
     }
     const presId = parseInt(presentationId, 10);
     if (isNaN(presId)) {
-        throw new Error("Invalid presentation ID provided.");
+        throw createError("Invalid presentation ID provided.", 400);
     }
     try {
         const presentation = await prisma.presentation.findUnique({
             where: { id: presId }
         });
         if (!presentation) {
-            throw new Error(`Presentation with ID ${presId} not found.`);
+            throw createError(`Presentation with ID ${presId} not found.`, 404);
         }
 
         const questions = await prisma.question.findMany({
@@ -26,30 +27,32 @@ export const getQuestions = async (presentationId) => {
         });
         return questions.map(({ state, ...rest }) => rest);
     } catch (error) {
+        if (error instanceof HttpError) {
+            throw error;
+        }
         console.error("Error in getQuestions:", error);
-        throw error;
+        throw createError("Failed to retrieve questions.", 500);
     }
 };
 
 export const createQuestion = async (presentationId, content, author = "Anonymous", authorToken = "Anonymous") => {
     if (!presentationId) {
-        throw new Error("Presentation ID is required.");
+        throw createError("Presentation ID is required.", 400);
     }
     if (!content || typeof content !== 'string') {
-        throw new Error("Valid content is required to create a question.");
+        throw createError("Valid content is required to create a question.", 400);
     }
     const presId = parseInt(presentationId, 10);
     if (isNaN(presId)) {
-        throw new Error("Invalid presentation ID provided.");
+        throw createError("Invalid presentation ID provided.", 400);
     }
     try {
         const presentation = await prisma.presentation.findUnique({
             where: { id: presId }
         });
         if (!presentation) {
-            throw new Error(`Presentation with ID ${presId} not found.`);
+            throw createError(`Presentation with ID ${presId} not found.`, 404);
         }
-        // Create the question with likes defaulting to 0. The state will default to CREATED as per the schema.
         await prisma.question.create({
             data: {
                 content,
@@ -61,23 +64,26 @@ export const createQuestion = async (presentationId, content, author = "Anonymou
         });
         return getQuestions(presId);
     } catch (error) {
+        if (error instanceof HttpError) {
+            throw error;
+        }
         console.error("Error in createQuestion:", error);
-        throw error;
+        throw createError("Failed to create question.", 500);
     }
 };
 
 export const likeQuestion = async (questionId) => {
     if (!questionId) {
-        throw new Error("Question ID is required.");
+        throw createError("Question ID is required.", 400);
     }
     const qId = parseInt(questionId, 10);
     if (isNaN(qId)) {
-        throw new Error("Invalid question ID provided.");
+        throw createError("Invalid question ID provided.", 400);
     }
     try {
         const question = await prisma.question.findUnique({ where: { id: qId } });
         if (!question) {
-            throw new Error(`Question with ID ${qId} not found.`);
+            throw createError(`Question with ID ${qId} not found.`, 404);
         }
         await prisma.question.update({
             where: { id: qId },
@@ -85,23 +91,26 @@ export const likeQuestion = async (questionId) => {
         });
         return getQuestions(question.presentationId);
     } catch (error) {
+        if (error instanceof HttpError) {
+            throw error;
+        }
         console.error("Error in likeQuestion:", error);
-        throw error;
+        throw createError("Failed to like question.", 500);
     }
 };
 
 export const unlikeQuestion = async (questionId) => {
     if (!questionId) {
-        throw new Error("Question ID is required.");
+        throw createError("Question ID is required.", 400);
     }
     const qId = parseInt(questionId, 10);
     if (isNaN(qId)) {
-        throw new Error("Invalid question ID provided.");
+        throw createError("Invalid question ID provided.", 400);
     }
     try {
         const question = await prisma.question.findUnique({ where: { id: qId } });
         if (!question) {
-            throw new Error(`Question with ID ${qId} not found.`);
+            throw createError(`Question with ID ${qId} not found.`, 404);
         }
         const updatedLikes = question.likes > 0 ? question.likes - 1 : 0;
         await prisma.question.update({
@@ -110,29 +119,32 @@ export const unlikeQuestion = async (questionId) => {
         });
         return getQuestions(question.presentationId);
     } catch (error) {
+        if (error instanceof HttpError) {
+            throw error;
+        }
         console.error("Error in unlikeQuestion:", error);
-        throw error;
+        throw createError("Failed to unlike question.", 500);
     }
 };
 
 export const deleteQuestion = async (questionId, authorToken) => {
     if (!questionId) {
-        throw new Error("Question ID is required.");
+        throw createError("Question ID is required.", 400);
     }
     if (!authorToken) {
-        throw new Error("Author token is required for deletion.");
+        throw createError("Author token is required for deletion.", 400);
     }
     const qId = parseInt(questionId, 10);
     if (isNaN(qId)) {
-        throw new Error("Invalid question ID provided.");
+        throw createError("Invalid question ID provided.", 400);
     }
     try {
         const question = await prisma.question.findUnique({ where: { id: qId } });
         if (!question) {
-            throw new Error(`Question with ID ${qId} not found.`);
+            throw createError(`Question with ID ${qId} not found.`, 404);
         }
         if (question.authorToken !== authorToken) {
-            throw new Error("Unauthorized: Invalid author token.");
+            throw createError("Unauthorized: Invalid author token.", 403);
         }
         await prisma.question.update({
             where: { id: qId },
@@ -140,7 +152,10 @@ export const deleteQuestion = async (questionId, authorToken) => {
         });
         return getQuestions(question.presentationId);
     } catch (error) {
+        if (error instanceof HttpError) {
+            throw error;
+        }
         console.error("Error in deleteQuestion:", error);
-        throw error;
+        throw createError("Failed to delete question.", 500);
     }
 };

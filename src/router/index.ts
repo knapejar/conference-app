@@ -7,11 +7,16 @@ import Questions from '../views/Questions.vue'
 import Admin from '../views/Admin.vue'
 import Registration from '@/components/registration/Registration.vue';
 import Settings from '@/components/settings/Settings.vue';
+import WelcomeScreen from '@/components/WelcomeScreen.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: '/home'
+  }, {
+    path: '/welcome',
+    name: 'Welcome',
+    component: WelcomeScreen
   }, {
     path: '/program',
     name: 'Program',
@@ -46,6 +51,28 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
+})
+
+// Navigation guard to check if user needs to see welcome screen
+router.beforeEach((to, from, next) => {
+  if (to.path === '/welcome') {
+    next()
+    return
+  }
+
+  const savedSettings = localStorage.getItem('userSettings')
+  if (!savedSettings) {
+    next('/welcome')
+    return
+  }
+
+  const settings = JSON.parse(savedSettings)
+  if (!settings.name) {
+    next('/welcome')
+    return
+  }
+
+  next()
 })
 
 export default router

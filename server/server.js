@@ -12,12 +12,22 @@ import { getPresentations } from './presentations.js';
 import { getAnnouncements } from './announcements.js';
 import { getPeople } from './people.js';
 import { getConference } from './conference.js';
+import { HttpError } from './errors.js';
 import cors from 'cors';
 
 const app = express();
 const server = createServer(app);
 app.use(cors());
 app.use(express.json());
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    if (err instanceof HttpError) {
+        return res.status(err.statusCode).json({ error: err.message });
+    }
+    res.status(500).json({ error: 'Internal server error' });
+});
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
@@ -28,7 +38,7 @@ app.get('/debug-get-test-token', async (req, res) => {
 });
 
 // GET questions for a given presentationId
-app.get('/questions', async (req, res) => {
+app.get('/questions', async (req, res, next) => {
     const { presentationId } = req.query;
     if (!presentationId) {
         return res.status(400).json({ error: 'Presentation ID is required' });
@@ -37,13 +47,12 @@ app.get('/questions', async (req, res) => {
         const questions = await getQuestions(presentationId);
         res.json(questions);
     } catch (error) {
-        console.error('Error retrieving questions:', error);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 });
 
 // POST to create a new question
-app.post('/questions', async (req, res) => {
+app.post('/questions', async (req, res, next) => {
     const { presentationId, content, author, authorToken } = req.body;
     if (!presentationId || !content) {
         return res.status(400).json({ error: 'Presentation ID and content are required' });
@@ -52,13 +61,12 @@ app.post('/questions', async (req, res) => {
         const questions = await createQuestion(presentationId, content, author, authorToken);
         res.json(questions);
     } catch (error) {
-        console.error('Error creating question:', error);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 });
 
 // POST to like a question
-app.post('/questions/:id/like', async (req, res) => {
+app.post('/questions/:id/like', async (req, res, next) => {
     const questionId = req.params.id;
     if (!questionId) {
         return res.status(400).json({ error: 'Question ID is required' });
@@ -67,13 +75,12 @@ app.post('/questions/:id/like', async (req, res) => {
         const questions = await likeQuestion(questionId);
         res.json(questions);
     } catch (error) {
-        console.error('Error liking question:', error);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 });
 
 // POST to unlike a question
-app.post('/questions/:id/unlike', async (req, res) => {
+app.post('/questions/:id/unlike', async (req, res, next) => {
     const questionId = req.params.id;
     if (!questionId) {
         return res.status(400).json({ error: 'Question ID is required' });
@@ -82,13 +89,12 @@ app.post('/questions/:id/unlike', async (req, res) => {
         const questions = await unlikeQuestion(questionId);
         res.json(questions);
     } catch (error) {
-        console.error('Error unliking question:', error);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 });
 
 // DELETE a question
-app.delete('/questions/:id', async (req, res) => {
+app.delete('/questions/:id', async (req, res, next) => {
     const questionId = req.params.id;
     if (!questionId) {
         return res.status(400).json({ error: 'Question ID is required' });
@@ -101,52 +107,47 @@ app.delete('/questions/:id', async (req, res) => {
         const questions = await deleteQuestion(questionId, authorToken);
         res.json(questions);
     } catch (error) {
-        console.error('Error deleting question:', error);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 });
 
 // GET presentations
-app.get('/presentations', async (req, res) => {
+app.get('/presentations', async (req, res, next) => {
     try {
         const presentations = await getPresentations();
         res.json(presentations);
     } catch (error) {
-        console.error('Error retrieving presentations:', error);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 });
 
 // GET announcements
-app.get('/announcements', async (req, res) => {
+app.get('/announcements', async (req, res, next) => {
     try {
         const announcements = await getAnnouncements();
         res.json(announcements);
     } catch (error) {
-        console.error('Error retrieving announcements:', error);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 });
 
 // GET people
-app.get('/people', async (req, res) => {
+app.get('/people', async (req, res, next) => {
     try {
         const people = await getPeople();
         res.json(people);
     } catch (error) {
-        console.error('Error retrieving people:', error);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 });
 
 // GET conference
-app.get('/conference', async (req, res) => {
+app.get('/conference', async (req, res, next) => {
     try {
         const conference = await getConference();
         res.json(conference);
     } catch (error) {
-        console.error('Error retrieving conference:', error);
-        res.status(500).json({ error: error.message });
+        next(error);
     }
 });
 

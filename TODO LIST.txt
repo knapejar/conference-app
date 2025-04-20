@@ -2,8 +2,7 @@ TODO LIST
 
 APP
 
-Mazání mých otázek
-Hezčí notifikace
+Dodělat notifikace
 Přidat detail prezentace
 Prezentující by se měli ukazovat u prezentací
 Detail prezentujícího - vyhodit dotazy na prezentujícího
@@ -34,4 +33,5 @@ Admin - modifikace prezentačních bloků, prezentací a prezentujících
 HOTOVO
 Vyřešit .env načítání v developmentu
 Obnovit seznam otázek při příchodu na stránku
+Mazání mých otázek
 

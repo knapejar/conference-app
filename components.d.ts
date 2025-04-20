@@ -76,5 +76,6 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Settings: typeof import('./src/components/settings/Settings.vue')['default']
     StarredPresentations: typeof import('./src/components/presentations/StarredPresentations.vue')['default']
+    WelcomeScreen: typeof import('./src/components/WelcomeScreen.vue')['default']
   }
 }
