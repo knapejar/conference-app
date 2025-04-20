@@ -58,6 +58,7 @@ async function main() {
             name: faker.person.fullName(),
             role: faker.person.jobTitle(),
             imageURL: faker.image.avatar(),
+            details: faker.lorem.paragraph(),
             presentation: { connect: { id: presentation.id } },
           },
         })

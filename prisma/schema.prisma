@@ -58,6 +58,7 @@ model Presenter {
   name           String
   role           String
   imageURL       String
+  details        String
   presentationId Int
   presentation   Presentation @relation(fields: [presentationId], references: [id])
 }

@@ -13,6 +13,7 @@
             <img :src="person.imageURL" alt="Profile image" class="modal-image" />
             <h3>{{ person.name }}</h3>
             <p>{{ person.role }}</p>
+            <p>{{ person.details }}</p>
         </ion-content>
     </ion-content>
 </template>

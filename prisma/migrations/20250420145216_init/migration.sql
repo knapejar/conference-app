@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "QuestionState" AS ENUM ('CREATED', 'ANSWERED', 'DELETED');
+
 -- CreateTable
 CREATE TABLE "Announcement" (
     "id" SERIAL NOT NULL,
@@ -35,6 +38,7 @@ CREATE TABLE "Presentation" (
 -- CreateTable
 CREATE TABLE "Question" (
     "id" SERIAL NOT NULL,
+    "state" "QuestionState" NOT NULL DEFAULT 'CREATED',
     "content" TEXT NOT NULL,
     "author" TEXT NOT NULL,
     "authorToken" TEXT NOT NULL,
@@ -50,6 +54,7 @@ CREATE TABLE "Presenter" (
     "name" TEXT NOT NULL,
     "role" TEXT NOT NULL,
     "imageURL" TEXT NOT NULL,
+    "details" TEXT NOT NULL,
     "presentationId" INTEGER NOT NULL,
 
     CONSTRAINT "Presenter_pkey" PRIMARY KEY ("id")

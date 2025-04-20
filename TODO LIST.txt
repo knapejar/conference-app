@@ -2,8 +2,6 @@ TODO LIST
 
 APP
 
-Přidat detail prezentace
-Prezentující by se měli ukazovat u prezentací
 Normální ukázková data v aplikaci, aby se to dalo použít
 Dodělat notifikace
 Bonus: Sdílet můj profil qr kódem?
@@ -31,6 +29,8 @@ Mazání mých otázek
 Detail prezentujícího - vyhodit dotazy na prezentujícího
 Vyřešit automatické obnovování třeba co 10 sekund
 Hezký popup když chybí internetové připojení
+Přidat detail prezentace
+Prezentující by se měli ukazovat u prezentací
 
 
 PWA
