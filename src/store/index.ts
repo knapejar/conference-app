@@ -11,6 +11,8 @@ import presentations from './modules/presentations'
 import people from './modules/people'
 // @ts-ignore
 import announcements from './modules/announcements'
+// @ts-ignore
+import toast from './toast'
 
 export default createStore({
   modules: {
@@ -19,6 +21,7 @@ export default createStore({
     conference,
     presentations,
     people,
-    announcements
+    announcements,
+    toast
   }
 })

@@ -7,7 +7,6 @@
             <h2>{{ person.name }}</h2>
             <p>{{ person.role }}</p>
         </ion-label>
-        <QuestionsIconButton :questionsRoom="person.name" />
     </ion-item>
 </template>
 

@@ -2,20 +2,12 @@ TODO LIST
 
 APP
 
-Dodělat notifikace
 Přidat detail prezentace
 Prezentující by se měli ukazovat u prezentací
-Detail prezentujícího - vyhodit dotazy na prezentujícího
 Normální ukázková data v aplikaci, aby se to dalo použít
-Vyřešit automatické obnovování třeba co 10 sekund
 Hezký popup když chybí internetové připojení
 
-
-PWA
-
-Uvítací obrazovka s tlačítkem nainstalovat
-Druhá uvítací obrazovka s nastavením profilu
-
+Dodělat notifikace
 
 
 ADMIN
@@ -29,9 +21,26 @@ Vyřešit následné příjmutí notifikací a push na klientu
 Admin - modifikace prezentačních bloků, prezentací a prezentujících
 
 
+CODE
+e2e testy v pupeteeru
+Vytvořit hyrearchii komponentů - umí to něco? Hezké grafy do prezentace
+
 
 HOTOVO
 Vyřešit .env načítání v developmentu
 Obnovit seznam otázek při příchodu na stránku
 Mazání mých otázek
+Detail prezentujícího - vyhodit dotazy na prezentujícího
+Vyřešit automatické obnovování třeba co 10 sekund
 
+
+PWA
+
+Uvítací obrazovka s tlačítkem nainstalovat
+Druhá uvítací obrazovka s nastavením profilu
+
+
+Funktionality:
+
+ion-toast - Notifikace když něco nefunguje, Components/helpers
+ion-refresher - Obnovení MainLayout a Questions online

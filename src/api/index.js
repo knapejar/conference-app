@@ -1,10 +1,22 @@
 import axios from 'axios';
+import store from '../store';
 
 const API_BASE = process.env.VITE_API_BASE || 'https://konference.jk9.eu/server'; //'https://konference.jk9.eu/server';
 
 axios.defaults.baseURL = API_BASE;
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
+
+const handleError = (error) => {
+  // Check if it's a network error (server down, no internet, etc.)
+  if (error.code === 'ERR_NETWORK' || !navigator.onLine) {
+    store.dispatch('toast/showOfflineWarning');
+  } else if (error.response?.status && error.response.status !== 200) {
+    store.dispatch('toast/showError');
+  }
+  console.error('API Error:', error);
+  throw error;
+};
 
 export const init = async () => {
     // Initialization code if needed.
@@ -20,8 +32,7 @@ export const getQuestions = async (presentationId) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error in getQuestions:', error);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -41,8 +52,7 @@ export const createQuestion = async (presentationId, content, author = "Anonymou
         });
         return response.data;
     } catch (error) {
-        console.error('Error in createQuestion:', error);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -54,8 +64,7 @@ export const likeQuestion = async (questionId) => {
         const response = await axios.post(`/questions/${questionId}/like`);
         return response.data;
     } catch (error) {
-        console.error('Error in likeQuestion:', error);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -67,8 +76,7 @@ export const unlikeQuestion = async (questionId) => {
         const response = await axios.post(`/questions/${questionId}/unlike`);
         return response.data;
     } catch (error) {
-        console.error('Error in unlikeQuestion:', error);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -85,8 +93,7 @@ export const deleteQuestion = async (questionId, authorToken) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error in deleteQuestion:', error);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -95,8 +102,7 @@ export const getPresentations = async () => {
         const response = await axios.get('/presentations');
         return response.data;
     } catch (error) {
-        console.error('Error in getPresentations:', error);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -105,8 +111,7 @@ export const getAnnouncements = async () => {
         const response = await axios.get('/announcements');
         return response.data;
     } catch (error) {
-        console.error('Error in getAnnouncements:', error);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -115,8 +120,7 @@ export const getPeople = async () => {
         const response = await axios.get('/people');
         return response.data;
     } catch (error) {
-        console.error('Error in getPeople:', error);
-        throw error;
+        handleError(error);
     }
 };
 
@@ -125,7 +129,6 @@ export const getConference = async () => {
         const response = await axios.get('/conference');
         return response.data;
     } catch (error) {
-        console.error('Error in getConference:', error);
-        throw error;
+        handleError(error);
     }
 };

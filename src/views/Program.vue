@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, onMounted, ref } from 'vue';
+import { defineComponent, computed, ref } from 'vue';
 // @ts-ignore
 import { useStore } from '@/composables/useVuexStore';
 import StarredPresentations from '@/components/presentations/StarredPresentations.vue';
@@ -43,12 +43,6 @@ export default defineComponent({
     const loading = computed(() => store.getters['presentations/isLoading']);
     const error = computed(() => store.getters['presentations/getError']);
     const hasCachedData = computed(() => blocks.value && blocks.value.length > 0);
-
-    onMounted(() => {
-      console.log('Program view mounted');
-      console.log('Conference data:', conferenceData.value);
-      console.log('Blocks:', blocks.value);
-    });
 
     return {
       conferenceData,

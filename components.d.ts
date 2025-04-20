@@ -14,6 +14,7 @@ declare module 'vue' {
     AnnouncementsBlock: typeof import('./src/components/announcements/AnnouncementsBlock.vue')['default']
     AnnouncementsBlocks: typeof import('./src/components/announcements/AnnouncementsBlocks.vue')['default']
     BaseLayout: typeof import('./src/components/base/BaseLayout.vue')['default']
+    ErrorOccured: typeof import('./src/components/toasts/ErrorOccured.vue')['default']
     InstallationScreen: typeof import('./src/components/welcome/InstallationScreen.vue')['default']
     IonAvatar: typeof import('@ionic/vue')['IonAvatar']
     IonBackButton: typeof import('@ionic/vue')['IonBackButton']
@@ -62,6 +63,7 @@ declare module 'vue' {
     MainLayoutNotificationsMenu: typeof import('./src/components/MainLayout/notificationsMenu/MainLayoutNotificationsMenu.vue')['default']
     MainLayoutRefresher: typeof import('./src/components/MainLayout/MainLayoutRefresher.vue')['default']
     MenuLayoutFooterToolbar: typeof import('./src/components/MainLayout/footerToolbar/MenuLayoutFooterToolbar.vue')['default']
+    OfflineWarning: typeof import('./src/components/toasts/OfflineWarning.vue')['default']
     PeopleList: typeof import('./src/components/people/PeopleList.vue')['default']
     PeopleListItem: typeof import('./src/components/people/PeopleListItem.vue')['default']
     PersonModal: typeof import('./src/components/people/PersonModal.vue')['default']
@@ -81,6 +83,7 @@ declare module 'vue' {
     RouterView: typeof import('vue-router')['RouterView']
     Settings: typeof import('./src/components/settings/Settings.vue')['default']
     StarredPresentations: typeof import('./src/components/presentations/StarredPresentations.vue')['default']
+    ToastParent: typeof import('./src/components/toasts/ToastParent.vue')['default']
     WelcomeScreen: typeof import('./src/components/welcome/WelcomeScreen.vue')['default']
   }
 }

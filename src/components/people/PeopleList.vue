@@ -23,7 +23,7 @@
 </template>
 
 <script>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted } from 'vue';
 export default {
   name: 'PeopleList',
   props: {
@@ -48,12 +48,7 @@ export default {
 
     onMounted(() => {
       presentingElement.value = document.querySelector('ion-content');
-      console.log('PeopleList mounted with people:', props.people);
     });
-
-    watch(() => props.people, (newPeople) => {
-      console.log('People prop changed:', newPeople);
-    }, { immediate: true });
 
     return {
       selectedPerson,

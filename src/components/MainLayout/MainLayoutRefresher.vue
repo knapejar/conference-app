@@ -15,7 +15,7 @@ export default {
             try {
                 // Refresh all stores except questions
                 await Promise.all([
-                    store.dispatch('conference/fetchConference'),
+                    store.dispatch('conference/fetchConferenceData'),
                     store.dispatch('announcements/fetchAnnouncements'),
                     store.dispatch('people/fetchPeople'),
                     store.dispatch('presentations/fetchPresentations')

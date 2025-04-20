@@ -5,7 +5,6 @@
                 <ion-buttons slot="start">
                     <ion-button @click="closeModal">Close</ion-button>
                 </ion-buttons>
-                <QuestionsIconButton :questionsRoom="person.name" @click="closeModal"/>
                 <ion-title>{{ person.name }}</ion-title>
             </ion-toolbar>
         </ion-header>
