@@ -8,6 +8,7 @@ import Admin from '../views/Admin.vue'
 import Registration from '@/components/registration/Registration.vue';
 import Settings from '@/components/settings/Settings.vue';
 import WelcomeScreen from '@/components/welcome/WelcomeScreen.vue';
+import PresentationDetail from '@/components/presentations/PresentationDetail.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -21,6 +22,10 @@ const routes: Array<RouteRecordRaw> = [
     path: '/program',
     name: 'Program',
     component: Program
+  }, {
+    path: '/presentations/:id',
+    name: 'PresentationDetail',
+    component: PresentationDetail
   }, {
     path: '/questions/:id',
     name: 'Questions',

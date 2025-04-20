@@ -5,10 +5,8 @@ APP
 Přidat detail prezentace
 Prezentující by se měli ukazovat u prezentací
 Normální ukázková data v aplikaci, aby se to dalo použít
-Hezký popup když chybí internetové připojení
-
 Dodělat notifikace
-
+Bonus: Sdílet můj profil qr kódem?
 
 ADMIN
 
@@ -32,6 +30,7 @@ Obnovit seznam otázek při příchodu na stránku
 Mazání mých otázek
 Detail prezentujícího - vyhodit dotazy na prezentujícího
 Vyřešit automatické obnovování třeba co 10 sekund
+Hezký popup když chybí internetové připojení
 
 
 PWA

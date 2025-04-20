@@ -69,6 +69,7 @@ declare module 'vue' {
     PersonModal: typeof import('./src/components/people/PersonModal.vue')['default']
     PresentationBlock: typeof import('./src/components/presentations/PresentationBlock.vue')['default']
     PresentationBlocks: typeof import('./src/components/presentations/PresentationBlocks.vue')['default']
+    PresentationDetail: typeof import('./src/components/presentations/PresentationDetail.vue')['default']
     PresentationItem: typeof import('./src/components/presentations/PresentationItem.vue')['default']
     ProfileSetupScreen: typeof import('./src/components/welcome/ProfileSetupScreen.vue')['default']
     QuestionsComponent: typeof import('./src/components/questions/QuestionsComponent.vue')['default']

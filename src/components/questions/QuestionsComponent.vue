@@ -1,6 +1,5 @@
 <template>
-    <BaseLayout :pageTitle="'Otázky ' + presentationTitle">
-        <!-- Add ion-refresher at the top (slot "fixed" ensures its placement) -->
+    <BaseLayout pageTitle="Otázky">
         <ion-refresher slot="fixed" @ionRefresh="handlePullToRefresh">
             <ion-refresher-content></ion-refresher-content>
         </ion-refresher>
@@ -36,13 +35,6 @@ export default {
                 .find((presentation) => presentation.id === presentationId);
         };
 
-        const presentationTitle = computed(() => {
-            const blocks = store.getters['presentations/getBlocks'];
-            const presentation = getPresentationFromBlocks(blocks);
-            console.log('Presentation:', presentation);
-            return presentation ? presentation.title : '';
-        });
-
         watch(
             () => store.getters['presentations/getBlocks'],
             (blocks) => {
@@ -69,7 +61,6 @@ export default {
             refreshInterval = setInterval(refreshQuestions, 5000);
         };
 
-        // Only fetch questions if we don't have them yet
         onMounted(async () => {
             await refreshQuestions();
             startAutoRefresh();
@@ -123,16 +114,12 @@ export default {
             }
         };
 
-        // New pull-to-refresh handler to refresh questions and reset auto-refresh timer
         const handlePullToRefresh = async (event) => {
-            // Clear the existing interval then refresh questions
             if (refreshInterval) {
                 clearInterval(refreshInterval);
             }
             await refreshQuestions();
-            // Restart auto refreshing
             startAutoRefresh();
-            // Tell the refresher to complete
             event.detail.complete();
         };
 
@@ -141,7 +128,6 @@ export default {
             sendQuestion,
             likeQuestion,
             deleteQuestionHandler,
-            presentationTitle,
             handlePullToRefresh,
         };
     },
