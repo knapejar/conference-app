@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
-import { createError, HttpError } from './errors.js';
+const { PrismaClient } = require('@prisma/client');
+const { createError, HttpError } = require('./errors.js');
 
 const prisma = new PrismaClient();
 
-export const getQuestions = async (presentationId) => {
+const getQuestions = async (presentationId) => {
     if (!presentationId) {
         throw createError("Presentation ID is required.", 400);
     }
@@ -35,7 +35,7 @@ export const getQuestions = async (presentationId) => {
     }
 };
 
-export const createQuestion = async (presentationId, content, author = "Anonymous", authorToken = "Anonymous") => {
+const createQuestion = async (presentationId, content, author = "Anonymous", authorToken = "Anonymous") => {
     if (!presentationId) {
         throw createError("Presentation ID is required.", 400);
     }
@@ -72,7 +72,7 @@ export const createQuestion = async (presentationId, content, author = "Anonymou
     }
 };
 
-export const likeQuestion = async (questionId) => {
+const likeQuestion = async (questionId) => {
     if (!questionId) {
         throw createError("Question ID is required.", 400);
     }
@@ -99,7 +99,7 @@ export const likeQuestion = async (questionId) => {
     }
 };
 
-export const unlikeQuestion = async (questionId) => {
+const unlikeQuestion = async (questionId) => {
     if (!questionId) {
         throw createError("Question ID is required.", 400);
     }
@@ -127,7 +127,7 @@ export const unlikeQuestion = async (questionId) => {
     }
 };
 
-export const deleteQuestion = async (questionId, authorToken) => {
+const deleteQuestion = async (questionId, authorToken) => {
     if (!questionId) {
         throw createError("Question ID is required.", 400);
     }
@@ -158,4 +158,12 @@ export const deleteQuestion = async (questionId, authorToken) => {
         console.error("Error in deleteQuestion:", error);
         throw createError("Failed to delete question.", 500);
     }
+};
+
+module.exports = {
+    getQuestions,
+    createQuestion,
+    likeQuestion,
+    unlikeQuestion,
+    deleteQuestion
 };

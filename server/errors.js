@@ -1,11 +1,15 @@
-export class HttpError extends Error {
-    constructor(message, statusCode = 500) {
+class HttpError extends Error {
+    constructor(message, statusCode) {
         super(message);
         this.statusCode = statusCode;
-        this.name = 'HttpError';
     }
 }
 
-export const createError = (message, statusCode = 500) => {
+function createError(message, statusCode) {
     return new HttpError(message, statusCode);
+}
+
+module.exports = {
+    HttpError,
+    createError
 }; 
