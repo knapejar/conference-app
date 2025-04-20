@@ -7,7 +7,7 @@
         <p>Pro úspěšné nainstalování této aplikace prosím otevřete tento odkaz v prohlížeči Chrome nebo Safari.</p>
         
         <div class="button-container">
-          <ion-button expand="block" color="primary" @click="installApp">
+          <ion-button expand="block" color="primary" @click="installApp" :disabled="!deferredPrompt">
             Nainstalovat aplikaci
           </ion-button>
           <ion-button expand="block" fill="outline" @click="continueToBrowser">
@@ -38,7 +38,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, onUnmounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { IonPage, IonContent, IonButton, IonItem, IonLabel, IonInput } from '@ionic/vue'
 import { useStore } from 'vuex'
@@ -49,6 +49,7 @@ const store = useStore()
 const hasSeenFirstScreen = ref(false)
 const hasCompletedSetup = ref(false)
 const userName = ref('')
+const deferredPrompt = ref<any>(null)
 
 onMounted(() => {
   // Check if user has completed setup
@@ -58,10 +59,39 @@ onMounted(() => {
     hasCompletedSetup.value = !!settings.name
     hasSeenFirstScreen.value = true
   }
+
+  // Listen for beforeinstallprompt event
+  window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
 })
 
-const installApp = () => {
-  // TODO: Implement PWA installation logic
+onUnmounted(() => {
+  window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
+})
+
+const handleBeforeInstallPrompt = (e: Event) => {
+  // Prevent Chrome 67 and earlier from automatically showing the prompt
+  e.preventDefault()
+  // Stash the event so it can be triggered later
+  deferredPrompt.value = e
+}
+
+const installApp = async () => {
+  if (!deferredPrompt.value) {
+    // If the prompt is not available, just continue to the next screen
+    hasSeenFirstScreen.value = true
+    return
+  }
+
+  // Show the install prompt
+  deferredPrompt.value.prompt()
+
+  // Wait for the user to respond to the prompt
+  const { outcome } = await deferredPrompt.value.userChoice
+
+  // Clear the deferred prompt
+  deferredPrompt.value = null
+
+  // Continue to the next screen regardless of the user's choice
   hasSeenFirstScreen.value = true
 }
 
