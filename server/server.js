@@ -17,18 +17,12 @@ import cors from 'cors';
 
 const app = express();
 const server = createServer(app);
+
+// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Error handling middleware
-app.use((err, req, res, next) => {
-    console.error('Error:', err);
-    if (err instanceof HttpError) {
-        return res.status(err.statusCode).json({ error: err.message });
-    }
-    res.status(500).json({ error: 'Internal server error' });
-});
-
+// Routes
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
@@ -37,7 +31,7 @@ app.get('/debug-get-test-token', async (req, res) => {
     await debugGetTestToken(req, res);
 });
 
-// GET questions for a given presentationId
+// Questions routes
 app.get('/questions', async (req, res, next) => {
     const { presentationId } = req.query;
     if (!presentationId) {
@@ -51,7 +45,6 @@ app.get('/questions', async (req, res, next) => {
     }
 });
 
-// POST to create a new question
 app.post('/questions', async (req, res, next) => {
     const { presentationId, content, author, authorToken } = req.body;
     if (!presentationId || !content) {
@@ -65,7 +58,6 @@ app.post('/questions', async (req, res, next) => {
     }
 });
 
-// POST to like a question
 app.post('/questions/:id/like', async (req, res, next) => {
     const questionId = req.params.id;
     if (!questionId) {
@@ -79,7 +71,6 @@ app.post('/questions/:id/like', async (req, res, next) => {
     }
 });
 
-// POST to unlike a question
 app.post('/questions/:id/unlike', async (req, res, next) => {
     const questionId = req.params.id;
     if (!questionId) {
@@ -93,7 +84,6 @@ app.post('/questions/:id/unlike', async (req, res, next) => {
     }
 });
 
-// DELETE a question
 app.delete('/questions/:id', async (req, res, next) => {
     const questionId = req.params.id;
     if (!questionId) {
@@ -111,7 +101,7 @@ app.delete('/questions/:id', async (req, res, next) => {
     }
 });
 
-// GET presentations
+// Other routes
 app.get('/presentations', async (req, res, next) => {
     try {
         const presentations = await getPresentations();
@@ -121,7 +111,6 @@ app.get('/presentations', async (req, res, next) => {
     }
 });
 
-// GET announcements
 app.get('/announcements', async (req, res, next) => {
     try {
         const announcements = await getAnnouncements();
@@ -131,7 +120,6 @@ app.get('/announcements', async (req, res, next) => {
     }
 });
 
-// GET people
 app.get('/people', async (req, res, next) => {
     try {
         const people = await getPeople();
@@ -141,7 +129,6 @@ app.get('/people', async (req, res, next) => {
     }
 });
 
-// GET conference
 app.get('/conference', async (req, res, next) => {
     try {
         const conference = await getConference();
@@ -151,7 +138,22 @@ app.get('/conference', async (req, res, next) => {
     }
 });
 
-const PORT = 3000;
-server.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`);
+// Error handling middleware - must be after all routes
+app.use((err, req, res, next) => {
+    console.error('Error:', err);
+    if (err instanceof HttpError) {
+        return res.status(err.statusCode).json({ error: err.message });
+    }
+    res.status(500).json({ error: 'Internal server error' });
 });
+
+const PORT = process.env.PORT || 3000;
+
+// Only start the server if this file is run directly
+if (process.env.NODE_ENV !== 'test') {
+    server.listen(PORT, () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}
+
+export { app };
