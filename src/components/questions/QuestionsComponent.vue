@@ -1,5 +1,10 @@
 <template>
     <BaseLayout :pageTitle="'Otázky ' + presentationTitle">
+        <!-- Add ion-refresher at the top (slot "fixed" ensures its placement) -->
+        <ion-refresher slot="fixed" @ionRefresh="handlePullToRefresh">
+            <ion-refresher-content></ion-refresher-content>
+        </ion-refresher>
+        
         <QuestionsList 
             :questions="sortedQuestions" 
             @like="likeQuestion" 
@@ -60,13 +65,14 @@ export default {
             }
         };
 
+        const startAutoRefresh = () => {
+            refreshInterval = setInterval(refreshQuestions, 5000);
+        };
+
         // Only fetch questions if we don't have them yet
         onMounted(async () => {
-            // Always fetch fresh questions when entering the chatroom
             await refreshQuestions();
-            
-            // Set up periodic refresh every 5 seconds
-            refreshInterval = setInterval(refreshQuestions, 5000);
+            startAutoRefresh();
         });
 
         onUnmounted(() => {
@@ -117,12 +123,26 @@ export default {
             }
         };
 
+        // New pull-to-refresh handler to refresh questions and reset auto-refresh timer
+        const handlePullToRefresh = async (event) => {
+            // Clear the existing interval then refresh questions
+            if (refreshInterval) {
+                clearInterval(refreshInterval);
+            }
+            await refreshQuestions();
+            // Restart auto refreshing
+            startAutoRefresh();
+            // Tell the refresher to complete
+            event.detail.complete();
+        };
+
         return {
             sortedQuestions,
             sendQuestion,
             likeQuestion,
             deleteQuestionHandler,
             presentationTitle,
+            handlePullToRefresh,
         };
     },
 };
