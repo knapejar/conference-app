@@ -4,18 +4,24 @@
 			v-for="(block, index) in blocks"
 			:key="index"
 			:block="block"
+			@mark-read="markAsRead"
 		/>
 	</div>
 </template>
 	
 <script>
-	export default {
-		props: {
-			blocks: {
-				type: Array,
-				required: false,
-				default: () => []
-			}
+import { mapActions } from 'vuex';
+
+export default {
+	props: {
+		blocks: {
+			type: Array,
+			required: false,
+			default: () => []
 		}
+	},
+	methods: {
+		...mapActions('announcements', ['markAsRead'])
 	}
+}
 </script>

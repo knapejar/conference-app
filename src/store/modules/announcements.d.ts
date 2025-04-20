@@ -6,11 +6,11 @@ declare module './announcements' {
     date: string;
     category: string;
     type: string;
-    read: boolean;
   }
 
   interface AnnouncementsState {
     announcements: Announcement[];
+    readNotifications: number[];
     loading: boolean;
     error: string | null;
   }

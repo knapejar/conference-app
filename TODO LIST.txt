@@ -6,6 +6,11 @@ Normální ukázková data v aplikaci, aby se to dalo použít
 Dodělat notifikace
 Bonus: Sdílet můj profil qr kódem?
 
+SERVER
+Přidat API na vše
+Přidat testy
+Zdokumentovat
+
 ADMIN
 
 Statistic nic nedělá...

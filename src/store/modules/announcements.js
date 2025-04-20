@@ -5,10 +5,16 @@ function loadAnnouncements() {
   return stored ? JSON.parse(stored) : [];
 }
 
+function loadReadNotifications() {
+  const stored = localStorage.getItem('readNotifications');
+  return stored ? JSON.parse(stored) : [];
+}
+
 export default {
   namespaced: true,
   state: {
     announcements: loadAnnouncements(),
+    readNotifications: loadReadNotifications(),
     loading: false,
     error: null
   },
@@ -28,10 +34,9 @@ export default {
       }
     },
     markAnnouncementAsRead(state, announcementId) {
-      const announcement = state.announcements.find(a => a.id === announcementId);
-      if (announcement) {
-        announcement.read = true;
-        localStorage.setItem('announcements', JSON.stringify(state.announcements));
+      if (!state.readNotifications.includes(announcementId)) {
+        state.readNotifications.push(announcementId);
+        localStorage.setItem('readNotifications', JSON.stringify(state.readNotifications));
       }
     }
   },
@@ -68,8 +73,8 @@ export default {
     }
   },
   getters: {
-    getAnnouncements: state => state.announcements,
-    getUnreadAnnouncements: state => state.announcements.filter(a => !a.read),
+    getAnnouncements: state => state.announcements.filter(a => !state.readNotifications.includes(a.id)),
+    getUnreadAnnouncements: state => state.announcements.filter(a => !state.readNotifications.includes(a.id)),
     isLoading: state => state.loading,
     getError: state => state.error
   }
