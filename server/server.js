@@ -1,6 +1,5 @@
 import express from 'express';
 import { createServer } from 'http';
-import setup from './setup.cjs';
 import questions from './questions.cjs';
 import presentations from './presentations.cjs';
 import announcements from './announcements.cjs';
@@ -16,7 +15,6 @@ import protectedPeople from './protected/people.cjs';
 import protectedQuestions from './protected/questions.cjs';
 import auth from './middleware/auth.cjs';
 
-const { debugGetTestToken } = setup;
 const { getQuestions, createQuestion, likeQuestion, unlikeQuestion, deleteQuestion } = questions;
 const { getPresentations } = presentations;
 const { getAnnouncements } = announcements;
@@ -46,10 +44,6 @@ app.use((err, req, res, next) => {
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
-});
-
-app.get('/debug-get-test-token', async (req, res) => {
-    await debugGetTestToken(req, res);
 });
 
 // Public routes
