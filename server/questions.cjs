@@ -1,5 +1,5 @@
 const { PrismaClient } = require('@prisma/client');
-const { createError, HttpError } = require('./errors.js');
+const { createError, HttpError } = require('./errors.cjs');
 
 const prisma = new PrismaClient();
 

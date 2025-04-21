@@ -1,6 +1,6 @@
 const { prisma } = require('../testSetup.cjs');
-const { getQuestions, createQuestion, likeQuestion, unlikeQuestion, deleteQuestion } = require('../questions.js');
-const { HttpError } = require('../errors.js');
+const { getQuestions, createQuestion, likeQuestion, unlikeQuestion, deleteQuestion } = require('../questions.cjs');
+const { HttpError } = require('../errors.cjs');
 
 describe('Questions Module', () => {
     const mockPresentation = {
