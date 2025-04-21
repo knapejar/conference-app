@@ -1,18 +1,18 @@
 import express from 'express';
 import { createServer } from 'http';
-import questions from './questions.cjs';
-import presentations from './presentations.cjs';
-import announcements from './announcements.cjs';
-import people from './people.cjs';
-import conference from './conference.cjs';
-import errors from './errors.cjs';
+import questions from './services/public/questions.service.cjs';
+import presentations from './services/public/presentations.service.cjs';
+import announcements from './services/public/announcements.service.cjs';
+import people from './services/public/people.service.cjs';
+import conference from './services/public/conference.service.cjs';
+import errors from './utils/errors.cjs';
 import cors from 'cors';
 
-import protectedConference from './protected/conference.cjs';
-import protectedAnnouncements from './protected/announcements.cjs';
-import protectedPresentations from './protected/presentations.cjs';
-import protectedPeople from './protected/people.cjs';
-import protectedQuestions from './protected/questions.cjs';
+import protectedConference from './services/protected/conference.service.cjs';
+import protectedAnnouncements from './services/protected/announcements.service.cjs';
+import protectedPresentations from './services/protected/presentations.service.cjs';
+import protectedPeople from './services/protected/people.service.cjs';
+import protectedQuestions from './services/protected/questions.service.cjs';
 import auth from './middleware/auth.cjs';
 
 const { getQuestions, createQuestion, likeQuestion, unlikeQuestion, deleteQuestion } = questions;

@@ -1,4 +1,4 @@
-const { createError } = require('../errors.cjs');
+const { createError } = require('../utils/errors.cjs');
 const crypto = require('crypto');
 
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'default_admin_password';

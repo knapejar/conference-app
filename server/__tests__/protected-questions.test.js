@@ -1,6 +1,6 @@
 const { prisma } = require('../testSetup.cjs');
-const { createQuestion: adminCreateQuestion, updateQuestion, deleteQuestion: adminDeleteQuestion } = require('../protected/questions.cjs');
-const { HttpError } = require('../errors.cjs');
+const { createQuestion, updateQuestion, deleteQuestion } = require('../services/protected/questions.service.cjs');
+const { HttpError } = require('../utils/errors.cjs');
 
 describe('Protected Questions Module', () => {
     const mockQuestion = {
@@ -9,30 +9,32 @@ describe('Protected Questions Module', () => {
         author: 'Test Author',
         authorToken: 'test-token',
         likes: 0,
-        presentationId: 1,
-        state: 'CREATED'
+        state: 'CREATED',
+        presentationId: 1
     };
 
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    describe('adminCreateQuestion', () => {
+    describe('createQuestion', () => {
         it('should create a question as admin', async () => {
             prisma.presentation.findUnique.mockResolvedValue({ id: 1 });
             prisma.question.create.mockResolvedValue(mockQuestion);
 
-            const result = await adminCreateQuestion({
+            const result = await createQuestion({
                 content: 'Test question',
                 author: 'Test Author',
                 presentationId: 1
             });
+
             expect(result).toEqual(mockQuestion);
+            expect(prisma.question.create).toHaveBeenCalled();
         });
 
         it('should throw error for invalid presentation', async () => {
             prisma.presentation.findUnique.mockResolvedValue(null);
-            await expect(adminCreateQuestion({
+            await expect(createQuestion({
                 content: 'Test',
                 author: 'Test',
                 presentationId: 1
@@ -55,12 +57,12 @@ describe('Protected Questions Module', () => {
         });
     });
 
-    describe('adminDeleteQuestion', () => {
+    describe('deleteQuestion', () => {
         it('should delete a question as admin', async () => {
             prisma.question.findUnique.mockResolvedValue(mockQuestion);
             prisma.question.delete.mockResolvedValue(mockQuestion);
 
-            const result = await adminDeleteQuestion('1');
+            const result = await deleteQuestion('1');
             expect(result).toEqual({ success: true });
         });
     });

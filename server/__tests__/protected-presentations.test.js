@@ -1,6 +1,6 @@
 const { prisma } = require('../testSetup.cjs');
-const { createBlock, updateBlock, deleteBlock, createPresentation, updatePresentation, deletePresentation } = require('../protected/presentations.cjs');
-const { HttpError } = require('../errors.cjs');
+const { createBlock, updateBlock, deleteBlock, createPresentation, updatePresentation, deletePresentation } = require('../services/protected/presentations.service.cjs');
+const { HttpError } = require('../utils/errors.cjs');
 
 describe('Protected Presentations Module', () => {
     const mockBlock = {

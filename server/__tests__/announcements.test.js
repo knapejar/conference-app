@@ -1,5 +1,5 @@
 const { prisma } = require('../testSetup.cjs');
-const { getAnnouncements } = require('../announcements.cjs');
+const { getAnnouncements } = require('../services/public/announcements.service.cjs');
 
 describe('Announcements Module', () => {
     const mockAnnouncement = {

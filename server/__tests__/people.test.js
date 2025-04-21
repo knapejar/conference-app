@@ -1,5 +1,5 @@
 const { prisma } = require('../testSetup.cjs');
-const { getPeople } = require('../people.cjs');
+const { getPeople } = require('../services/public/people.service.cjs');
 
 describe('People Module', () => {
     const mockPerson = {

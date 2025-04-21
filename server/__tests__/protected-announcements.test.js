@@ -1,6 +1,6 @@
 const { prisma } = require('../testSetup.cjs');
-const { createAnnouncement, updateAnnouncement, deleteAnnouncement } = require('../protected/announcements.cjs');
-const { HttpError } = require('../errors.cjs');
+const { createAnnouncement, updateAnnouncement, deleteAnnouncement } = require('../services/protected/announcements.service.cjs');
+const { HttpError } = require('../utils/errors.cjs');
 
 describe('Protected Announcements Module', () => {
     const mockAnnouncement = {

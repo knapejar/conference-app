@@ -1,6 +1,6 @@
 const { prisma } = require('../testSetup.cjs');
-const { createPerson, updatePerson, deletePerson } = require('../protected/people.cjs');
-const { HttpError } = require('../errors.cjs');
+const { createPerson, updatePerson, deletePerson } = require('../services/protected/people.service.cjs');
+const { HttpError } = require('../utils/errors.cjs');
 
 describe('Protected People Module', () => {
     const mockPerson = {

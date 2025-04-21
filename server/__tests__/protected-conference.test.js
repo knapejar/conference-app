@@ -1,6 +1,6 @@
 const { prisma } = require('../testSetup.cjs');
-const { updateConference } = require('../protected/conference.cjs');
-const { HttpError } = require('../errors.cjs');
+const { updateConference } = require('../services/protected/conference.service.cjs');
+const { HttpError } = require('../utils/errors.cjs');
 
 describe('Protected Conference Module', () => {
     const mockConference = {
