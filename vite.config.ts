@@ -19,9 +19,9 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       manifest: {
-        name: 'My Ionic PWA',
-        short_name: 'IonicPWA',
-        description: 'An Ionic Vue Progressive Web App',
+        name: 'Konference',
+        short_name: 'Konference',
+        description: 'Aplikace pro správu konferencí',
         theme_color: '#3880ff',
         background_color: '#ffffff',
         display: 'standalone',

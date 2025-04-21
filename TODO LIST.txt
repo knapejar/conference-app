@@ -2,6 +2,8 @@ TODO LIST
 
 APP
 
+Při instalaci My Ionic PWA se nemění název podle názvu konference - konfigurovat vite.config.ts podle env variable
+Neumí rozpoznat stav aplikace je již nainstalována
 Nepřeskočit úvodní okno dokud se nenainstaluje aplikace
 Otázky se někdy aktualizují i po zavřnení okna
 
