@@ -1,25 +1,6 @@
 <template>
     <div class="card-grid">
-        <ion-card class="card-item">
-            <ion-card-header>
-                <ion-card-title>Conference Settings</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-                <ion-item>
-                    <ion-label position="stacked">Name</ion-label>
-                    <ion-input v-model="conference.name"></ion-input>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="stacked">Description</ion-label>
-                    <ion-textarea v-model="conference.description"></ion-textarea>
-                </ion-item>
-                <ion-item>
-                    <ion-label position="stacked">Welcome Image</ion-label>
-                    <input type="file" @change="handleImageUpload" />
-                </ion-item>
-                <ion-button expand="full" @click="updateConference">Update Conference</ion-button>
-            </ion-card-content>
-        </ion-card>
+        <ConferenceSettings />
 
         <ion-card class="card-item">
             <ion-card-header>
@@ -56,12 +37,7 @@
 
 <script setup>
 import { reactive } from 'vue'
-
-const conference = reactive({
-    name: "Default Conference",
-    description: "Default conference description",
-    welcomeImage: null
-})
+import ConferenceSettings from './ConferenceSettings.vue'
 
 const stats = reactive({
     devicesCount: 10,
@@ -72,19 +48,6 @@ const newNotification = reactive({
     title: "Default Title",
     message: "Default Message"
 })
-
-const handleImageUpload = (event) => {
-    const file = event.target.files[0]
-    if (file) {
-        conference.welcomeImage = file
-        console.log("Selected image:", file.name)
-    }
-}
-
-const updateConference = () => {
-    console.log("Conference updated with:", conference)
-    // API integration will go here later.
-}
 
 const sendNotification = () => {
     console.log("Notification sent with:", newNotification)

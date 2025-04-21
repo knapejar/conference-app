@@ -2,22 +2,35 @@ TODO LIST
 
 APP
 
+Nepřeskočit úvodní okno dokud se nenainstaluje aplikace
+Otázky se někdy aktualizují i po zavřnení okna
+
 Normální ukázková data v aplikaci, aby se to dalo použít
 Dodělat notifikace
 Bonus: Sdílet můj profil qr kódem?
 
 SERVER
 Přidat API na vše
-Přidat testy
+Přidat testy☻
 Zdokumentovat
+
+Conference - GET, SET
+Annoucements - CRUD
+Presentation - 
+People - CRUD
+QUESTIONS - CRUD
+
+
 
 ADMIN
 
+Hash password before storing it
 Statistic nic nedělá...
 Image bucket
 Rozchodit hlavní menu - změna názvu, popisu a obrázku konference
 Vyřešit odesílání notifikací
 Vyřešit následné příjmutí notifikací a push na klientu
+Tabule otázek pro jednotlivé prezentace
 
 Admin - modifikace prezentačních bloků, prezentací a prezentujících
 

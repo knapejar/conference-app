@@ -1,9 +1,6 @@
 const { createError } = require('../utils/errors.cjs');
 const crypto = require('crypto');
 
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'default_admin_password';
-const ADMIN_PASSWORD_HASH = crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex');
-
 const requireAdmin = (req, res, next) => {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
@@ -15,8 +12,12 @@ const requireAdmin = (req, res, next) => {
         throw createError('Invalid authorization format', 401);
     }
 
-    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
-    if (tokenHash !== ADMIN_PASSWORD_HASH) {
+    // Get current admin password and compute its hash
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'default_admin_password';
+    const ADMIN_PASSWORD_HASH = crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex');
+
+    // Compare received hash with stored hash
+    if (token !== ADMIN_PASSWORD_HASH) {
         throw createError('Invalid admin token', 403);
     }
 

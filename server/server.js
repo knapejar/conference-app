@@ -15,6 +15,7 @@ import protectedAnnouncementsRoutes from './routes/protected/announcements.route
 import protectedPresentationsRoutes from './routes/protected/presentations.routes.cjs';
 import protectedPeopleRoutes from './routes/protected/people.routes.cjs';
 import protectedQuestionsRoutes from './routes/protected/questions.routes.cjs';
+import adminRoutes from './routes/protected/admin.routes.cjs';
 
 const { HttpError } = errors;
 
@@ -36,6 +37,7 @@ app.use('/announcements', protectedAnnouncementsRoutes);
 app.use('/presentations', protectedPresentationsRoutes);
 app.use('/people', protectedPeopleRoutes);
 app.use('/admin/questions', protectedQuestionsRoutes);
+app.use('/admin', adminRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

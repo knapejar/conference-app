@@ -12,6 +12,8 @@ import people from './modules/people'
 // @ts-ignore
 import announcements from './modules/announcements'
 // @ts-ignore
+import admin from './modules/admin'
+// @ts-ignore
 import toast from './toast'
 
 export default createStore({
@@ -22,6 +24,7 @@ export default createStore({
     presentations,
     people,
     announcements,
+    admin,
     toast
   }
 })

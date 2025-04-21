@@ -9,7 +9,7 @@
             <ion-label>Bloky prezentací</ion-label>
           </ion-segment-button>
           <ion-segment-button value="starred">
-            <ion-label>Mé prezentace</ion-label>
+            <ion-label>Oblíbené prezentace</ion-label>
           </ion-segment-button>
         </ion-segment>
       </div>
