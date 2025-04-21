@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
-import { createError, HttpError } from './errors.js';
+const { PrismaClient } = require('@prisma/client');
+const { createError, HttpError } = require('./errors.cjs');
 
 const prisma = new PrismaClient();
 
-export const getPresentations = async () => {
+const getPresentations = async () => {
     try {
         const blocks = await prisma.block.findMany({
             include: {
@@ -30,4 +30,8 @@ export const getPresentations = async () => {
         console.error("Error in getPresentations:", error);
         throw createError("Failed to retrieve presentations.", 500);
     }
+};
+
+module.exports = {
+    getPresentations
 }; 

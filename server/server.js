@@ -1,29 +1,34 @@
 import express from 'express';
 import { createServer } from 'http';
-import { debugGetTestToken } from './testPrisma.js';
-import {
-    getQuestions,
-    createQuestion,
-    likeQuestion,
-    unlikeQuestion,
-    deleteQuestion
-} from './questions.js';
-import { getPresentations } from './presentations.js';
-import { getAnnouncements } from './announcements.js';
-import { getPeople } from './people.js';
-import { getConference } from './conference.js';
-import { HttpError } from './errors.js';
+import setup from './setup.cjs';
+import questions from './questions.cjs';
+import presentations from './presentations.cjs';
+import announcements from './announcements.cjs';
+import people from './people.cjs';
+import conference from './conference.cjs';
+import errors from './errors.cjs';
 import cors from 'cors';
 
-import { updateConference } from './protected/conference.js';
-import { createAnnouncement, updateAnnouncement, deleteAnnouncement } from './protected/announcements.js';
-import { 
-    createBlock, updateBlock, deleteBlock,
-    createPresentation, updatePresentation, deletePresentation
-} from './protected/presentations.js';
-import { createPerson, updatePerson, deletePerson } from './protected/people.js';
-import { createQuestion as adminCreateQuestion, updateQuestion, deleteQuestion as adminDeleteQuestion } from './protected/questions.js';
-import { requireAdmin } from './middleware/auth.js';
+import protectedConference from './protected/conference.cjs';
+import protectedAnnouncements from './protected/announcements.cjs';
+import protectedPresentations from './protected/presentations.cjs';
+import protectedPeople from './protected/people.cjs';
+import protectedQuestions from './protected/questions.cjs';
+import auth from './middleware/auth.cjs';
+
+const { debugGetTestToken } = setup;
+const { getQuestions, createQuestion, likeQuestion, unlikeQuestion, deleteQuestion } = questions;
+const { getPresentations } = presentations;
+const { getAnnouncements } = announcements;
+const { getPeople } = people;
+const { getConference } = conference;
+const { HttpError } = errors;
+const { updateConference } = protectedConference;
+const { createAnnouncement, updateAnnouncement, deleteAnnouncement } = protectedAnnouncements;
+const { createBlock, updateBlock, deleteBlock, createPresentation, updatePresentation, deletePresentation } = protectedPresentations;
+const { createPerson, updatePerson, deletePerson } = protectedPeople;
+const { createQuestion: adminCreateQuestion, updateQuestion, deleteQuestion: adminDeleteQuestion } = protectedQuestions;
+const { requireAdmin } = auth;
 
 const app = express();
 const server = createServer(app);

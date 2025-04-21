@@ -1,9 +1,9 @@
-import { PrismaClient } from '@prisma/client';
-import { createError, HttpError } from './errors.js';
+const { PrismaClient } = require('@prisma/client');
+const { createError, HttpError } = require('./errors.cjs');
 
 const prisma = new PrismaClient();
 
-export const getAnnouncements = async () => {
+const getAnnouncements = async () => {
     try {
         const announcements = await prisma.announcement.findMany();
         return announcements;
@@ -14,4 +14,8 @@ export const getAnnouncements = async () => {
         console.error("Error in getAnnouncements:", error);
         throw createError("Failed to retrieve announcements.", 500);
     }
+};
+
+module.exports = {
+    getAnnouncements
 }; 
