@@ -6,10 +6,10 @@
       <div class="segment-sticky ion-no-border">
         <ion-segment v-model="activeSegment">
           <ion-segment-button value="all">
-            <ion-label>All Presentations</ion-label>
+            <ion-label>Bloky prezentací</ion-label>
           </ion-segment-button>
           <ion-segment-button value="starred">
-            <ion-label>Starred</ion-label>
+            <ion-label>Mé prezentace</ion-label>
           </ion-segment-button>
         </ion-segment>
       </div>

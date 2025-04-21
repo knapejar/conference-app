@@ -3,7 +3,9 @@
         <ion-header translucent>
             <ion-toolbar>
                 <ion-buttons slot="start">
-                    <ion-button @click="closeModal">Close</ion-button>
+                    <ion-button @click="closeModal">
+                        <ion-icon name="close"></ion-icon>
+                    </ion-button>
                 </ion-buttons>
                 <ion-title>{{ person.name }}</ion-title>
             </ion-toolbar>
