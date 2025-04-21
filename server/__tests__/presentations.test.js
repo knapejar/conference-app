@@ -1,0 +1,136 @@
+const { prisma } = require('../testSetup.cjs');
+const { getPresentations } = require('../presentations.cjs');
+const { createBlock, updateBlock, deleteBlock, createPresentation, updatePresentation, deletePresentation } = require('../protected/presentations.cjs');
+const { HttpError } = require('../errors.cjs');
+
+describe('Presentations Module', () => {
+    const mockBlock = {
+        id: 1,
+        blockName: 'Test Block',
+        presentations: []
+    };
+
+    const mockPresentation = {
+        id: 1,
+        title: 'Test Presentation',
+        description: 'Test Description',
+        start: new Date(),
+        end: new Date(),
+        blockId: 1,
+        questionsRoom: true,
+        block: mockBlock
+    };
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    describe('getPresentations', () => {
+        it('should return all presentations', async () => {
+            const mockBlockWithPresentations = {
+                ...mockBlock,
+                presentations: [mockPresentation]
+            };
+            prisma.block.findMany.mockResolvedValue([mockBlockWithPresentations]);
+
+            const result = await getPresentations();
+            expect(result).toHaveLength(1);
+            expect(result[0].presentations).toHaveLength(1);
+            expect(result[0].presentations[0].title).toBe('Test Presentation');
+        });
+    });
+
+    describe('Protected Presentation Endpoints', () => {
+        describe('createBlock', () => {
+            it('should create a new block', async () => {
+                prisma.block.create.mockResolvedValue(mockBlock);
+
+                const result = await createBlock({ blockName: 'Test Block' });
+                expect(result).toEqual(mockBlock);
+            });
+
+            it('should throw error for missing blockName', async () => {
+                await expect(createBlock({})).rejects.toThrow('Block name is required');
+            });
+        });
+
+        describe('updateBlock', () => {
+            it('should update a block', async () => {
+                prisma.block.findUnique.mockResolvedValue(mockBlock);
+                prisma.block.update.mockResolvedValue({ ...mockBlock, blockName: 'Updated Block' });
+
+                const result = await updateBlock('1', { blockName: 'Updated Block' });
+                expect(result.blockName).toBe('Updated Block');
+            });
+
+            it('should throw error for non-existent block', async () => {
+                prisma.block.findUnique.mockResolvedValue(null);
+                await expect(updateBlock('1', { blockName: 'Test' })).rejects.toThrow('Block not found');
+            });
+        });
+
+        describe('deleteBlock', () => {
+            it('should delete a block', async () => {
+                prisma.block.findUnique.mockResolvedValue(mockBlock);
+                prisma.block.delete.mockResolvedValue(mockBlock);
+
+                const result = await deleteBlock('1');
+                expect(result).toEqual({ success: true });
+            });
+        });
+
+        describe('createPresentation', () => {
+            it('should create a new presentation', async () => {
+                prisma.block.findUnique.mockResolvedValue(mockBlock);
+                prisma.presentation.create.mockResolvedValue(mockPresentation);
+
+                const result = await createPresentation({
+                    title: 'Test Presentation',
+                    description: 'Test Description',
+                    start: new Date(),
+                    end: new Date(),
+                    blockId: 1,
+                    questionsRoom: true
+                });
+                expect(result).toEqual(mockPresentation);
+            });
+
+            it('should throw error for invalid block', async () => {
+                prisma.block.findUnique.mockResolvedValue(null);
+                await expect(createPresentation({
+                    title: 'Test',
+                    description: 'Test',
+                    start: new Date(),
+                    end: new Date(),
+                    blockId: 1,
+                    questionsRoom: true
+                })).rejects.toThrow('Block not found');
+            });
+        });
+
+        describe('updatePresentation', () => {
+            it('should update a presentation', async () => {
+                prisma.presentation.findUnique.mockResolvedValue(mockPresentation);
+                prisma.presentation.update.mockResolvedValue({ ...mockPresentation, title: 'Updated Title' });
+
+                const result = await updatePresentation('1', { title: 'Updated Title' });
+                expect(result.title).toBe('Updated Title');
+            });
+
+            it('should throw error for non-existent presentation', async () => {
+                prisma.presentation.findUnique.mockResolvedValue(null);
+                await expect(updatePresentation('1', { title: 'Test' })).rejects.toThrow('Presentation not found');
+            });
+        });
+
+        describe('deletePresentation', () => {
+            it('should delete a presentation', async () => {
+                prisma.presentation.findUnique.mockResolvedValue(mockPresentation);
+                prisma.presentation.delete.mockResolvedValue(mockPresentation);
+
+                const result = await deletePresentation('1');
+                expect(result).toEqual({ success: true });
+            });
+        });
+    });
+}); 

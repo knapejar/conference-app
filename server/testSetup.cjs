@@ -4,14 +4,40 @@ const mockPrismaClient = {
         findMany: jest.fn(),
         create: jest.fn(),
         update: jest.fn(),
+        delete: jest.fn(),
     },
     presentation: {
         findUnique: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
     },
     conference: {
         findFirst: jest.fn(),
         findUnique: jest.fn(),
         update: jest.fn(),
+    },
+    block: {
+        findUnique: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+    },
+    announcement: {
+        findUnique: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
+    },
+    presenter: {
+        findUnique: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
+        update: jest.fn(),
+        delete: jest.fn(),
     },
 };
 
