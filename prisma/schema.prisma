@@ -69,3 +69,12 @@ model Conference {
   description    String
   welcomeImage   String
 }
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  mimeType  String
+  size      Int
+  createdAt DateTime @default(now())
+  data      Bytes    // This will store the actual image data
+}
