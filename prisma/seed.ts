@@ -1,5 +1,4 @@
 import { PrismaClient } from '@prisma/client';
-import { faker } from '@faker-js/faker';
 
 const prisma = new PrismaClient();
 
@@ -13,75 +12,140 @@ async function main() {
     prisma.conference.deleteMany(),
   ]);
 
-  const blocks = await Promise.all(
-    Array.from({ length: 5 }, (_, i) =>
-      prisma.block.create({
-        data: { blockName: `Block ${i + 1}` },
-      })
-    )
-  );
+  const conference = await prisma.conference.create({
+    data: {
+      name: 'Baťův odkaz světu 2024',
+      description: 'Konference o synergii lidí, technologií a odkazu Tomáše Bati.',
+      welcomeImage: './assets/batuv-odkaz-2024.jpg',
+    },
+  });
 
-  const conference = await Promise.all(
-    Array.from({ length: 1 }, () =>
-      prisma.conference.create({
+  // Uvítací announcement
+  await prisma.announcement.create({
+    data: {
+      title: 'Vítejte na konferenci Baťův odkaz světu 2024',
+      message: 'Těší nás, že jste s námi! Připravili jsme pro vás pestrý program plný inspirativních osobností a témat.',
+      date: new Date('2024-04-25T08:00:00Z'),
+      category: 'General',
+      type: 'Welcome',
+      read: false,
+    },
+  });
+
+  const plenaryBlock = await prisma.block.create({
+    data: {
+      blockName: 'Plenární zasedání',
+    },
+  });
+
+  const plenaryPresentation = await prisma.presentation.create({
+    data: {
+      title: 'Plenární diskuse: Lidé a technologie',
+      description: 'Diskuse o synergii lidí a technologií v moderním světě.',
+      start: new Date('2024-04-25T09:00:00Z'),
+      end: new Date('2024-04-25T10:30:00Z'),
+      questionsRoom: true,
+      block: { connect: { id: plenaryBlock.id } },
+    },
+  });
+
+  const plenaryPresenters = [
+    'Milan Adámek',
+    'Ivan Baťka',
+    'Artur Gevorkyan',
+    'Mojmír Hampl',
+    'Helena Horská',
+    'Eva Jiřičná',
+    'Radomír Lapčík',
+    'Petr Očko',
+    'David Pavlík',
+    'Petr Sáha',
+  ];
+
+  for (const name of plenaryPresenters) {
+    await prisma.presenter.create({
+      data: {
+        name,
+        role: 'Panelista',
+        imageURL: '', // Můžeš později doplnit obrázky
+        details: 'Účastník diskuse na plenárním zasedání',
+        presentation: { connect: { id: plenaryPresentation.id } },
+      },
+    });
+  }
+
+  const blocksData = [
+    {
+      name: 'Oběd',
+      start: new Date('2024-04-25T13:30:00Z'),
+      end: new Date('2024-04-25T14:30:00Z'),
+    },
+    {
+      name: 'Workshop: Transformace průmyslu ve Střední Evropě',
+      presenter: ['Ján Košturiak'],
+      start: new Date('2024-04-25T09:00:00Z'),
+      end: new Date('2024-04-25T11:00:00Z'),
+    },
+    {
+      name: 'Workshop: Technologie a humanita',
+      presenter: ['Jaroslav Dlabač', 'Marcel Pavelka'],
+      start: new Date('2024-04-25T09:00:00Z'),
+      end: new Date('2024-04-25T11:00:00Z'),
+    },
+    {
+      name: 'Workshop: Připravenost na změny',
+      presenter: ['Jan Mašek', 'Luboš Malý'],
+      start: new Date('2024-04-25T09:00:00Z'),
+      end: new Date('2024-04-25T11:00:00Z'),
+    },
+    {
+      name: 'Workshop: Naplnění motivátorů',
+      presenter: ['Jana Matošková'],
+      start: new Date('2024-04-25T09:00:00Z'),
+      end: new Date('2024-04-25T11:00:00Z'),
+    },
+    {
+      name: 'Workshop: Inspiruj se Baťou',
+      presenter: ['Gabriela Končitíková', 'Jakub Malovaný'],
+      start: new Date('2024-04-25T09:00:00Z'),
+      end: new Date('2024-04-25T11:00:00Z'),
+    },
+  ];
+
+  for (const block of blocksData) {
+    const createdBlock = await prisma.block.create({
+      data: {
+        blockName: block.name,
+      },
+    });
+
+    if (!block.presenter) continue;
+
+    const presentation = await prisma.presentation.create({
+      data: {
+        title: block.name,
+        description: `Workshop v rámci konference Baťův odkaz světu.`,
+        start: block.start,
+        end: block.end,
+        questionsRoom: false,
+        block: { connect: { id: createdBlock.id } },
+      },
+    });
+
+    for (const name of block.presenter) {
+      await prisma.presenter.create({
         data: {
-          name: 'Mobile World Congress',
-          description: "The world's most influential event for the connectivity industry.",
-          welcomeImage: './assets/conference.jpg',
+          name,
+          role: 'Lektor',
+          imageURL: '',
+          details: 'Workshopový lektor',
+          presentation: { connect: { id: presentation.id } },
         },
-      })
-    )
-  );
+      });
+    }
+  }
 
-  const presentations = await Promise.all(
-    blocks.flatMap(block =>
-      Array.from({ length: 3 }, (_, i) =>
-        prisma.presentation.create({
-          data: {
-            start: faker.date.future(),
-            end: faker.date.future(),
-            title: `Presentation ${i + 1}`,
-            description: faker.lorem.paragraph(),
-            questionsRoom: Math.random() < 0.5,
-            block: { connect: { id: block.id } },
-          },
-        })
-      )
-    )
-  );
-
-  const presenters = await Promise.all(
-    presentations.flatMap(presentation =>
-      Array.from({ length: Math.floor(Math.random() * 3) + 1 }, (_, i) =>
-        prisma.presenter.create({
-          data: {
-            name: faker.person.fullName(),
-            role: faker.person.jobTitle(),
-            imageURL: faker.image.avatar(),
-            details: faker.lorem.paragraph(),
-            presentation: { connect: { id: presentation.id } },
-          },
-        })
-      )
-    )
-  );
-
-  await Promise.all(
-    Array.from({ length: 5 }, () =>
-      prisma.announcement.create({
-        data: {
-          title: faker.lorem.sentence(),
-          message: faker.lorem.paragraph(),
-          date: faker.date.recent(),
-          category: 'General',
-          type: 'Important',
-          read: false,
-        },
-      })
-    )
-  );
-
-  console.log('Database seeded successfully!');
+  console.log('Database seeded successfully with real data!');
 }
 
 main()
