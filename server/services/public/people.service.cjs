@@ -5,7 +5,11 @@ const prisma = new PrismaClient();
 
 const getPeople = async () => {
     try {
-        const presenters = await prisma.presenter.findMany();
+        const presenters = await prisma.presenter.findMany({
+            orderBy: {
+                name: 'asc'
+            }
+        });
         return presenters;
     } catch (error) {
         if (error instanceof HttpError) {

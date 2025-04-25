@@ -183,6 +183,7 @@ export const createPresenter = async (presenterData, adminPassword) => {
 
         const response = await axios.post(`${API_BASE}/admin/people`, presenterData, {
             headers: {
+                'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${adminPassword}`
             }
         });
@@ -201,6 +202,7 @@ export const updatePresenter = async (presenterId, presenterData, adminPassword)
 
         const response = await axios.put(`${API_BASE}/admin/people/${presenterId}`, presenterData, {
             headers: {
+                'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${adminPassword}`
             }
         });

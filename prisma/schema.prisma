@@ -61,8 +61,8 @@ model Presenter {
   role           String
   imageURL       String
   details        String
-  presentationId Int
-  presentation   Presentation @relation(fields: [presentationId], references: [id])
+  presentationId Int?
+  presentation   Presentation? @relation(fields: [presentationId], references: [id])
 }
 
 model Conference {

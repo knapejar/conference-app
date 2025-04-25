@@ -33,7 +33,19 @@
                 <ion-label position="stacked">Fotografie</ion-label>
                 <div class="image-container">
                     <img v-if="presenterData.imageURL" :src="presenterData.imageURL" alt="Presenter photo" class="preview-image" />
-                    <input type="file" @change="handleImageUpload" accept="image/*" />
+                    <div class="image-upload">
+                        <ion-button color="medium" @click="triggerFileInput">
+                            <ion-icon :icon="image" slot="start"></ion-icon>
+                            {{ presenterData.imageURL ? 'Změnit fotografii' : 'Nahrát fotografii' }}
+                        </ion-button>
+                        <input
+                            type="file"
+                            ref="fileInput"
+                            @change="handleImageUpload"
+                            accept="image/*"
+                            style="display: none"
+                        />
+                    </div>
                 </div>
             </ion-item>
         </ion-list>
@@ -50,7 +62,7 @@
 import { defineComponent, onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
-import { save } from 'ionicons/icons';
+import { save, image } from 'ionicons/icons';
 import { createPresenter, updatePresenter } from '@/api/admin';
 
 interface PresenterData {
@@ -83,6 +95,14 @@ export default defineComponent({
 
         const blocks = computed(() => store.getters['presentations/getBlocks']);
 
+        const fileInput = ref<HTMLInputElement | null>(null);
+
+        const triggerFileInput = () => {
+            if (fileInput.value) {
+                fileInput.value.click();
+            }
+        };
+
         const loadPresenter = async () => {
             if (!isNew) {
                 await store.dispatch('people/fetchPeople');
@@ -109,6 +129,10 @@ export default defineComponent({
             const input = event.target as HTMLInputElement;
             if (input.files && input.files[0]) {
                 const file = input.files[0];
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    alert('Soubor je příliš velký. Maximální velikost je 5MB.');
+                    return;
+                }
                 presenterData.value.imageFile = file;
                 presenterData.value.imageURL = URL.createObjectURL(file);
             }
@@ -123,19 +147,19 @@ export default defineComponent({
                     throw new Error('Admin password not found. Please log in again.');
                 }
 
-                if (!presenterData.value.name || !presenterData.value.role || !presenterData.value.presentationId) {
-                    throw new Error('Name, role, and presentation are required');
+                if (!presenterData.value.name) {
+                    throw new Error('Name is required');
                 }
 
                 const formData = new FormData();
                 formData.append('name', presenterData.value.name);
-                formData.append('role', presenterData.value.role);
-                formData.append('details', presenterData.value.details);
-                formData.append('presentationId', presenterData.value.presentationId);
+                formData.append('role', presenterData.value.role || '');
+                formData.append('details', presenterData.value.details || '');
+                formData.append('presentationId', presenterData.value.presentationId || '');
                 
                 if (presenterData.value.imageFile) {
                     formData.append('image', presenterData.value.imageFile);
-                } else if (presenterData.value.imageURL) {
+                } else if (presenterData.value.imageURL && !presenterData.value.imageURL.startsWith('blob:')) {
                     formData.append('imageURL', presenterData.value.imageURL);
                 }
 
@@ -172,7 +196,10 @@ export default defineComponent({
             isNew,
             savePresenter,
             handleImageUpload,
-            save
+            triggerFileInput,
+            fileInput,
+            save,
+            image
         };
     }
 });
@@ -190,8 +217,9 @@ ion-item {
 .image-container {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 16px;
     width: 100%;
+    padding: 16px 0;
 }
 
 .preview-image {
@@ -199,6 +227,12 @@ ion-item {
     max-height: 200px;
     object-fit: contain;
     border-radius: 8px;
-    border: 1px solid var(--ion-color-medium);
+    background-color: var(--ion-color-light-shade);
+}
+
+.image-upload {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 </style> 

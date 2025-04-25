@@ -12,14 +12,27 @@ describe('Protected People Module', () => {
         presentationId: 1
     };
 
+    const mockPresenters = [
+        mockPerson,
+        {
+            id: 2,
+            name: 'Another Person',
+            role: 'Another Role',
+            imageURL: 'another.jpg',
+            details: 'Another Details',
+            presentationId: 2
+        }
+    ];
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     describe('createPerson', () => {
-        it('should create a new person', async () => {
+        it('should create a new person and return all presenters sorted by name', async () => {
             prisma.presentation.findUnique.mockResolvedValue({ id: 1 });
             prisma.presenter.create.mockResolvedValue(mockPerson);
+            prisma.presenter.findMany.mockResolvedValue(mockPresenters);
 
             const result = await createPerson({
                 name: 'Test Person',
@@ -28,7 +41,12 @@ describe('Protected People Module', () => {
                 details: 'Test Details',
                 presentationId: 1
             });
-            expect(result).toEqual(mockPerson);
+            expect(result).toEqual(mockPresenters);
+            expect(prisma.presenter.findMany).toHaveBeenCalledWith({
+                orderBy: {
+                    name: 'asc'
+                }
+            });
         });
 
         it('should throw error for invalid presentation', async () => {
@@ -44,12 +62,18 @@ describe('Protected People Module', () => {
     });
 
     describe('updatePerson', () => {
-        it('should update a person', async () => {
+        it('should update a person and return all presenters sorted by name', async () => {
             prisma.presenter.findUnique.mockResolvedValue(mockPerson);
             prisma.presenter.update.mockResolvedValue({ ...mockPerson, name: 'Updated Name' });
+            prisma.presenter.findMany.mockResolvedValue(mockPresenters);
 
             const result = await updatePerson('1', { name: 'Updated Name' });
-            expect(result.name).toBe('Updated Name');
+            expect(result).toEqual(mockPresenters);
+            expect(prisma.presenter.findMany).toHaveBeenCalledWith({
+                orderBy: {
+                    name: 'asc'
+                }
+            });
         });
 
         it('should throw error for non-existent person', async () => {

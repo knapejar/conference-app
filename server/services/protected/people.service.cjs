@@ -4,30 +4,40 @@ const { createError, HttpError } = require('../../utils/errors.cjs');
 const prisma = new PrismaClient();
 
 const createPerson = async (data) => {
-    if (!data.name || !data.role || !data.imageURL || !data.details || !data.presentationId) {
-        throw createError('Name, role, imageURL, details, and presentationId are required', 400);
+    if (!data.name) {
+        throw createError('Name is required', 400);
     }
 
     try {
-        const presentation = await prisma.presentation.findUnique({
-            where: { id: parseInt(data.presentationId, 10) }
-        });
+        let presentationId = null;
+        if (data.presentationId) {
+            const presentation = await prisma.presentation.findUnique({
+                where: { id: parseInt(data.presentationId, 10) }
+            });
 
-        if (!presentation) {
-            throw createError('Presentation not found', 404);
+            if (!presentation) {
+                throw createError('Presentation not found', 404);
+            }
+            presentationId = parseInt(data.presentationId, 10);
         }
 
         const person = await prisma.presenter.create({
             data: {
                 name: data.name,
-                role: data.role,
-                imageURL: data.imageURL,
-                details: data.details,
-                presentationId: parseInt(data.presentationId, 10)
+                role: data.role || '',
+                imageURL: data.imageURL || '',
+                details: data.details || '',
+                presentationId: presentationId
             }
         });
 
-        return person;
+        // Return all presenters sorted by name
+        const presenters = await prisma.presenter.findMany({
+            orderBy: {
+                name: 'asc'
+            }
+        });
+        return presenters;
     } catch (error) {
         if (error instanceof HttpError) {
             throw error;
@@ -56,7 +66,7 @@ const updatePerson = async (id, data) => {
             throw createError('Person not found', 404);
         }
 
-        const updatedPerson = await prisma.presenter.update({
+        await prisma.presenter.update({
             where: { id: personId },
             data: {
                 name: data.name,
@@ -67,7 +77,13 @@ const updatePerson = async (id, data) => {
             }
         });
 
-        return updatedPerson;
+        // Return all presenters sorted by name
+        const presenters = await prisma.presenter.findMany({
+            orderBy: {
+                name: 'asc'
+            }
+        });
+        return presenters;
     } catch (error) {
         if (error instanceof HttpError) {
             throw error;
