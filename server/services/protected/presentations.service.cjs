@@ -118,7 +118,13 @@ const createPresentation = async (data) => {
                 start: data.start ? new Date(data.start) : new Date(),
                 end: data.end ? new Date(data.end) : new Date(),
                 blockId: parseInt(data.blockId, 10),
-                questionsRoom: data.questionsRoom || false
+                questionsRoom: data.questionsRoom || false,
+                presenters: {
+                    connect: data.presenterIds?.map(id => ({ id: parseInt(id, 10) })) || []
+                }
+            },
+            include: {
+                presenters: true
             }
         });
 
@@ -144,13 +150,27 @@ const updatePresentation = async (id, data) => {
 
     try {
         const presentation = await prisma.presentation.findUnique({
-            where: { id: presId }
+            where: { id: presId },
+            include: {
+                presenters: true
+            }
         });
 
         if (!presentation) {
             throw createError('Presentation not found', 404);
         }
 
+        // First, disconnect all current presenters
+        await prisma.presentation.update({
+            where: { id: presId },
+            data: {
+                presenters: {
+                    set: []
+                }
+            }
+        });
+
+        // Then update the presentation with new data and connect new presenters
         const updatedPresentation = await prisma.presentation.update({
             where: { id: presId },
             data: {
@@ -159,7 +179,13 @@ const updatePresentation = async (id, data) => {
                 start: data.start ? new Date(data.start) : undefined,
                 end: data.end ? new Date(data.end) : undefined,
                 blockId: data.blockId ? parseInt(data.blockId, 10) : undefined,
-                questionsRoom: data.questionsRoom
+                questionsRoom: data.questionsRoom,
+                presenters: {
+                    connect: data.presenterIds?.map(id => ({ id: parseInt(id, 10) })) || []
+                }
+            },
+            include: {
+                presenters: true
             }
         });
 

@@ -12,9 +12,10 @@
         <ion-label>
             <h2>{{ presentation.title }}</h2>
             <div class="presenters">
-                <ion-avatar v-for="presenter in presentation.presenters" :key="presenter.id" class="presenter-avatar">
+                <ion-avatar v-for="presenter in displayedPresenters" :key="presenter.id" class="presenter-avatar">
                     <img :src="presenter.imageURL" :alt="presenter.name" />
                 </ion-avatar>
+                <span v-if="hasMorePresenters" class="more-presenters">({{ presentation.presenters.length }})</span>
             </div>
             <p>Začátek: {{ new Date(presentation.start).toLocaleTimeString() }}</p>
             <p>Konec: {{ new Date(presentation.end).toLocaleTimeString() }}</p>
@@ -45,6 +46,14 @@ export default {
         const isStarred = computed(() => {
             return store.getters['presentations/isPresentationStarred'](props.presentation.id);
         });
+
+        const displayedPresenters = computed(() => {
+            return props.presentation.presenters.slice(0, 5);
+        });
+
+        const hasMorePresenters = computed(() => {
+            return props.presentation.presenters.length > 5;
+        });
         
         const toggleStar = () => {
             store.dispatch('presentations/toggleStar', props.presentation.id);
@@ -57,7 +66,9 @@ export default {
         return {
             isStarred,
             toggleStar,
-            navigateToDetail
+            navigateToDetail,
+            displayedPresenters,
+            hasMorePresenters
         };
     }
 }
@@ -73,6 +84,7 @@ export default {
     display: flex;
     gap: 8px;
     margin: 8px 0;
+    align-items: center;
 }
 
 .presenter-avatar {
@@ -84,5 +96,11 @@ export default {
     width: 100%;
     height: 100%;
     object-fit: cover;
+}
+
+.more-presenters {
+    color: var(--ion-color-medium);
+    font-size: 0.9em;
+    margin-left: 4px;
 }
 </style>

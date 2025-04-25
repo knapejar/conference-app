@@ -9,7 +9,11 @@ const getPresentations = async () => {
             include: {
                 presentations: {
                     include: {
-                        presenters: true
+                        presenters: {
+                            orderBy: {
+                                name: 'asc'
+                            }
+                        }
                     }
                 }
             },

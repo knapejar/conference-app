@@ -18,6 +18,23 @@
                 <ion-textarea v-model="presentationData.description" placeholder="Zadejte popis prezentace"></ion-textarea>
             </ion-item>
 
+            <ion-item>
+                <ion-label position="stacked">Prezentéři</ion-label>
+                <ion-select
+                    v-model="presentationData.presenterIds"
+                    multiple
+                    :interface-options="{
+                        header: 'Vyberte prezentéry',
+                        subHeader: 'Můžete vybrat více prezentérů'
+                    }"
+                    interface="action-sheet"
+                >
+                    <ion-select-option v-for="presenter in presenters" :key="presenter.id" :value="String(presenter.id)">
+                        {{ presenter.name }} ({{ presenter.role }})
+                    </ion-select-option>
+                </ion-select>
+            </ion-item>
+
             <BlockDateSelector
                 v-model="presentationData.start"
                 label="Začátek prezentace"
@@ -61,6 +78,7 @@ interface PresentationData {
     start: string;
     end: string;
     questionsRoom: boolean;
+    presenterIds: string[];
 }
 
 export default defineComponent({
@@ -75,17 +93,19 @@ export default defineComponent({
 
         const presentationId = route.params.id as string;
         const isNew = !presentationId;
-        const blockId = route.query.blockId as string;
+        let blockId = route.query.blockId as string;
 
         const presentationData = ref<PresentationData>({
             title: '',
             description: '',
             start: new Date().toISOString().split('.')[0],
             end: new Date().toISOString().split('.')[0],
-            questionsRoom: false
+            questionsRoom: false,
+            presenterIds: []
         });
 
         const blocks = computed(() => store.getters['presentations/getBlocks']);
+        const presenters = computed(() => store.getters['people/getPeople']);
 
         const currentBlock = computed(() => {
             if (!blockId) return null;
@@ -105,8 +125,9 @@ export default defineComponent({
         });
 
         const loadPresentation = async () => {
-            // Always load blocks first
+            // Always load blocks and presenters first
             await store.dispatch('presentations/fetchPresentations');
+            await store.dispatch('people/fetchPeople');
             
             if (!isNew) {
                 const blocks = store.getters['presentations/getBlocks'];
@@ -122,8 +143,11 @@ export default defineComponent({
                             description: presentation.description,
                             start: presentation.start,
                             end: presentation.end,
-                            questionsRoom: presentation.questionsRoom
+                            questionsRoom: presentation.questionsRoom,
+                            presenterIds: presentation.presenters.map((p: any) => String(p.id))
                         };
+                        // Set blockId from the presentation's block
+                        blockId = String(block.id);
                         break;
                     }
                 }
@@ -173,8 +197,9 @@ export default defineComponent({
                     description: presentationData.value.description,
                     start: presentationData.value.start,
                     end: presentationData.value.end,
-                    blockId: blockId,
-                    questionsRoom: presentationData.value.questionsRoom
+                    blockId: String(blockId),
+                    questionsRoom: presentationData.value.questionsRoom,
+                    presenterIds: presentationData.value.presenterIds
                 };
 
                 if (isNew) {
@@ -206,6 +231,7 @@ export default defineComponent({
         return {
             presentationData,
             blocks,
+            presenters,
             isNew,
             minDate,
             maxDate,
