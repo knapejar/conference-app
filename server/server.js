@@ -32,10 +32,10 @@ app.use('/people', publicPeopleRoutes);
 app.use('/conference', publicConferenceRoutes);
 
 // Protected routes
-app.use('/conference', protectedConferenceRoutes);
-app.use('/announcements', protectedAnnouncementsRoutes);
-app.use('/presentations', protectedPresentationsRoutes);
-app.use('/people', protectedPeopleRoutes);
+app.use('/admin/conference', protectedConferenceRoutes);
+app.use('/admin/announcements', protectedAnnouncementsRoutes);
+app.use('/admin/presentations', protectedPresentationsRoutes);
+app.use('/admin/people', protectedPeopleRoutes);
 app.use('/admin/questions', protectedQuestionsRoutes);
 app.use('/admin', adminRoutes);
 

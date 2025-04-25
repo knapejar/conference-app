@@ -1,5 +1,5 @@
 import axios from 'axios';
-const API_BASE = process.env.VITE_API_BASE || 'https://konference.jk9.eu/server'; //'https://konference.jk9.eu/server';
+const API_BASE = process.env.VITE_API_BASE || 'https://konference.jk9.eu/server';
 
 axios.defaults.baseURL = API_BASE;
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
@@ -28,23 +28,35 @@ export const getConference = async () => {
     }
 };
 
-export const updateConference = async (conferenceData) => {
+export const updateConference = async (conferenceData, adminPassword) => {
     try {
         const formData = new FormData();
-        formData.append('name', conferenceData.name);
-        formData.append('description', conferenceData.description);
-        if (conferenceData.welcomeImage) {
+        formData.append('name', conferenceData.name || '');
+        formData.append('description', conferenceData.description || '');
+        
+        if (conferenceData.welcomeImage instanceof File) {
             formData.append('welcomeImage', conferenceData.welcomeImage);
         }
+
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        console.log('Sending conference data:', {
+            name: conferenceData.name,
+            description: conferenceData.description,
+            hasImage: !!conferenceData.welcomeImage
+        });
 
         const response = await axios.put(`${API_BASE}/admin/conference`, formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
-                'Authorization': `Bearer ${hashedPassword}`
+                'Authorization': `Bearer ${adminPassword}`
             }
         });
         return response.data;
     } catch (error) {
+        console.error('Error in updateConference:', error);
         throw error;
     }
 }; 

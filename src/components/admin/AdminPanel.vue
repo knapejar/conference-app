@@ -6,14 +6,8 @@
             </ion-toolbar>
         </ion-header>
         <ion-content>
-            <ion-loading
-                :is-open="loading"
-                message="Loading..."
-            ></ion-loading>
-            <template v-if="!loading">
-                <AdminPanelLogin v-if="!isAuthenticated" />
-                <AdminPanelSettings v-else />
-            </template>
+            <AdminPanelLogin v-if="!isAuthenticated" />
+            <AdminPanelSettings v-else />
         </ion-content>
     </ion-page>
 </template>
@@ -26,8 +20,7 @@ import {
     IonHeader,
     IonToolbar,
     IonTitle,
-    IonContent,
-    IonLoading
+    IonContent
 } from '@ionic/vue';
 import AdminPanelLogin from './AdminPanelLogin.vue';
 import AdminPanelSettings from '@/components/admin/AdminPanelSettings.vue';
@@ -39,7 +32,6 @@ export default defineComponent({
         IonToolbar,
         IonTitle,
         IonContent,
-        IonLoading,
         AdminPanelLogin,
         AdminPanelSettings,
     },
@@ -47,7 +39,6 @@ export default defineComponent({
         const store = useStore();
 
         const isAuthenticated = computed(() => store.getters['admin/isAuthenticated']);
-        const loading = computed(() => store.getters['admin/isLoading']);
 
         onMounted(async () => {
             // Always verify access on mount, regardless of isAuthenticated state
@@ -55,8 +46,7 @@ export default defineComponent({
         });
 
         return {
-            isAuthenticated,
-            loading,
+            isAuthenticated
         };
     },
 });

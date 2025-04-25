@@ -6,31 +6,44 @@
         <ion-card-content>
             <ion-item>
                 <ion-label position="stacked">Name</ion-label>
-                <ion-input v-model="conference.name" :disabled="loading"></ion-input>
+                <ion-input v-model="conference.name"></ion-input>
             </ion-item>
             <ion-item>
                 <ion-label position="stacked">Description</ion-label>
-                <ion-textarea v-model="conference.description" :disabled="loading"></ion-textarea>
+                <ion-textarea v-model="conference.description"></ion-textarea>
             </ion-item>
             <ion-item>
                 <ion-label position="stacked">Welcome Image</ion-label>
                 <div class="image-container">
                     <img v-if="conference.welcomeImageUrl" :src="conference.welcomeImageUrl" alt="Welcome Image" class="preview-image" />
-                    <input type="file" @change="handleImageUpload" :disabled="loading" accept="image/*" />
+                    <input type="file" @change="handleImageUpload" accept="image/*" />
                 </div>
             </ion-item>
-            <ion-button expand="full" @click="updateConference" :disabled="loading">
-                <ion-spinner v-if="loading" name="dots"></ion-spinner>
-                <span v-else>Update Conference</span>
+            <ion-button expand="full" @click="updateConference">
+                Update Conference
             </ion-button>
         </ion-card-content>
     </ion-card>
 </template>
 
 <script setup>
-import { reactive, ref, onMounted } from 'vue'
+import { reactive, onMounted, computed } from 'vue'
 import { getConference, updateConference as updateConferenceApi } from '@/api/admin'
+import { toastController } from '@ionic/vue'
+import { useStore } from 'vuex'
 
+const store = useStore()
+const adminPassword = computed(() => store.state.admin.password)
+
+const showToast = async (message, color = 'success') => {
+    const toast = await toastController.create({
+        message,
+        duration: 3000,
+        color,
+        position: 'top'
+    })
+    await toast.present()
+}
 
 const conference = reactive({
     name: "",
@@ -38,8 +51,6 @@ const conference = reactive({
     welcomeImage: null,
     welcomeImageUrl: ""
 })
-
-const loading = ref(false)
 
 const fetchConference = async () => {
     try {
@@ -51,6 +62,7 @@ const fetchConference = async () => {
         }
     } catch (error) {
         console.error('Error fetching conference:', error)
+        showToast('Error fetching conference settings', 'danger')
     }
 }
 
@@ -64,13 +76,12 @@ const handleImageUpload = (event) => {
 }
 
 const updateConference = async () => {
-    loading.value = true
     try {
         const response = await updateConferenceApi({
             name: conference.name,
             description: conference.description,
             welcomeImage: conference.welcomeImage
-        })
+        }, adminPassword.value)
 
         if (response) {
             console.log("Conference updated", response)
@@ -80,12 +91,11 @@ const updateConference = async () => {
             conference.welcomeImageUrl = response.welcomeImageUrl || conference.welcomeImageUrl
             // Clear the file input
             conference.welcomeImage = null
+            showToast('Conference settings updated successfully')
         }
     } catch (error) {
         console.error('Error updating conference:', error)
         showToast('Error updating conference settings', 'danger')
-    } finally {
-        loading.value = false
     }
 }
 
