@@ -5,14 +5,16 @@ const prisma = new PrismaClient();
 
 // Block operations
 const createBlock = async (data) => {
-    if (!data.blockName) {
-        throw createError('Block name is required', 400);
+    if (!data.blockName || !data.start || !data.end) {
+        throw createError('Block name, start time, and end time are required', 400);
     }
 
     try {
         const block = await prisma.block.create({
             data: {
-                blockName: data.blockName
+                blockName: data.blockName,
+                start: new Date(data.start),
+                end: new Date(data.end)
             }
         });
 
@@ -45,7 +47,9 @@ const updateBlock = async (id, data) => {
         const updatedBlock = await prisma.block.update({
             where: { id: blockId },
             data: {
-                blockName: data.blockName
+                blockName: data.blockName,
+                start: data.start ? new Date(data.start) : undefined,
+                end: data.end ? new Date(data.end) : undefined
             }
         });
 

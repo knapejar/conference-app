@@ -36,6 +36,8 @@ export const updateConference = async (conferenceData, adminPassword) => {
         
         if (conferenceData.welcomeImage instanceof File) {
             formData.append('welcomeImage', conferenceData.welcomeImage);
+        } else if (conferenceData.welcomeImageUrl) {
+            formData.append('welcomeImage', conferenceData.welcomeImageUrl);
         }
 
         if (!adminPassword) {
@@ -45,7 +47,8 @@ export const updateConference = async (conferenceData, adminPassword) => {
         console.log('Sending conference data:', {
             name: conferenceData.name,
             description: conferenceData.description,
-            hasImage: !!conferenceData.welcomeImage
+            hasImage: !!conferenceData.welcomeImage,
+            hasImageUrl: !!conferenceData.welcomeImageUrl
         });
 
         const response = await axios.put(`${API_BASE}/admin/conference`, formData, {
@@ -57,6 +60,61 @@ export const updateConference = async (conferenceData, adminPassword) => {
         return response.data;
     } catch (error) {
         console.error('Error in updateConference:', error);
+        throw error;
+    }
+};
+
+// Conference Blocks API calls
+export const createBlock = async (blockData, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.post(`${API_BASE}/admin/presentations/blocks`, blockData, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in createBlock:', error);
+        throw error;
+    }
+};
+
+export const updateBlock = async (blockId, blockData, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.put(`${API_BASE}/admin/presentations/blocks/${blockId}`, blockData, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in updateBlock:', error);
+        throw error;
+    }
+};
+
+export const deleteBlock = async (blockId, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.delete(`${API_BASE}/admin/presentations/blocks/${blockId}`, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in deleteBlock:', error);
         throw error;
     }
 }; 

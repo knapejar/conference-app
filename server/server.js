@@ -9,6 +9,7 @@ import publicPresentationsRoutes from './routes/public/presentations.routes.cjs'
 import publicAnnouncementsRoutes from './routes/public/announcements.routes.cjs';
 import publicPeopleRoutes from './routes/public/people.routes.cjs';
 import publicConferenceRoutes from './routes/public/conference.routes.cjs';
+import publicImagesRoutes from './routes/public/images.routes.cjs';
 
 import protectedConferenceRoutes from './routes/protected/conference.routes.cjs';
 import protectedAnnouncementsRoutes from './routes/protected/announcements.routes.cjs';
@@ -30,6 +31,7 @@ app.use('/presentations', publicPresentationsRoutes);
 app.use('/announcements', publicAnnouncementsRoutes);
 app.use('/people', publicPeopleRoutes);
 app.use('/conference', publicConferenceRoutes);
+app.use('/images', publicImagesRoutes);
 
 // Protected routes
 app.use('/admin/conference', protectedConferenceRoutes);

@@ -5,6 +5,7 @@ const mockPrismaClient = {
         create: jest.fn(),
         update: jest.fn(),
         delete: jest.fn(),
+        count: jest.fn(),
     },
     presentation: {
         findUnique: jest.fn(),
@@ -17,6 +18,7 @@ const mockPrismaClient = {
         findFirst: jest.fn(),
         findUnique: jest.fn(),
         update: jest.fn(),
+        create: jest.fn(),
     },
     block: {
         findUnique: jest.fn(),

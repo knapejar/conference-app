@@ -1,26 +1,26 @@
 <template>
     <ion-card class="card-item">
         <ion-card-header>
-            <ion-card-title>Conference Settings</ion-card-title>
+            <ion-card-title>Nastavení konference</ion-card-title>
         </ion-card-header>
         <ion-card-content>
             <ion-item>
-                <ion-label position="stacked">Name</ion-label>
+                <ion-label position="stacked">Název</ion-label>
                 <ion-input v-model="conference.name"></ion-input>
             </ion-item>
             <ion-item>
-                <ion-label position="stacked">Description</ion-label>
+                <ion-label position="stacked">Popis</ion-label>
                 <ion-textarea v-model="conference.description"></ion-textarea>
             </ion-item>
             <ion-item>
-                <ion-label position="stacked">Welcome Image</ion-label>
+                <ion-label position="stacked">Uvítací obrázek</ion-label>
                 <div class="image-container">
                     <img v-if="conference.welcomeImageUrl" :src="conference.welcomeImageUrl" alt="Welcome Image" class="preview-image" />
                     <input type="file" @change="handleImageUpload" accept="image/*" />
                 </div>
             </ion-item>
             <ion-button expand="full" @click="updateConference">
-                Update Conference
+                Uložit
             </ion-button>
         </ion-card-content>
     </ion-card>
@@ -62,7 +62,7 @@ const fetchConference = async () => {
         }
     } catch (error) {
         console.error('Error fetching conference:', error)
-        showToast('Error fetching conference settings', 'danger')
+        showToast('Chyba při načítání nastavení konference', 'danger')
     }
 }
 
@@ -70,7 +70,6 @@ const handleImageUpload = (event) => {
     const file = event.target.files[0]
     if (file) {
         conference.welcomeImage = file
-        // Create a preview URL for the selected image
         conference.welcomeImageUrl = URL.createObjectURL(file)
     }
 }
@@ -84,18 +83,15 @@ const updateConference = async () => {
         }, adminPassword.value)
 
         if (response) {
-            console.log("Conference updated", response)
-            // Update local state with response data
             conference.name = response.name || conference.name
             conference.description = response.description || conference.description
             conference.welcomeImageUrl = response.welcomeImageUrl || conference.welcomeImageUrl
-            // Clear the file input
             conference.welcomeImage = null
-            showToast('Conference settings updated successfully')
+            showToast('Nastavení konference aktualizováno')
         }
     } catch (error) {
         console.error('Error updating conference:', error)
-        showToast('Error updating conference settings', 'danger')
+        showToast('Chyba při aktualizaci nastavení konference', 'danger')
     }
 }
 

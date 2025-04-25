@@ -10,19 +10,21 @@ const getPresentations = async () => {
                 presentations: {
                     include: {
                         presenters: true,
+                    },
+                    orderBy: {
+                        start: 'asc'
                     }
                 }
             }
         });
 
-        const blocksWithPresentations = blocks.map(block => ({
-            ...block,
-            presentations: block.presentations.map(presentation => ({
-                ...presentation,
-            }))
-        }));
+        const sortedBlocks = blocks.sort((a, b) => {
+            const aEarliest = a.presentations[0]?.start || new Date(0);
+            const bEarliest = b.presentations[0]?.start || new Date(0);
+            return aEarliest - bEarliest;
+        });
 
-        return blocksWithPresentations;
+        return sortedBlocks;
     } catch (error) {
         if (error instanceof HttpError) {
             throw error;

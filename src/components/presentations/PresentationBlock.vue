@@ -29,9 +29,7 @@ export default {
   },
   methods: {
     blockTime(block) {
-      const startTime = block.presentations[0]?.start || '';
-      const endTime = block.presentations[block.presentations.length - 1]?.end || '';
-      return `${new Date(startTime).toLocaleTimeString()} - ${new Date(endTime).toLocaleTimeString()}`;
+      return `${new Date(block.start).toLocaleTimeString()} - ${new Date(block.end).toLocaleTimeString()}`;
     }
   }
 }

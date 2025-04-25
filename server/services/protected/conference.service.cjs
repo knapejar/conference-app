@@ -4,12 +4,8 @@ const { createError, HttpError } = require('../../utils/errors.cjs');
 const prisma = new PrismaClient();
 
 const updateConference = async (id, data) => {
-    if (!id) {
-        throw createError('Conference ID is required', 400);
-    }
-
-    if (!data.name || !data.description || !data.welcomeImage) {
-        throw createError('Name, description, and welcomeImage are required', 400);
+    if (!data.name || !data.description) {
+        throw createError('Name and description are required', 400);
     }
 
     try {
@@ -18,18 +14,29 @@ const updateConference = async (id, data) => {
             throw createError('Invalid conference ID', 400);
         }
 
-        const conference = await prisma.conference.findUnique({
+        // Try to find existing conference
+        let conference = await prisma.conference.findUnique({
             where: { id: confId }
         });
 
+        // If conference doesn't exist, create it
         if (!conference) {
-            throw createError('Conference not found', 404);
+            conference = await prisma.conference.create({
+                data: {
+                    id: confId,
+                    name: data.name,
+                    description: data.description,
+                    welcomeImage: data.welcomeImage || null
+                }
+            });
+            return conference;
         }
 
+        // Update existing conference
         const updateData = {
             name: data.name,
             description: data.description,
-            welcomeImage: data.welcomeImage
+            welcomeImage: data.welcomeImage || conference.welcomeImage
         };
 
         const updatedConference = await prisma.conference.update({

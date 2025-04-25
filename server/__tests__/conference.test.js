@@ -63,13 +63,28 @@ describe('Conference Module', () => {
             })).rejects.toThrow('Invalid conference ID');
         });
 
-        it('should throw error for non-existent conference', async () => {
+        it('should create conference if it does not exist', async () => {
             prisma.conference.findUnique.mockResolvedValue(null);
-            await expect(updateConference('1', {
+            prisma.conference.create.mockResolvedValue({
+                id: 0,
                 name: 'Test',
                 description: 'Test',
                 welcomeImage: 'test.jpg'
-            })).rejects.toThrow('Conference not found');
+            });
+
+            const result = await updateConference('0', {
+                name: 'Test',
+                description: 'Test',
+                welcomeImage: 'test.jpg'
+            });
+
+            expect(result).toEqual({
+                id: 0,
+                name: 'Test',
+                description: 'Test',
+                welcomeImage: 'test.jpg'
+            });
+            expect(prisma.conference.create).toHaveBeenCalled();
         });
 
         it('should throw error for missing required fields', async () => {
@@ -80,7 +95,7 @@ describe('Conference Module', () => {
                 welcomeImage: ''
             };
 
-            await expect(updateConference('1', invalidData)).rejects.toThrow('Name, description, and welcomeImage are required');
+            await expect(updateConference('1', invalidData)).rejects.toThrow('Name and description are required');
         });
     });
 }); 

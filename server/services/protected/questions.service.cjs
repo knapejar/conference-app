@@ -108,8 +108,45 @@ const deleteQuestion = async (id) => {
     }
 };
 
+const getQuestions = async (presentationId, skip = 0, take = 100) => {
+    try {
+        const questions = await prisma.question.findMany({
+            where: {
+                presentationId: parseInt(presentationId, 10)
+            },
+            orderBy: {
+                createdAt: 'desc'
+            },
+            skip,
+            take
+        });
+
+        return questions;
+    } catch (error) {
+        console.error('Error getting questions:', error.message);
+        throw createError('Failed to get questions', 500);
+    }
+};
+
+const getQuestionCount = async (presentationId) => {
+    try {
+        const count = await prisma.question.count({
+            where: {
+                presentationId: parseInt(presentationId, 10)
+            }
+        });
+
+        return { count };
+    } catch (error) {
+        console.error('Error getting question count:', error.message);
+        throw createError('Failed to get question count', 500);
+    }
+};
+
 module.exports = {
     createQuestion,
     updateQuestion,
-    deleteQuestion
+    deleteQuestion,
+    getQuestions,
+    getQuestionCount
 }; 

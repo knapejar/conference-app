@@ -35,6 +35,8 @@ async function main() {
   const plenaryBlock = await prisma.block.create({
     data: {
       blockName: 'Plenární zasedání',
+      start: new Date('2024-04-25T09:00:00Z'),
+      end: new Date('2024-04-25T10:30:00Z')
     },
   });
 
@@ -116,6 +118,8 @@ async function main() {
     const createdBlock = await prisma.block.create({
       data: {
         blockName: block.name,
+        start: block.start,
+        end: block.end
       },
     });
 

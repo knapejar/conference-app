@@ -9,6 +9,7 @@ import Registration from '@/components/registration/Registration.vue';
 import Settings from '@/components/settings/Settings.vue';
 import WelcomeScreen from '@/components/welcome/WelcomeScreen.vue';
 import PresentationDetail from '@/components/presentations/PresentationDetail.vue';
+import ConferenceBlockEditor from '@/components/admin/ConferenceBlockEditor.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -46,6 +47,14 @@ const routes: Array<RouteRecordRaw> = [
     path: '/admin',
     name: 'Admin',
     component: Admin
+  }, {
+    path: '/admin/blocks/new',
+    name: 'NewBlock',
+    component: ConferenceBlockEditor
+  }, {
+    path: '/admin/blocks/:id',
+    name: 'EditBlock',
+    component: ConferenceBlockEditor
   }, {
     path: '/settings',
     name: 'Settings',

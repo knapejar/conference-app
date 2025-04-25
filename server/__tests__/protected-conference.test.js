@@ -35,34 +35,33 @@ describe('Protected Conference Module', () => {
             expect(result.welcomeImage).toBe('updated-image.jpg');
         });
 
-        it('should throw error for non-existent conference', async () => {
+        it('should create conference if it does not exist', async () => {
             prisma.conference.findUnique.mockResolvedValue(null);
-            await expect(updateConference('1', {
+            prisma.conference.create.mockResolvedValue({
+                id: 0,
                 name: 'Test',
                 description: 'Test',
                 welcomeImage: 'test.jpg'
-            })).rejects.toThrow('Conference not found');
+            });
+
+            const result = await updateConference('0', {
+                name: 'Test',
+                description: 'Test',
+                welcomeImage: 'test.jpg'
+            });
+
+            expect(result).toEqual({
+                id: 0,
+                name: 'Test',
+                description: 'Test',
+                welcomeImage: 'test.jpg'
+            });
+            expect(prisma.conference.create).toHaveBeenCalled();
         });
 
         it('should throw error for missing required fields', async () => {
             prisma.conference.findUnique.mockResolvedValue(mockConference);
-            await expect(updateConference('1', {})).rejects.toThrow('Name, description, and welcomeImage are required');
-        });
-
-        it('should throw error for invalid conference ID', async () => {
-            await expect(updateConference('invalid', {
-                name: 'Test',
-                description: 'Test',
-                welcomeImage: 'test.jpg'
-            })).rejects.toThrow('Invalid conference ID');
-        });
-
-        it('should throw error for missing conference ID', async () => {
-            await expect(updateConference(null, {
-                name: 'Test',
-                description: 'Test',
-                welcomeImage: 'test.jpg'
-            })).rejects.toThrow('Conference ID is required');
+            await expect(updateConference('1', {})).rejects.toThrow('Name and description are required');
         });
     });
 }); 

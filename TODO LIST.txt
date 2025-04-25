@@ -1,5 +1,9 @@
 TODO LIST
 
+IMAGE bucket
+ADMIN
+
+
 APP
 
 Při instalaci My Ionic PWA se nemění název podle názvu konference - konfigurovat vite.config.ts podle env variable
@@ -26,7 +30,6 @@ QUESTIONS - CRUD
 
 ADMIN
 
-Hash password before storing it
 Statistic nic nedělá...
 Image bucket
 Rozchodit hlavní menu - změna názvu, popisu a obrázku konference
@@ -51,6 +54,9 @@ Vyřešit automatické obnovování třeba co 10 sekund
 Hezký popup když chybí internetové připojení
 Přidat detail prezentace
 Prezentující by se měli ukazovat u prezentací
+
+HOTOVO ADMIN:
+Hash password before storing it
 
 
 PWA

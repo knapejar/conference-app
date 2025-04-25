@@ -6,6 +6,8 @@ describe('Protected Presentations Module', () => {
     const mockBlock = {
         id: 1,
         blockName: 'Test Block',
+        start: new Date(),
+        end: new Date(),
         presentations: []
     };
 
@@ -28,27 +30,44 @@ describe('Protected Presentations Module', () => {
         it('should create a new block', async () => {
             prisma.block.create.mockResolvedValue(mockBlock);
 
-            const result = await createBlock({ blockName: 'Test Block' });
+            const result = await createBlock({ 
+                blockName: 'Test Block',
+                start: new Date(),
+                end: new Date()
+            });
             expect(result).toEqual(mockBlock);
         });
 
-        it('should throw error for missing blockName', async () => {
-            await expect(createBlock({})).rejects.toThrow('Block name is required');
+        it('should throw error for missing required fields', async () => {
+            await expect(createBlock({})).rejects.toThrow('Block name, start time, and end time are required');
         });
     });
 
     describe('updateBlock', () => {
         it('should update a block', async () => {
             prisma.block.findUnique.mockResolvedValue(mockBlock);
-            prisma.block.update.mockResolvedValue({ ...mockBlock, blockName: 'Updated Block' });
+            prisma.block.update.mockResolvedValue({ 
+                ...mockBlock, 
+                blockName: 'Updated Block',
+                start: new Date(),
+                end: new Date()
+            });
 
-            const result = await updateBlock('1', { blockName: 'Updated Block' });
+            const result = await updateBlock('1', { 
+                blockName: 'Updated Block',
+                start: new Date(),
+                end: new Date()
+            });
             expect(result.blockName).toBe('Updated Block');
         });
 
         it('should throw error for non-existent block', async () => {
             prisma.block.findUnique.mockResolvedValue(null);
-            await expect(updateBlock('1', { blockName: 'Test' })).rejects.toThrow('Block not found');
+            await expect(updateBlock('1', { 
+                blockName: 'Test',
+                start: new Date(),
+                end: new Date()
+            })).rejects.toThrow('Block not found');
         });
     });
 
