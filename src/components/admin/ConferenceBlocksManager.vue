@@ -82,8 +82,7 @@ export default defineComponent({
         };
 
         const editPresentation = (presentation: Presentation): void => {
-            // TODO: Implement presentation editing
-            console.log('Edit presentation:', presentation);
+            router.push(`/admin/presentations/${presentation.id}`);
         };
 
         const addNewBlock = (): void => {

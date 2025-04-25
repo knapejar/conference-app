@@ -10,6 +10,8 @@ import Settings from '@/components/settings/Settings.vue';
 import WelcomeScreen from '@/components/welcome/WelcomeScreen.vue';
 import PresentationDetail from '@/components/presentations/PresentationDetail.vue';
 import ConferenceBlockEditor from '@/components/admin/ConferenceBlockEditor.vue';
+import PresentationEditor from '@/components/admin/PresentationEditor.vue';
+import PresenterEditor from '@/components/admin/PresenterEditor.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -55,6 +57,22 @@ const routes: Array<RouteRecordRaw> = [
     path: '/admin/blocks/:id',
     name: 'EditBlock',
     component: ConferenceBlockEditor
+  }, {
+    path: '/admin/presentations/new',
+    name: 'NewPresentation',
+    component: PresentationEditor
+  }, {
+    path: '/admin/presentations/:id',
+    name: 'EditPresentation',
+    component: PresentationEditor
+  }, {
+    path: '/admin/presenters/new',
+    name: 'NewPresenter',
+    component: PresenterEditor
+  }, {
+    path: '/admin/presenters/:id',
+    name: 'EditPresenter',
+    component: PresenterEditor
   }, {
     path: '/settings',
     name: 'Settings',

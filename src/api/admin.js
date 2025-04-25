@@ -117,4 +117,114 @@ export const deleteBlock = async (blockId, adminPassword) => {
         console.error('Error in deleteBlock:', error);
         throw error;
     }
+};
+
+// Presentation API calls
+export const createPresentation = async (presentationData, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.post(`${API_BASE}/admin/presentations`, presentationData, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in createPresentation:', error);
+        throw error;
+    }
+};
+
+export const updatePresentation = async (presentationId, presentationData, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.put(`${API_BASE}/admin/presentations/${presentationId}`, presentationData, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in updatePresentation:', error);
+        throw error;
+    }
+};
+
+export const deletePresentation = async (presentationId, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.delete(`${API_BASE}/admin/presentations/${presentationId}`, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in deletePresentation:', error);
+        throw error;
+    }
+};
+
+// Presenter API calls
+export const createPresenter = async (presenterData, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.post(`${API_BASE}/admin/people`, presenterData, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in createPresenter:', error);
+        throw error;
+    }
+};
+
+export const updatePresenter = async (presenterId, presenterData, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.put(`${API_BASE}/admin/people/${presenterId}`, presenterData, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in updatePresenter:', error);
+        throw error;
+    }
+};
+
+export const deletePresenter = async (presenterId, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.delete(`${API_BASE}/admin/people/${presenterId}`, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in deletePresenter:', error);
+        throw error;
+    }
 }; 
