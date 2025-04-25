@@ -29,7 +29,12 @@ export default {
   },
   methods: {
     blockTime(block) {
-      return `${new Date(block.start).toLocaleTimeString()} - ${new Date(block.end).toLocaleTimeString()}`;
+      const options = { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: false 
+      };
+      return `${new Date(block.start).toLocaleTimeString('cs-CZ', options)} - ${new Date(block.end).toLocaleTimeString('cs-CZ', options)}`;
     }
   }
 }

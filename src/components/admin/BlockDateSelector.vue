@@ -1,17 +1,14 @@
 <template>
     <ion-item>
         <ion-label position="stacked">{{ label }} ({{ formattedTime }})</ion-label>
-        <ion-datetime-button :datetime="datetimeId"></ion-datetime-button>
-        <ion-modal :keep-contents-mounted="true">
-            <ion-datetime
-                :id="datetimeId"
-                :value="localTimeValue"
-                presentation="date-time"
-                :min="minDate"
-                :max="maxDate"
-                @ionChange="handleChange"
-            ></ion-datetime>
-        </ion-modal>
+        <input
+            type="datetime-local"
+            :value="localTimeValue"
+            :min="minDate"
+            :max="maxDate"
+            @input="handleChange"
+            class="datetime-input"
+        />
     </ion-item>
 </template>
 
@@ -40,28 +37,30 @@ export default defineComponent({
     },
     emits: ['update:modelValue'],
     setup(props, { emit }) {
-        const datetimeId = ref(`datetime-${Math.random().toString(36).substr(2, 9)}`);
-
         const localTimeValue = computed(() => {
-            const date = new Date(props.modelValue);
-            const timezoneOffset = date.getTimezoneOffset();
-            date.setMinutes(date.getMinutes() - timezoneOffset);
-            return date.toISOString().split('.')[0];
+            if (!props.modelValue) return '';
+            return props.modelValue.slice(0, 16); // Just take the date and time part
         });
 
         const formattedTime = computed(() => {
-            return new Date(props.modelValue).toLocaleTimeString();
+            if (!props.modelValue) return '';
+            const date = new Date(props.modelValue);
+            return date.toLocaleTimeString('cs-CZ', { 
+                hour: '2-digit', 
+                minute: '2-digit',
+                hour12: false 
+            });
         });
 
-        const handleChange = (event: CustomEvent) => {
-            const date = new Date(event.detail.value);
-            const timezoneOffset = date.getTimezoneOffset();
-            date.setMinutes(date.getMinutes() + timezoneOffset);
-            emit('update:modelValue', date.toISOString().split('.')[0]);
+        const handleChange = (event: Event) => {
+            const input = event.target as HTMLInputElement;
+            if (!input.value) return;
+            
+            // Just emit the value directly
+            emit('update:modelValue', input.value);
         };
 
         return {
-            datetimeId,
             handleChange,
             formattedTime,
             localTimeValue
@@ -71,7 +70,19 @@ export default defineComponent({
 </script>
 
 <style scoped>
-ion-datetime {
+.datetime-input {
     width: 100%;
+    padding: 8px;
+    border: 1px solid var(--ion-color-medium);
+    border-radius: 4px;
+    background-color: var(--ion-background-color);
+    color: var(--ion-text-color);
+    font-size: 16px;
+    margin: 8px 0;
+}
+
+.datetime-input:focus {
+    outline: none;
+    border-color: var(--ion-color-primary);
 }
 </style> 

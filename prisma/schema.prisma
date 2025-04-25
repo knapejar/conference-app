@@ -27,10 +27,10 @@ model Block {
 
 model Presentation {
   id              Int       @id @default(autoincrement())
-  start           DateTime
-  end             DateTime
   title           String
   description     String
+  start           DateTime
+  end             DateTime
   blockId         Int
   block           Block      @relation(fields: [blockId], references: [id])
   questionsRoom   Boolean
