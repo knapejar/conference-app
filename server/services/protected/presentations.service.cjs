@@ -98,8 +98,8 @@ const deleteBlock = async (id) => {
 
 // Presentation operations
 const createPresentation = async (data) => {
-    if (!data.title || !data.description || !data.start || !data.end || !data.blockId) {
-        throw createError('Title, description, start time, end time, and block ID are required', 400);
+    if (!data.title || !data.blockId) {
+        throw createError('Title and block ID are required', 400);
     }
 
     try {
@@ -114,9 +114,9 @@ const createPresentation = async (data) => {
         const presentation = await prisma.presentation.create({
             data: {
                 title: data.title,
-                description: data.description,
-                start: new Date(data.start),
-                end: new Date(data.end),
+                description: data.description || '',
+                start: data.start ? new Date(data.start) : new Date(),
+                end: data.end ? new Date(data.end) : new Date(),
                 blockId: parseInt(data.blockId, 10),
                 questionsRoom: data.questionsRoom || false
             }
@@ -206,11 +206,43 @@ const deletePresentation = async (id) => {
     }
 };
 
+const getPresentations = async () => {
+    try {
+        const blocks = await prisma.block.findMany({
+            include: {
+                presentations: {
+                    include: {
+                        presenters: true,
+                    },
+                    orderBy: {
+                        start: 'asc'
+                    }
+                }
+            }
+        });
+
+        const sortedBlocks = blocks.sort((a, b) => {
+            const aEarliest = a.presentations[0]?.start || new Date(0);
+            const bEarliest = b.presentations[0]?.start || new Date(0);
+            return aEarliest - bEarliest;
+        });
+
+        return sortedBlocks;
+    } catch (error) {
+        if (error instanceof HttpError) {
+            throw error;
+        }
+        console.error("Error in getPresentations:", error);
+        throw createError("Failed to retrieve presentations.", 500);
+    }
+};
+
 module.exports = {
     createBlock,
     updateBlock,
     deleteBlock,
     createPresentation,
     updatePresentation,
-    deletePresentation
+    deletePresentation,
+    getPresentations
 }; 

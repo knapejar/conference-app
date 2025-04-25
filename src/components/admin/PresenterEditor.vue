@@ -17,19 +17,6 @@
             </ion-item>
 
             <ion-item>
-                <ion-label position="stacked">Prezentace</ion-label>
-                <ion-select v-model="presenterData.presentationId" placeholder="Vyberte prezentaci">
-                    <ion-select-option v-for="block in blocks" :key="block.id">
-                        <template v-for="presentation in block.presentations" :key="presentation.id">
-                            <ion-select-option :value="presentation.id">
-                                {{ presentation.title }} ({{ block.blockName }})
-                            </ion-select-option>
-                        </template>
-                    </ion-select-option>
-                </ion-select>
-            </ion-item>
-
-            <ion-item>
                 <ion-label position="stacked">Fotografie</ion-label>
                 <div class="image-container">
                     <img v-if="presenterData.imageURL" :src="presenterData.imageURL" alt="Presenter photo" class="preview-image" />

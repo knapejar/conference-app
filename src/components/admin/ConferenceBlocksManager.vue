@@ -5,10 +5,18 @@
                 <ion-label>
                     <h2>{{ block.blockName }}</h2>
                     <p>{{ formatBlockTime(block) }}</p>
+                    <div>
+                        <ion-button slot="end" fill="clear" @click="addNewPresentation(block)">
+                            <ion-icon icon="add" />
+                        </ion-button>
+                        <ion-button slot="end" fill="clear" @click="editBlock(block)">
+                            <ion-icon icon="pencil" />
+                        </ion-button>
+                        <ion-button slot="end" fill="clear" color="danger" @click="handleDeleteBlock(block)">
+                            <ion-icon icon="trash" />
+                        </ion-button>
+                    </div>
                 </ion-label>
-                <ion-button slot="end" fill="clear" @click="editBlock(block)">
-                    <ion-icon icon="pencil" />
-                </ion-button>
             </ion-item-divider>
 
             <ion-item v-for="presentation in block.presentations" :key="presentation.id">
@@ -18,6 +26,9 @@
                 </ion-label>
                 <ion-button slot="end" fill="clear" @click="editPresentation(presentation)">
                     <ion-icon icon="pencil" />
+                </ion-button>
+                <ion-button slot="end" fill="clear" color="danger" @click="handleDeletePresentation(presentation)">
+                    <ion-icon icon="trash" />
                 </ion-button>
             </ion-item>
         </ion-item-group>
@@ -34,6 +45,7 @@
 import { defineComponent, onMounted, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
+import { deleteBlock as apiDeleteBlock, deletePresentation as apiDeletePresentation } from '@/api/admin';
 
 interface Presentation {
     id: string;
@@ -89,6 +101,58 @@ export default defineComponent({
             router.push('/admin/blocks/new');
         };
 
+        const addNewPresentation = (block: Block): void => {
+            router.push(`/admin/presentations/new?blockId=${block.id}`);
+        };
+
+        const handleDeleteBlock = async (block: Block): Promise<void> => {
+            try {
+                await store.dispatch('admin/verifyAccess');
+                const adminPassword = store.state.admin.password;
+
+                if (!adminPassword) {
+                    throw new Error('Admin password not found. Please log in again.');
+                }
+
+                await apiDeleteBlock(String(block.id), adminPassword);
+                const updatedBlocks = blocks.value.filter((b: Block) => b.id !== block.id);
+                store.commit('presentations/setBlocks', updatedBlocks);
+            } catch (error: any) {
+                console.error('Failed to delete block:', error);
+                if (error.message?.includes('password') || error.message?.includes('authentication')) {
+                    router.push('/admin');
+                }
+            }
+        };
+
+        const handleDeletePresentation = async (presentation: Presentation): Promise<void> => {
+            try {
+                await store.dispatch('admin/verifyAccess');
+                const adminPassword = store.state.admin.password;
+
+                if (!adminPassword) {
+                    throw new Error('Admin password not found. Please log in again.');
+                }
+
+                await apiDeletePresentation(String(presentation.id), adminPassword);
+                const updatedBlocks = blocks.value.map((block: Block) => {
+                    if (block.presentations.some((p: Presentation) => p.id === presentation.id)) {
+                        return {
+                            ...block,
+                            presentations: block.presentations.filter((p: Presentation) => p.id !== presentation.id)
+                        };
+                    }
+                    return block;
+                });
+                store.commit('presentations/setBlocks', updatedBlocks);
+            } catch (error: any) {
+                console.error('Failed to delete presentation:', error);
+                if (error.message?.includes('password') || error.message?.includes('authentication')) {
+                    router.push('/admin');
+                }
+            }
+        };
+
         onMounted(() => {
             loadBlocks();
         });
@@ -102,6 +166,9 @@ export default defineComponent({
             editBlock,
             editPresentation,
             addNewBlock,
+            addNewPresentation,
+            handleDeleteBlock,
+            handleDeletePresentation
         };
     }
 });
@@ -120,4 +187,4 @@ ion-item {
     --padding-start: 16px;
     --padding-end: 16px;
 }
-</style> 
+</style>

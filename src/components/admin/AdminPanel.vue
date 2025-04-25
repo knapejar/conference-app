@@ -7,7 +7,7 @@
             <ion-toolbar v-if="isAuthenticated">
                 <ion-segment v-model="selectedTab">
                     <ion-segment-button value="settings">
-                        <ion-label>Administrace</ion-label>
+                        <ion-label>Konference</ion-label>
                     </ion-segment-button>
                     <ion-segment-button value="blocks">
                         <ion-label>Program</ion-label>

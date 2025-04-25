@@ -2,6 +2,7 @@
     <div class="card-grid">
         <ConferenceSettings />
 
+        <!--
         <ion-card class="card-item">
             <ion-card-header>
                 <ion-card-title>Statistics</ion-card-title>
@@ -32,6 +33,7 @@
                 <ion-button expand="full" @click="sendNotification">Send Notification</ion-button>
             </ion-card-content>
         </ion-card>
+        -->
     </div>
 </template>
 

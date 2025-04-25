@@ -2,13 +2,6 @@
     <ion-content>
         <ion-list>
             <ion-item-group>
-                <ion-item-divider sticky>
-                    <ion-label>Prezentéři</ion-label>
-                    <ion-button slot="end" fill="clear" @click="addNewPresenter">
-                        <ion-icon :icon="add"></ion-icon>
-                    </ion-button>
-                </ion-item-divider>
-
                 <ion-item v-for="presenter in presenters" :key="presenter.id">
                     <ion-avatar slot="start">
                         <img :src="presenter.imageURL" :alt="presenter.name" />

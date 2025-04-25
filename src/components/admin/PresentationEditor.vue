@@ -2,6 +2,13 @@
     <BaseLayout :page-title="isNew ? 'Nová prezentace' : 'Upravit prezentaci'">
         <ion-list>
             <ion-item>
+                <ion-label>
+                    <h2>Konferenční blok</h2>
+                    <p>{{ currentBlock?.blockName || 'Načítání...' }}</p>
+                </ion-label>
+            </ion-item>
+
+            <ion-item>
                 <ion-label position="stacked">Název prezentace</ion-label>
                 <ion-input v-model="presentationData.title" placeholder="Zadejte název prezentace"></ion-input>
             </ion-item>
@@ -9,15 +16,6 @@
             <ion-item>
                 <ion-label position="stacked">Popis</ion-label>
                 <ion-textarea v-model="presentationData.description" placeholder="Zadejte popis prezentace"></ion-textarea>
-            </ion-item>
-
-            <ion-item>
-                <ion-label position="stacked">Konferenční blok</ion-label>
-                <ion-select v-model="presentationData.blockId" placeholder="Vyberte konferenční blok">
-                    <ion-select-option v-for="block in blocks" :key="block.id" :value="block.id">
-                        {{ block.blockName }}
-                    </ion-select-option>
-                </ion-select>
             </ion-item>
 
             <BlockDateSelector
@@ -49,7 +47,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed } from 'vue';
+import { defineComponent, onMounted, ref, computed, watch } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
 import { save } from 'ionicons/icons';
@@ -62,7 +60,6 @@ interface PresentationData {
     description: string;
     start: string;
     end: string;
-    blockId: string;
     questionsRoom: boolean;
 }
 
@@ -78,17 +75,22 @@ export default defineComponent({
 
         const presentationId = route.params.id as string;
         const isNew = !presentationId;
+        const blockId = route.query.blockId as string;
 
         const presentationData = ref<PresentationData>({
             title: '',
             description: '',
             start: new Date().toISOString().split('.')[0],
             end: new Date().toISOString().split('.')[0],
-            blockId: '',
             questionsRoom: false
         });
 
         const blocks = computed(() => store.getters['presentations/getBlocks']);
+
+        const currentBlock = computed(() => {
+            if (!blockId) return null;
+            return blocks.value.find((b: any) => String(b.id) === blockId);
+        });
 
         const minDate = computed(() => {
             const date = new Date();
@@ -103,9 +105,10 @@ export default defineComponent({
         });
 
         const loadPresentation = async () => {
+            // Always load blocks first
+            await store.dispatch('presentations/fetchPresentations');
+            
             if (!isNew) {
-                await store.dispatch('presentations/fetchPresentations');
-                
                 const blocks = store.getters['presentations/getBlocks'];
                 let presentation = null;
                 
@@ -119,7 +122,6 @@ export default defineComponent({
                             description: presentation.description,
                             start: presentation.start,
                             end: presentation.end,
-                            blockId: String(presentation.blockId),
                             questionsRoom: presentation.questionsRoom
                         };
                         break;
@@ -128,6 +130,16 @@ export default defineComponent({
                 
                 if (!presentation) {
                     console.error('Presentation not found:', presentationId);
+                }
+            } else if (blockId) {
+                // For new presentations, pre-fill with block's data
+                const block = blocks.value.find((b: any) => String(b.id) === blockId);
+                if (block) {
+                    presentationData.value = {
+                        ...presentationData.value,
+                        start: block.start,
+                        end: block.end
+                    };
                 }
             }
         };
@@ -141,6 +153,10 @@ export default defineComponent({
                     throw new Error('Admin password not found. Please log in again.');
                 }
 
+                if (!blockId) {
+                    throw new Error('Block ID is required');
+                }
+
                 const startDate = new Date(presentationData.value.start);
                 const endDate = new Date(presentationData.value.end);
                 
@@ -152,16 +168,12 @@ export default defineComponent({
                     throw new Error('End time must be after start time');
                 }
 
-                if (!presentationData.value.blockId) {
-                    throw new Error('Please select a conference block');
-                }
-
                 const data = {
                     title: presentationData.value.title,
                     description: presentationData.value.description,
                     start: presentationData.value.start,
                     end: presentationData.value.end,
-                    blockId: presentationData.value.blockId,
+                    blockId: blockId,
                     questionsRoom: presentationData.value.questionsRoom
                 };
 
@@ -198,7 +210,8 @@ export default defineComponent({
             minDate,
             maxDate,
             savePresentation,
-            save
+            save,
+            currentBlock
         };
     }
 });
