@@ -24,6 +24,20 @@ export const registerServiceWorker = () => {
         if (navigator.serviceWorker.controller) {
           console.log('Service Worker is controlling the page');
         }
+
+        // Setup message listener for notifications
+        navigator.serviceWorker.addEventListener('message', (event) => {
+          if (event.data && event.data.type === 'NOTIFICATION') {
+            const { title, options } = event.data;
+            if (Notification.permission === 'granted') {
+              registration.showNotification(title, {
+                icon: '/icons/icon-192x192.png',
+                badge: '/icons/icon-192x192.png',
+                ...options
+              });
+            }
+          }
+        });
       }
     },
     onRegisterError(error) {

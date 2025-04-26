@@ -15,6 +15,8 @@ import announcements from './modules/announcements'
 import admin from './modules/admin'
 // @ts-ignore
 import toast from './toast'
+// @ts-ignore
+import notifications from './modules/notifications'
 
 export default createStore({
   modules: {
@@ -25,6 +27,7 @@ export default createStore({
     people,
     announcements,
     admin,
-    toast
+    toast,
+    notifications
   }
 })

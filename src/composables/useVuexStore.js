@@ -16,6 +16,7 @@ export const useStore = () => {
     store.dispatch('presentations/fetchPresentations');
     store.dispatch('people/fetchPeople');
     store.dispatch('announcements/fetchAnnouncements');
+    store.dispatch('notifications/setupNotifications');
     isInitialized = true;
   }
   

@@ -5,7 +5,6 @@ import Home from '../views/Home.vue'
 import People from '../views/People.vue'
 import Questions from '../views/Questions.vue'
 import Admin from '../views/Admin.vue'
-import Registration from '@/components/registration/Registration.vue';
 import Settings from '@/components/settings/Settings.vue';
 import WelcomeScreen from '@/components/welcome/WelcomeScreen.vue';
 import PresentationDetail from '@/components/presentations/PresentationDetail.vue';
@@ -47,10 +46,6 @@ const routes: Array<RouteRecordRaw> = [
     path: '/people/:id',
     name: 'PersonDetail',
     component: PersonDetail
-  }, {
-    path: '/registration',
-    name: 'Registration',
-    component: Registration
   }, {
     path: '/admin',
     name: 'Admin',

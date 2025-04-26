@@ -53,6 +53,21 @@ export default defineConfig({
                 statuses: [0, 200]
               }
             }
+          },
+          {
+            urlPattern: /^https:\/\/.*\/server\/announcements.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'announcements-cache',
+              networkTimeoutSeconds: 10,
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 // 1 hour
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
           }
         ],
         cleanupOutdatedCaches: true,
