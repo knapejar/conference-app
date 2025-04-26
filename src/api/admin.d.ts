@@ -43,4 +43,5 @@ export declare function deletePresentation(presentationId: string, adminPassword
 export function createPresenter(presenterData: FormData, adminPassword: string): Promise<void>;
 export function updatePresenter(presenterId: string, presenterData: FormData, adminPassword: string): Promise<void>;
 export function deletePresenter(presenterId: string, adminPassword: string): Promise<void>;
-export declare function updateQuestion(questionId: string, data: { state: string }, adminPassword: string): Promise<any>; 
+export declare function updateQuestion(questionId: string, data: { state: string }, adminPassword: string): Promise<any>;
+export declare function createAnnouncement(announcementData: { title: string; message: string; type: string; category: string; date: string }, adminPassword: string): Promise<any>; 

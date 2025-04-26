@@ -242,10 +242,8 @@ export default defineComponent({
             minDate,
             maxDate,
             savePresentation,
-            save,
             currentBlock,
-            viewQuestions,
-            chatbubble
+            viewQuestions
         };
     }
 });

@@ -79,6 +79,7 @@ declare module 'vue' {
     MainLayoutNotificationsMenu: typeof import('./src/components/MainLayout/notificationsMenu/MainLayoutNotificationsMenu.vue')['default']
     MainLayoutRefresher: typeof import('./src/components/MainLayout/MainLayoutRefresher.vue')['default']
     MenuLayoutFooterToolbar: typeof import('./src/components/MainLayout/footerToolbar/MenuLayoutFooterToolbar.vue')['default']
+    NotificationSender: typeof import('./src/components/admin/NotificationSender.vue')['default']
     OfflineWarning: typeof import('./src/components/toasts/OfflineWarning.vue')['default']
     PeopleList: typeof import('./src/components/people/PeopleList.vue')['default']
     PeopleListItem: typeof import('./src/components/people/PeopleListItem.vue')['default']

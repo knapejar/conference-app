@@ -250,11 +250,10 @@ export const deleteQuestion = async (questionId, adminPassword) => {
 };
 
 export const updateQuestion = async (questionId, data, adminPassword) => {
+    if (!adminPassword) {
+        throw new Error('Admin password is required');
+    }
     try {
-        if (!adminPassword) {
-            throw new Error('Admin password not found');
-        }
-
         const response = await axios.put(`${API_BASE}/admin/questions/${questionId}`, data, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
@@ -262,7 +261,24 @@ export const updateQuestion = async (questionId, data, adminPassword) => {
         });
         return response.data;
     } catch (error) {
-        console.error('Error in updateQuestion:', error);
+        console.error('Error updating question:', error);
+        throw error;
+    }
+};
+
+export const createAnnouncement = async (announcementData, adminPassword) => {
+    if (!adminPassword) {
+        throw new Error('Admin password is required');
+    }
+    try {
+        const response = await axios.post(`${API_BASE}/admin/announcements`, announcementData, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating announcement:', error);
         throw error;
     }
 }; 
