@@ -13,6 +13,7 @@ export const useStore = () => {
   // Initialize the app and fetch all initial data only once
   if (!isInitialized) {
     store.dispatch('conference/initializeApp');
+    store.dispatch('settings/loadUserSettings');
     store.dispatch('presentations/fetchPresentations');
     store.dispatch('people/fetchPeople');
     store.dispatch('announcements/fetchAnnouncements');

@@ -101,7 +101,10 @@ export default {
             const question = questions.find(q => q.id === id);
             if (question && question.owned) {
                 try {
-                    const authorToken = await store.dispatch('settings/generateAuthorToken', null, { root: true });
+                    const authorToken = store.getters['settings/getAuthorToken'];
+                    if (!authorToken) {
+                        throw new Error('Author token not initialized');
+                    }
                     await store.dispatch('questions/deleteQuestion', { 
                         questionId: id, 
                         authorToken 

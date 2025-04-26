@@ -1,11 +1,35 @@
 import axios from 'axios';
+
 const API_BASE = process.env.VITE_API_BASE || 'https://konference.jk9.eu/server';
 
 axios.defaults.baseURL = API_BASE;
 axios.defaults.headers.post['Content-Type'] = 'application/json;charset=utf-8';
 axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
-export const verifyAdminAccess = async (hashedPassword) => {
+interface ConferenceData {
+    name?: string;
+    description?: string;
+    welcomeImage?: File | string;
+    welcomeImageUrl?: string;
+}
+
+interface BlockData {
+    [key: string]: any;
+}
+
+interface PresentationData {
+    [key: string]: any;
+}
+
+interface PresenterData {
+    [key: string]: any;
+}
+
+interface AnnouncementData {
+    [key: string]: any;
+}
+
+export const verifyAdminAccess = async (hashedPassword: string): Promise<any> => {
     try {
         const response = await axios.get(`${API_BASE}/admin/test`, {
             headers: {
@@ -18,8 +42,7 @@ export const verifyAdminAccess = async (hashedPassword) => {
     }
 };
 
-// Conference related API calls
-export const getConference = async () => {
+export const getConference = async (): Promise<any> => {
     try {
         const response = await axios.get(`${API_BASE}/conference`);
         return response.data;
@@ -28,7 +51,7 @@ export const getConference = async () => {
     }
 };
 
-export const updateConference = async (conferenceData, adminPassword) => {
+export const updateConference = async (conferenceData: ConferenceData, adminPassword: string): Promise<any> => {
     try {
         const formData = new FormData();
         formData.append('name', conferenceData.name || '');
@@ -64,8 +87,7 @@ export const updateConference = async (conferenceData, adminPassword) => {
     }
 };
 
-// Conference Blocks API calls
-export const createBlock = async (blockData, adminPassword) => {
+export const createBlock = async (blockData: BlockData, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -83,7 +105,7 @@ export const createBlock = async (blockData, adminPassword) => {
     }
 };
 
-export const updateBlock = async (blockId, blockData, adminPassword) => {
+export const updateBlock = async (blockId: string, blockData: BlockData, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -101,7 +123,7 @@ export const updateBlock = async (blockId, blockData, adminPassword) => {
     }
 };
 
-export const deleteBlock = async (blockId, adminPassword) => {
+export const deleteBlock = async (blockId: string, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -119,8 +141,7 @@ export const deleteBlock = async (blockId, adminPassword) => {
     }
 };
 
-// Presentation API calls
-export const createPresentation = async (presentationData, adminPassword) => {
+export const createPresentation = async (presentationData: PresentationData, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -138,7 +159,7 @@ export const createPresentation = async (presentationData, adminPassword) => {
     }
 };
 
-export const updatePresentation = async (presentationId, presentationData, adminPassword) => {
+export const updatePresentation = async (presentationId: string, presentationData: PresentationData, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -156,7 +177,7 @@ export const updatePresentation = async (presentationId, presentationData, admin
     }
 };
 
-export const deletePresentation = async (presentationId, adminPassword) => {
+export const deletePresentation = async (presentationId: string, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -174,8 +195,7 @@ export const deletePresentation = async (presentationId, adminPassword) => {
     }
 };
 
-// Presenter API calls
-export const createPresenter = async (presenterData, adminPassword) => {
+export const createPresenter = async (presenterData: PresenterData, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -194,7 +214,7 @@ export const createPresenter = async (presenterData, adminPassword) => {
     }
 };
 
-export const updatePresenter = async (presenterId, presenterData, adminPassword) => {
+export const updatePresenter = async (presenterId: string, presenterData: PresenterData, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -213,7 +233,7 @@ export const updatePresenter = async (presenterId, presenterData, adminPassword)
     }
 };
 
-export const deletePresenter = async (presenterId, adminPassword) => {
+export const deletePresenter = async (presenterId: string, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -231,7 +251,7 @@ export const deletePresenter = async (presenterId, adminPassword) => {
     }
 };
 
-export const deleteQuestion = async (questionId, adminPassword) => {
+export const deleteQuestion = async (questionId: string, adminPassword: string): Promise<any> => {
     try {
         if (!adminPassword) {
             throw new Error('Admin password not found');
@@ -249,7 +269,7 @@ export const deleteQuestion = async (questionId, adminPassword) => {
     }
 };
 
-export const updateQuestion = async (questionId, data, adminPassword) => {
+export const updateQuestion = async (questionId: string, data: any, adminPassword: string): Promise<any> => {
     if (!adminPassword) {
         throw new Error('Admin password is required');
     }
@@ -266,7 +286,7 @@ export const updateQuestion = async (questionId, data, adminPassword) => {
     }
 };
 
-export const createAnnouncement = async (announcementData, adminPassword) => {
+export const createAnnouncement = async (announcementData: AnnouncementData, adminPassword: string): Promise<any> => {
     if (!adminPassword) {
         throw new Error('Admin password is required');
     }

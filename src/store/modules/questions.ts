@@ -6,32 +6,52 @@ import {
     unlikeQuestion, 
     deleteQuestion 
 } from '@/api';
+import { Module } from 'vuex';
 
-function loadQuestions() {
+interface Question {
+    id: string;
+    presentationId: string;
+    content: string;
+    author: string;
+    authorToken: string;
+    likes: number;
+    createdAt: string;
+    isLiked?: boolean;
+    owned?: boolean;
+}
+
+interface QuestionsState {
+    likedQuestions: Set<string>;
+    questions: { [key: string]: Question[] };
+    currentPresentationId: string | null;
+    myQuestions: Set<string>;
+}
+
+function loadQuestions(): { [key: string]: Question[] } {
     const stored = localStorage.getItem('questions');
     return stored ? JSON.parse(stored) : {};
 }
 
-function loadLikedQuestions() {
+function loadLikedQuestions(): Set<string> {
     const stored = localStorage.getItem('likedQuestions');
     return stored ? new Set(JSON.parse(stored)) : new Set();
 }
 
-function loadMyQuestions() {
+function loadMyQuestions(): Set<string> {
     const stored = localStorage.getItem('myQuestions');
     return stored ? new Set(JSON.parse(stored)) : new Set();
 }
 
-export default {
+const questionsModule: Module<QuestionsState, any> = {
     namespaced: true,
     state: {
-        likedQuestions: ref(loadLikedQuestions()),
-        questions: ref(loadQuestions()),
-        currentPresentationId: ref(null),
+        likedQuestions: loadLikedQuestions(),
+        questions: loadQuestions(),
+        currentPresentationId: null,
         myQuestions: loadMyQuestions()
     },
     getters: {
-        getQuestions: (state) => (presentationId) => {
+        getQuestions: (state: QuestionsState) => (presentationId: string) => {
             const questions = state.questions[presentationId];
             if (!questions || !Array.isArray(questions)) {
                 return [];
@@ -42,10 +62,11 @@ export default {
                 owned: state.myQuestions.has(question.id)
             }));
         },
-        isQuestionLiked: (state) => (questionId) => state.likedQuestions.has(questionId),
+        isQuestionLiked: (state: QuestionsState) => (questionId: string) => 
+            state.likedQuestions.has(questionId),
     },
     mutations: {
-        setQuestions(state, { presentationId, questions }) {
+        setQuestions(state: QuestionsState, { presentationId, questions }: { presentationId: string; questions: Question[] }) {
             if (!Array.isArray(questions)) {
                 console.error('Questions must be an array');
                 return;
@@ -54,11 +75,11 @@ export default {
             state.currentPresentationId = presentationId;
             localStorage.setItem('questions', JSON.stringify(state.questions));
         },
-        setLikedQuestions(state, questionIds) {
+        setLikedQuestions(state: QuestionsState, questionIds: string[]) {
             state.likedQuestions = new Set(questionIds);
             localStorage.setItem('likedQuestions', JSON.stringify([...state.likedQuestions]));
         },
-        toggleQuestionLike(state, questionId) {
+        toggleQuestionLike(state: QuestionsState, questionId: string) {
             if (state.likedQuestions.has(questionId)) {
                 state.likedQuestions.delete(questionId);
             } else {
@@ -66,17 +87,17 @@ export default {
             }
             localStorage.setItem('likedQuestions', JSON.stringify([...state.likedQuestions]));
         },
-        addMyQuestion(state, questionId) {
+        addMyQuestion(state: QuestionsState, questionId: string) {
             state.myQuestions.add(questionId);
             localStorage.setItem('myQuestions', JSON.stringify([...state.myQuestions]));
         },
-        removeMyQuestion(state, questionId) {
+        removeMyQuestion(state: QuestionsState, questionId: string) {
             state.myQuestions.delete(questionId);
             localStorage.setItem('myQuestions', JSON.stringify([...state.myQuestions]));
         }
     },
     actions: {
-        async fetchQuestions({ commit }, presentationId) {
+        async fetchQuestions({ commit }, presentationId: string) {
             try {
                 const questions = await getQuestions(presentationId);
                 if (!Array.isArray(questions)) {
@@ -89,9 +110,12 @@ export default {
                 throw error;
             }
         },
-        async createNewQuestion({ commit, rootState }, { presentationId, question }) {
+        async createNewQuestion({ commit, rootState }, { presentationId, question }: { presentationId: string; question: string }) {
             try {
-                const authorToken = await this.dispatch('settings/generateAuthorToken', null, { root: true });
+                const authorToken = rootState.settings.authorToken;
+                if (!authorToken) {
+                    throw new Error('Author token not initialized');
+                }
                 const author = rootState.settings.userSettings.name || 'Anonymous';
                 
                 const questions = await createQuestion(presentationId, question, author, authorToken);
@@ -107,7 +131,7 @@ export default {
                 throw error;
             }
         },
-        async toggleLike({ commit, state }, questionId) {
+        async toggleLike({ commit, state }, questionId: string) {
             try {
                 const isLiked = state.likedQuestions.has(questionId);
                 const questions = isLiked 
@@ -119,7 +143,7 @@ export default {
                 }
                 
                 commit('setQuestions', { 
-                    presentationId: state.currentPresentationId, 
+                    presentationId: state.currentPresentationId || '', 
                     questions 
                 });
                 commit('toggleQuestionLike', questionId);
@@ -129,15 +153,17 @@ export default {
                 throw error;
             }
         },
-        async deleteQuestion({ commit, state }, { questionId, authorToken }) {
+        async deleteQuestion({ commit, state }, { questionId, authorToken }: { questionId: string; authorToken: string }) {
             try {
                 await deleteQuestion(questionId, authorToken);
                 commit('removeMyQuestion', questionId);
-                const questions = state.questions[state.currentPresentationId].filter(q => q.id !== questionId);
-                commit('setQuestions', { 
-                    presentationId: state.currentPresentationId, 
-                    questions 
-                });
+                if (state.currentPresentationId) {
+                    const questions = state.questions[state.currentPresentationId].filter((q: Question) => q.id !== questionId);
+                    commit('setQuestions', { 
+                        presentationId: state.currentPresentationId, 
+                        questions 
+                    });
+                }
                 return questionId;
             } catch (error) {
                 console.error('Error deleting question:', error);
@@ -146,3 +172,5 @@ export default {
         },
     },
 };
+
+export default questionsModule; 

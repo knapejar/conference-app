@@ -1,6 +1,14 @@
 import { verifyAdminAccess } from '@/api/admin';
+import { Module } from 'vuex';
 
-export default {
+interface AdminState {
+    isAuthenticated: boolean;
+    password: string | null;
+    loading: boolean;
+    error: string | null;
+}
+
+const adminModule: Module<AdminState, any> = {
     namespaced: true,
     state: {
         isAuthenticated: false,
@@ -9,10 +17,10 @@ export default {
         error: null
     },
     mutations: {
-        setAuthenticated(state, isAuthenticated) {
+        setAuthenticated(state: AdminState, isAuthenticated: boolean) {
             state.isAuthenticated = isAuthenticated;
         },
-        setPassword(state, password) {
+        setPassword(state: AdminState, password: string | null) {
             state.password = password;
             if (password) {
                 localStorage.setItem('adminPassword', password);
@@ -20,10 +28,10 @@ export default {
                 localStorage.removeItem('adminPassword');
             }
         },
-        setLoading(state, loading) {
+        setLoading(state: AdminState, loading: boolean) {
             state.loading = loading;
         },
-        setError(state, error) {
+        setError(state: AdminState, error: string | null) {
             state.error = error;
         }
     },
@@ -42,13 +50,13 @@ export default {
                 return true;
             } catch (error) {
                 commit('setAuthenticated', false);
-                commit('setError', error.message || 'Failed to verify admin access');
+                commit('setError', error instanceof Error ? error.message : 'Failed to verify admin access');
                 return false;
             } finally {
                 commit('setLoading', false);
             }
         },
-        async login({ commit, dispatch }, password) {
+        async login({ commit, dispatch }, password: string) {
             commit('setLoading', true);
             commit('setError', null);
 
@@ -58,7 +66,7 @@ export default {
                 commit('setAuthenticated', true);
                 return true;
             } catch (error) {
-                commit('setError', error.message || 'Invalid admin password');
+                commit('setError', error instanceof Error ? error.message : 'Invalid admin password');
                 return false;
             } finally {
                 commit('setLoading', false);
@@ -70,8 +78,10 @@ export default {
         }
     },
     getters: {
-        isAuthenticated: state => state.isAuthenticated,
-        isLoading: state => state.loading,
-        getError: state => state.error
+        isAuthenticated: (state: AdminState) => state.isAuthenticated,
+        isLoading: (state: AdminState) => state.loading,
+        getError: (state: AdminState) => state.error
     }
-}; 
+};
+
+export default adminModule; 

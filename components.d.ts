@@ -92,7 +92,6 @@ declare module 'vue' {
     QuestionsIconButton: typeof import('./src/components/questions/QuestionsIconButton.vue')['default']
     QuestionsList: typeof import('./src/components/questions/QuestionsList.vue')['default']
     QuestionsListItem: typeof import('./src/components/questions/QuestionsListItem.vue')['default']
-    Registration: typeof import('./src/components/registration/Registration.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Settings: typeof import('./src/components/settings/Settings.vue')['default']

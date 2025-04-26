@@ -7,6 +7,7 @@ interface UserSettings {
 
 interface SettingsState {
   userSettings: UserSettings;
+  authorToken: string | null;
 }
 
 const state: SettingsState = {
@@ -15,7 +16,8 @@ const state: SettingsState = {
     email: '',
     phone: '',
     linkedinUrl: ''
-  }
+  },
+  authorToken: null
 }
 
 const mutations = {
@@ -24,6 +26,9 @@ const mutations = {
   },
   UPDATE_USER_SETTING(state: SettingsState, { key, value }: { key: keyof UserSettings; value: string }) {
     state.userSettings[key] = value
+  },
+  SET_AUTHOR_TOKEN(state: SettingsState, token: string) {
+    state.authorToken = token
   }
 }
 
@@ -42,11 +47,28 @@ const actions = {
     if (savedSettings) {
       commit('SET_USER_SETTINGS', JSON.parse(savedSettings))
     }
+    
+    // Generate and store author token if not exists
+    const savedToken = localStorage.getItem('authorToken')
+    if (!savedToken) {
+      const token = Math.random().toString(36).substring(2) + Date.now().toString(36)
+      localStorage.setItem('authorToken', token)
+      commit('SET_AUTHOR_TOKEN', token)
+    } else {
+      commit('SET_AUTHOR_TOKEN', savedToken)
+    }
+  },
+  getAuthorToken({ state }: { state: SettingsState }): string {
+    if (!state.authorToken) {
+      throw new Error('Author token not initialized')
+    }
+    return state.authorToken
   }
 }
 
 const getters = {
-  getUserSettings: (state: SettingsState) => state.userSettings
+  getUserSettings: (state: SettingsState) => state.userSettings,
+  getAuthorToken: (state: SettingsState) => state.authorToken
 }
 
 export default {
