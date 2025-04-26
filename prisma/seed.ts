@@ -14,9 +14,9 @@ async function main() {
 
   const conference = await prisma.conference.create({
     data: {
-      name: 'Baťův odkaz světu 2025',
-      description: 'Konference o synergii lidí, technologií a odkazu Tomáše Bati.',
-      welcomeImage: './assets/batuv-odkaz-2025.jpg',
+      name: 'Baťův odkaz světu 2024',
+      description: `Konference o synergii lidí, technologií a odkazu Tomáše Bati. Přijďte diskutovat o tomto tématu s odborníky, s osobnostmi firemního, vzdělávacího a veřejného života.`,
+      welcomeImage: './assets/batuv-odkaz-2024.jpg',
     },
   });
 
@@ -32,26 +32,7 @@ async function main() {
     },
   });
 
-  const plenaryBlock = await prisma.block.create({
-    data: {
-      blockName: 'Zahájení konference',
-      start: new Date('2025-04-25T09:00:00Z'),
-      end: new Date('2025-04-25T10:30:00Z')
-    },
-  });
-
-  const plenaryPresentation = await prisma.presentation.create({
-    data: {
-      title: 'Plenární diskuse: Lidé a technologie',
-      description: 'Diskuse o synergii lidí a technologií v moderním světě. Plenární zasedání moredují Ján Košturiak, Dominik Stroukal a Drahomíra Pavelková.',
-      start: new Date('2025-04-25T09:00:00Z'),
-      end: new Date('2025-04-25T10:30:00Z'),
-      questionsRoom: true,
-      block: { connect: { id: plenaryBlock.id } },
-    },
-  });
-
-  const plenaryPresenters = [
+  const presenters = [
     {
       name: 'Artur Gevorkyan',
       role: 'generální ředitel, Gevorkyan, a.s.',
@@ -103,9 +84,9 @@ async function main() {
       details: 'Radomír Lapčík je český bankéř a podnikatel, zakladatel a majoritní akcionář Trinity Bank. V bankovnictví působí od 90. let a je známý svým konzervativním přístupem k řízení rizik. Pod jeho vedením se Trinity Bank zaměřuje na poskytování služeb pro bonitní klientelu a malé a střední podniky. Lapčík je také filantrop, podporující řadu kulturních a vzdělávacích projektů. Jeho podnikatelská filozofie klade důraz na stabilitu, důvěru a dlouhodobé vztahy s klienty.',
     },
   ];
-  
+
   const createdPresenters = await Promise.all(
-    plenaryPresenters.map(({ name, role, details }) =>
+    presenters.map(({ name, role, details }) =>
       prisma.presenter.create({
         data: {
           name,
@@ -117,16 +98,6 @@ async function main() {
     )
   );
 
-  // Connect presenters to the plenary presentation
-  await prisma.presentation.update({
-    where: { id: plenaryPresentation.id },
-    data: {
-      presenters: {
-        connect: createdPresenters.map(presenter => ({ id: presenter.id }))
-      }
-    }
-  });
-
   const blocksData = [
     {
       name: 'Registrace',
@@ -134,81 +105,145 @@ async function main() {
       end: new Date('2025-04-25T07:30:00Z'),
     },
     {
-      name: 'Workshop: Transformace průmyslu ve Střední Evropě',
-      presenter: ['Ján Košturiak'],
-      start: new Date('2025-04-25T09:00:00Z'),
+      blockName: 'Zahájení konference',
+      start: new Date('2025-04-25T07:30:00Z'),
+      end: new Date('2025-04-25T10:00:00Z'),
+      presentations: [
+        {
+          title: 'Plenární diskuse: Lidé a technologie',
+          description: 'Plenární zasedání moderují Ján Košturiak, Dominik Stroukal a Drahomíra Pavelková.',
+          start: new Date('2025-04-25T07:30:00Z'),
+          end: new Date('2025-04-25T10:00:00Z'),
+          questionsRoom: false,
+          presenters: ["Artur Gevorkyan", "David Pavlík", "Eva Jiřičná", "Helena Horská", "Ivan Baťka", "Milan Adámek", "Mojmír Hampl", "Petr Očko", "Petr Sáha", "Radomír Lapčík"],
+        },
+      ]
+    },
+    {
+      blockName: 'Oběd',
+      start: new Date('2025-04-25T10:00:00Z'),
       end: new Date('2025-04-25T11:00:00Z'),
     },
     {
-      name: 'Workshop: Technologie a humanita',
-      presenter: ['Jaroslav Dlabač', 'Marcel Pavelka'],
-      start: new Date('2025-04-25T09:00:00Z'),
-      end: new Date('2025-04-25T11:00:00Z'),
+      blockName: 'Jednání v sekcích (blok A)',
+      start: new Date('2025-04-25T11:00:00Z'),
+      end: new Date('2025-04-25T13:00:00Z'),
+      presentations: [
+        {
+          title: 'Nové úkoly a požadavky na průmyslové inženýry',
+          description: 'Průmysloví inženýři byli kdysi pozorovatelé procesů a sběratelé údajů z výroby. Dnes se stávají analytiky a mají množství údajů v reálném čase z různých oblastí podniku. I v této oblasti lidé narážejí na své schopnosti.Kde jsou budoucí role průmyslových inženýrů v podnicích? Kolik své pozornosti budou věnovat strojům a lidem? Jak budou pracovat a jaké nové metody a postupy si musí osvojit?',
+          start: new Date('2025-04-25T11:00:00Z'),
+          end: new Date('2025-04-25T12:30:00Z'),
+          questionsRoom: true,
+          presenters: ["Artur Gevorkyan", "David Pavlík"],
+        },
+        {
+          title: 'Lidé a technologie: Synergie pro budoucnost',
+          description: 'Synergie mezi lidmi a technologiemi je stavebním kamenem budoucího světa. Harmonická spolupráce otevírá dveře k nekonečným možnostem inovací a rozvoje, přinášejících prosperitu a lepší kvalitu života pro nás všechny. Jak tato synergie může maximalizovat přínosy lidských schopností na jedné straně a možností, které nabízí technologie na druhé straně a zároveň minimalizovat omezení každé z nich?',
+          start: new Date('2025-04-25T11:00:00Z'),
+          end: new Date('2025-04-25T12:30:00Z'),
+          questionsRoom: true,
+          presenters: ["Eva Jiřičná", "Helena Horská"],
+        },
+        {
+          title: 'Rozhodování místních samospráv: data vs. emoce',
+          description: 'Obce, města i kraje prakticky neustále rozhodují o zásadních otázkách, které mají dopad na život každého z nás. Přitom se pohybují ve stále složitějším a informačně nabitějším světě. Využívají pro svá zásadní rozhodnutí dostatek evidence a dat? A jakou roli hraje v rozhodování psychologie? Jaké jsou moderní metody předvídání budoucího vývoje? A jak řídil město Baťa? Lze najít inspiraci?',
+          start: new Date('2025-04-25T11:00:00Z'),
+          end: new Date('2025-04-25T12:30:00Z'),
+          questionsRoom: true,
+          presenters: ["Ivan Baťka", "Milan Adámek"],
+        }
+      ]
     },
     {
-      name: 'Workshop: Připravenost na změny',
-      presenter: ['Jan Mašek', 'Luboš Malý'],
-      start: new Date('2025-04-25T09:00:00Z'),
-      end: new Date('2025-04-25T11:00:00Z'),
+      blockName: 'Pauza s občerstvením',
+      start: new Date('2025-04-25T13:00:00Z'),
+      end: new Date('2025-04-25T13:30:00Z'),
     },
     {
-      name: 'Workshop: Naplnění motivátorů',
-      presenter: ['Jana Matošková'],
-      start: new Date('2025-04-25T09:00:00Z'),
-      end: new Date('2025-04-25T11:00:00Z'),
+      blockName: 'Jednání v sekcích (blok B)',
+      start: new Date('2025-04-25T13:30:00Z'),
+      end: new Date('2025-04-25T15:30:00Z'),
+      presentations: [
+        {
+          title: 'Jak nové technologie mění průmyslové inženýrství?',
+          description: 'Do podniků nastupují nové technologie a lidé se učí spolupracovat nejen s kolaborativními roboty, ale také s roboty, které pomáhají v duševní a kreativní práci. Máme digitální dvojčata, která nám umožňují vidět dříve neviditelná plýtvání a máme technologie na ovládání „zhaslé“ fabriky na dálku. Jak nové technologie mění průmyslové inženýrství, přístupy a postupy průmyslových inženýrů k řízení podniku?',
+          start: new Date('2025-04-25T13:30:00Z'),
+          end: new Date('2025-04-25T15:30:00Z'),
+          questionsRoom: true,
+          presenters: ["Mojmír Hampl", "Petr Očko"],
+        },
+        {
+          title: 'Služba zákazníkovi v digitální době',
+          description: 'Jaké možnosti nabízí současná doba pro zážitek, který by si měl zákazník odnášet z nákupu? A je možné vytvořit vztah mezi brandem a zákazníkem? Při pohledu na loga firmy Baťa si zákazník neměl vybavit pouze obuv, ale zážitek, který si odnese z prodejny. Jak dnešní firmy vytváří to „něco navíc“, aby si k nim zákazník vytvořil vztah? Jak nezískat pouze peníze zákazníka, ale také jeho přízeň a srdce?',
+          start: new Date('2025-04-25T13:30:00Z'),
+          end: new Date('2025-04-25T15:30:00Z'),
+          questionsRoom: true,
+          presenters: ["Petr Sáha", "Milan Adámek", "Radomír Lapčík"],
+        },
+        {
+          title: 'Řízení chytrých měst a regionů: realita vs. vize',
+          description: 'Koncept chytrých měst a regionů je stále více zastoupen v činnosti našich měst a regionů a spolu s nimi množství digitálních řešení a nastupující internet věcí a umělá inteligence. Avšak, jsou skutečně všechna řešení chytrá? Umíme chytrá města řídit? Jak nastavit procesy řízení a rozhodování v chytrých městech, a co občan a návštěvník? A lze využít některé přístupy Tomáše Bati při řízení chytrých měst?',
+          start: new Date('2025-04-25T13:30:00Z'),
+          end: new Date('2025-04-25T15:30:00Z'),
+          questionsRoom: true,
+          presenters: ["Ivan Baťka"],
+        }
+      ]
     },
     {
-      name: 'Workshop: Inspiruj se Baťou',
-      presenter: ['Gabriela Končitíková', 'Jakub Malovaný'],
-      start: new Date('2025-04-25T09:00:00Z'),
-      end: new Date('2025-04-25T11:00:00Z'),
-    },
+      blockName: 'Večerní program',
+      start: new Date('2025-04-25T17:00:00Z'),
+      end: new Date('2025-04-25T21:00:00Z'),
+      presentations: [
+        {
+          title: 'Společenský večer - Baťova vila',
+          description: 'Včetně komentované prohlídky Baťovy vily.',
+          start: new Date('2025-04-25T17:00:00Z'),
+          end: new Date('2025-04-25T19:00:00Z'),
+          questionsRoom: false,
+          presenters: ["Eva Jiřičná", "Milan Adámek", "Radomír Lapčík", "Petr Sáha"],
+        },
+      ]
+    }
   ];
 
+  const presenterMap = Object.fromEntries(
+    createdPresenters.map((p) => [p.name, p.id])
+  );
+
   for (const block of blocksData) {
-    const createdBlock = await prisma.block.create({
+    await prisma.block.create({
       data: {
-        blockName: block.name,
-        start: block.start,
-        end: block.end
-      },
-    });
-
-    if (!block.presenter) continue;
-
-    const presentation = await prisma.presentation.create({
-      data: {
-        title: block.name,
-        description: `Workshop v rámci konference Baťův odkaz světu.`,
+        blockName: block.blockName ?? (block as any).name,
         start: block.start,
         end: block.end,
-        questionsRoom: false,
-        block: { connect: { id: createdBlock.id } },
+        presentations: block.presentations
+          ? {
+            create: block.presentations.map(
+              ({
+                title,
+                description,
+                start,
+                end,
+                questionsRoom,
+                presenters,
+              }) => ({
+                title,
+                description,
+                start,
+                end,
+                questionsRoom,
+                presenters: {
+                  connect: presenters.map((name) => ({
+                    id: presenterMap[name]!,
+                  })),
+                },
+              })
+            ),
+          }
+          : undefined,
       },
-    });
-
-    // Create presenters for this workshop
-    const workshopPresenters = await Promise.all(
-      block.presenter.map(name =>
-        prisma.presenter.create({
-          data: {
-            name,
-            role: 'Lektor',
-            imageURL: '',
-            details: 'Workshopový lektor',
-          },
-        })
-      )
-    );
-
-    // Connect presenters to the workshop presentation
-    await prisma.presentation.update({
-      where: { id: presentation.id },
-      data: {
-        presenters: {
-          connect: workshopPresenters.map(presenter => ({ id: presenter.id }))
-        }
-      }
     });
   }
 

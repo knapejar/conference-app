@@ -58,7 +58,7 @@ interface PresenterData {
     role: string;
     imageURL: string;
     details: string;
-    presentationId: string;
+    //presentationId: string;
     imageFile?: File;
 }
 
@@ -77,7 +77,7 @@ export default defineComponent({
             role: '',
             imageURL: '',
             details: '',
-            presentationId: ''
+            //presentationId: ''
         });
 
         const blocks = computed(() => store.getters['presentations/getBlocks']);
@@ -104,7 +104,7 @@ export default defineComponent({
                         role: presenter.role,
                         imageURL: presenter.imageURL,
                         details: presenter.details,
-                        presentationId: String(presenter.presentationId)
+                        //presentationId: String(presenter.presentationId)
                     };
                 } else {
                     console.error('Presenter not found:', presenterId);
@@ -142,7 +142,7 @@ export default defineComponent({
                 formData.append('name', presenterData.value.name);
                 formData.append('role', presenterData.value.role || '');
                 formData.append('details', presenterData.value.details || '');
-                formData.append('presentationId', presenterData.value.presentationId || '');
+                //formData.append('presentationId', presenterData.value.presentationId || '');
                 
                 if (presenterData.value.imageFile) {
                     formData.append('image', presenterData.value.imageFile);
