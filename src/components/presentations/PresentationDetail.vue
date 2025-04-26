@@ -59,15 +59,9 @@
 import { computed, ref, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { useStore } from 'vuex';
-import MainLayout from '../MainLayout/MainLayout.vue';
-import PersonModal from '../people/PersonModal.vue';
 
 export default {
   name: 'PresentationDetail',
-  components: {
-    MainLayout,
-    PersonModal
-  },
   setup() {
     const route = useRoute();
     const store = useStore();

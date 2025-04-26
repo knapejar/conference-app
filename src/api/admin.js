@@ -229,4 +229,40 @@ export const deletePresenter = async (presenterId, adminPassword) => {
         console.error('Error in deletePresenter:', error);
         throw error;
     }
+};
+
+export const deleteQuestion = async (questionId, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.delete(`${API_BASE}/admin/questions/${questionId}`, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in deleteQuestion:', error);
+        throw error;
+    }
+};
+
+export const updateQuestion = async (questionId, data, adminPassword) => {
+    try {
+        if (!adminPassword) {
+            throw new Error('Admin password not found');
+        }
+
+        const response = await axios.put(`${API_BASE}/admin/questions/${questionId}`, data, {
+            headers: {
+                'Authorization': `Bearer ${adminPassword}`
+            }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error in updateQuestion:', error);
+        throw error;
+    }
 }; 

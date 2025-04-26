@@ -53,23 +53,28 @@
                 <ion-label>Místnost pro otázky</ion-label>
                 <ion-toggle v-model="presentationData.questionsRoom"></ion-toggle>
             </ion-item>
+
+            <ion-item v-if="presentationData.questionsRoom">
+                <ion-button expand="block" @click="viewQuestions">
+                    <ion-icon icon="chatbubble" slot="start"></ion-icon>
+                    Otázky
+                </ion-button>
+            </ion-item>
         </ion-list>
 
         <ion-fab vertical="bottom" horizontal="end" slot="fixed">
             <ion-fab-button @click="savePresentation">
-                <ion-icon :icon="save"></ion-icon>
+                <ion-icon icon="save"></ion-icon>
             </ion-fab-button>
         </ion-fab>
     </BaseLayout>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref, computed, watch } from 'vue';
+import { defineComponent, onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
-import { save } from 'ionicons/icons';
 import { updatePresentation, createPresentation } from '@/api/admin';
-import BlockDateSelector from './BlockDateSelector.vue';
 
 interface PresentationData {
     id?: string;
@@ -83,9 +88,6 @@ interface PresentationData {
 
 export default defineComponent({
     name: 'PresentationEditor',
-    components: {
-        BlockDateSelector
-    },
     setup() {
         const store = useStore();
         const route = useRoute();
@@ -218,6 +220,10 @@ export default defineComponent({
             }
         };
 
+        const viewQuestions = () => {
+            router.push(`/admin/presentations/${presentationId}/questions`);
+        };
+
         onMounted(async () => {
             try {
                 await store.dispatch('admin/verifyAccess');
@@ -237,7 +243,9 @@ export default defineComponent({
             maxDate,
             savePresentation,
             save,
-            currentBlock
+            currentBlock,
+            viewQuestions,
+            chatbubble
         };
     }
 });

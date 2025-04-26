@@ -12,6 +12,7 @@ import PresentationDetail from '@/components/presentations/PresentationDetail.vu
 import ConferenceBlockEditor from '@/components/admin/ConferenceBlockEditor.vue';
 import PresentationEditor from '@/components/admin/PresentationEditor.vue';
 import PresenterEditor from '@/components/admin/PresenterEditor.vue';
+import AdminQuestionsView from '@/components/admin/AdminQuestionsView.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -77,6 +78,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/settings',
     name: 'Settings',
     component: Settings
+  }, {
+    path: '/admin/presentations/:id/questions',
+    name: 'AdminQuestions',
+    component: AdminQuestionsView,
+    meta: { requiresAuth: true }
   }
 ]
 

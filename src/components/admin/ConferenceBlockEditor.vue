@@ -23,7 +23,7 @@
 
         <ion-fab vertical="bottom" horizontal="end" slot="fixed">
             <ion-fab-button @click="saveBlock">
-                <ion-icon :icon="save"></ion-icon>
+                <ion-icon icon="save"></ion-icon>
             </ion-fab-button>
         </ion-fab>
     </BaseLayout>
@@ -33,9 +33,7 @@
 import { defineComponent, onMounted, ref, computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRoute, useRouter } from 'vue-router';
-import { save } from 'ionicons/icons';
 import { updateBlock, createBlock } from '@/api/admin';
-import BlockDateSelector from './BlockDateSelector.vue';
 
 interface BlockData {
     id?: string;
@@ -46,9 +44,6 @@ interface BlockData {
 
 export default defineComponent({
     name: 'ConferenceBlockEditor',
-    components: {
-        BlockDateSelector
-    },
     setup() {
         const store = useStore();
         const route = useRoute();

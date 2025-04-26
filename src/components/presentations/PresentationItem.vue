@@ -27,12 +27,8 @@
 import { computed } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
-import QuestionsIconButton from '../questions/QuestionsIconButton.vue';
 
 export default {
-    components: {
-        QuestionsIconButton
-    },
     props: {
         presentation: {
             type: Object,

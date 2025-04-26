@@ -1,7 +1,7 @@
 <template>
 <ion-card>
     <ion-card-header>
-        <ion-card-title>Mé prezentace</ion-card-title>
+        <ion-card-title>Oblíbené prezentace</ion-card-title>
     </ion-card-header>
     <div v-if="loading && !hasCachedData">Loading...</div>
     <div v-else-if="error && !hasCachedData">Error: {{ error }}</div>
@@ -25,13 +25,9 @@
 <script>
 import { computed } from 'vue';
 import { useStore } from 'vuex';
-import PresentationItem from './PresentationItem.vue';
 
 export default {
   name: 'StarredPresentations',
-  components: {
-    PresentationItem
-  },
   setup() {
     const store = useStore();
     

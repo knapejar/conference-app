@@ -28,12 +28,8 @@
 import { defineComponent, computed, ref } from 'vue';
 // @ts-ignore
 import { useStore } from '@/composables/useVuexStore';
-import StarredPresentations from '@/components/presentations/StarredPresentations.vue';
 
 export default defineComponent({
-  components: {
-    StarredPresentations
-  },
   setup() {
     const store = useStore();
     const activeSegment = ref('all');

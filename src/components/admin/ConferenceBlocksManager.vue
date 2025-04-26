@@ -23,6 +23,10 @@
                 <ion-label>
                     <h3>{{ presentation.title }}</h3>
                     <p>{{ formatPresentationTime(presentation) }}</p>
+                    <ion-button v-if="presentation.questionsRoom" @click="viewQuestions(presentation)">
+                        <ion-icon icon="chatbubble" slot="start" />
+                        <p>Otázky</p>
+                    </ion-button>
                 </ion-label>
                 <ion-button slot="end" fill="clear" @click="editPresentation(presentation)">
                     <ion-icon icon="pencil" />
@@ -153,6 +157,10 @@ export default defineComponent({
             }
         };
 
+        const viewQuestions = (presentation: Presentation): void => {
+            router.push(`/admin/presentations/${presentation.id}/questions`);
+        };
+
         onMounted(() => {
             loadBlocks();
         });
@@ -168,7 +176,8 @@ export default defineComponent({
             addNewBlock,
             addNewPresentation,
             handleDeleteBlock,
-            handleDeletePresentation
+            handleDeletePresentation,
+            viewQuestions
         };
     }
 });
