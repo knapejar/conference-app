@@ -39,6 +39,25 @@ export default defineConfig({
         ]
       },
       workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: /^https:\/\/.*\/server\/images\/.*/i,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'images-cache',
+              expiration: {
+                maxEntries: 200,
+                maxAgeSeconds: 365 * 24 * 60 * 60 // 1 year
+              },
+              cacheableResponse: {
+                statuses: [0, 200]
+              }
+            }
+          }
+        ],
+        cleanupOutdatedCaches: true,
+        skipWaiting: true,
+        clientsClaim: true
       }
     }),
     Components({
