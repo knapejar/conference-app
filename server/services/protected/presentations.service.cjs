@@ -199,27 +199,35 @@ const updatePresentation = async (id, data) => {
     }
 };
 
-const deletePresentation = async (id) => {
-    if (!id) {
+const deletePresentation = async (presId) => {
+    if (!presId) {
         throw createError('Presentation ID is required', 400);
     }
 
-    const presId = parseInt(id, 10);
-    if (isNaN(presId)) {
+    const presentationId = parseInt(presId, 10);
+    if (isNaN(presentationId)) {
         throw createError('Invalid presentation ID', 400);
     }
 
     try {
-        const presentation = await prisma.presentation.findUnique({
-            where: { id: presId }
+        // First delete all questions associated with this presentation
+        await prisma.question.deleteMany({
+            where: { presentationId: presentationId }
         });
 
-        if (!presentation) {
-            throw createError('Presentation not found', 404);
-        }
+        // Disconnect all presenters from this presentation
+        await prisma.presentation.update({
+            where: { id: presentationId },
+            data: {
+                presenters: {
+                    set: []
+                }
+            }
+        });
 
+        // Then delete the presentation
         await prisma.presentation.delete({
-            where: { id: presId }
+            where: { id: presentationId }
         });
 
         return { success: true };

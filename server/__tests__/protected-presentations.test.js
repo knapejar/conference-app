@@ -127,11 +127,26 @@ describe('Protected Presentations Module', () => {
 
     describe('deletePresentation', () => {
         it('should delete a presentation', async () => {
-            prisma.presentation.findUnique.mockResolvedValue(mockPresentation);
+            prisma.question.deleteMany.mockResolvedValue({ count: 0 });
+            prisma.presentation.update.mockResolvedValue(mockPresentation);
             prisma.presentation.delete.mockResolvedValue(mockPresentation);
 
             const result = await deletePresentation('1');
             expect(result).toEqual({ success: true });
+            expect(prisma.question.deleteMany).toHaveBeenCalledWith({
+                where: { presentationId: 1 }
+            });
+            expect(prisma.presentation.update).toHaveBeenCalledWith({
+                where: { id: 1 },
+                data: {
+                    presenters: {
+                        set: []
+                    }
+                }
+            });
+            expect(prisma.presentation.delete).toHaveBeenCalledWith({
+                where: { id: 1 }
+            });
         });
     });
 }); 

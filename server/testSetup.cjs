@@ -6,6 +6,7 @@ const mockPrismaClient = {
         update: jest.fn(),
         delete: jest.fn(),
         count: jest.fn(),
+        deleteMany: jest.fn(),
     },
     presentation: {
         findUnique: jest.fn(),

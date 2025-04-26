@@ -152,7 +152,6 @@ export default defineComponent({
             minDate,
             maxDate,
             saveBlock,
-            save,
             formatBlockTime
         };
     }
