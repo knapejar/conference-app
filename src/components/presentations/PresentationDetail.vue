@@ -7,7 +7,7 @@
             {{ presentation.title }}
           </ion-card-title>
           <ion-card-subtitle>
-            {{ new Date(presentation.start).toLocaleTimeString() }} - {{ new Date(presentation.end).toLocaleTimeString() }}
+            {{ new Date(presentation.start).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', hour12: false }) }} - {{ new Date(presentation.end).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', hour12: false }) }}
           </ion-card-subtitle>
         </ion-card-header>
 

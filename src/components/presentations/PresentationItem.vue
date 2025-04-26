@@ -17,8 +17,8 @@
                 </ion-avatar>
                 <span v-if="hasMorePresenters" class="more-presenters">({{ presentation.presenters.length }})</span>
             </div>
-            <p>Začátek: {{ new Date(presentation.start).toLocaleTimeString() }}</p>
-            <p>Konec: {{ new Date(presentation.end).toLocaleTimeString() }}</p>
+            <p>Začátek: {{ new Date(presentation.start).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', hour12: false }) }}</p>
+            <p>Konec: {{ new Date(presentation.end).toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit', hour12: false }) }}</p>
         </ion-label>
     </ion-item>
 </template>

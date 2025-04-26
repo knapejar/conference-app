@@ -86,11 +86,21 @@ export default defineComponent({
         };
 
         const formatBlockTime = (block: Block): string => {
-            return `${new Date(block.start).toLocaleTimeString()} - ${new Date(block.end).toLocaleTimeString()}`;
+            const options: Intl.DateTimeFormatOptions = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: false 
+            };
+            return `${new Date(block.start).toLocaleTimeString('cs-CZ', options)} - ${new Date(block.end).toLocaleTimeString('cs-CZ', options)}`;
         };
 
         const formatPresentationTime = (presentation: Presentation): string => {
-            return `${new Date(presentation.start).toLocaleTimeString()} - ${new Date(presentation.end).toLocaleTimeString()}`;
+            const options: Intl.DateTimeFormatOptions = { 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                hour12: false 
+            };
+            return `${new Date(presentation.start).toLocaleTimeString('cs-CZ', options)} - ${new Date(presentation.end).toLocaleTimeString('cs-CZ', options)}`;
         };
 
         const editBlock = (block: Block): void => {

@@ -23,6 +23,7 @@ declare module 'vue' {
     ConferenceSettings: typeof import('./src/components/admin/ConferenceSettings.vue')['default']
     ErrorOccured: typeof import('./src/components/toasts/ErrorOccured.vue')['default']
     InstallationScreen: typeof import('./src/components/welcome/InstallationScreen.vue')['default']
+    IonApp: typeof import('@ionic/vue')['IonApp']
     IonAvatar: typeof import('@ionic/vue')['IonAvatar']
     IonBackButton: typeof import('@ionic/vue')['IonBackButton']
     IonBadge: typeof import('@ionic/vue')['IonBadge']
