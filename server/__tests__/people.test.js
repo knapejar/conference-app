@@ -8,7 +8,16 @@ describe('People Module', () => {
         role: 'Test Role',
         imageURL: 'test.jpg',
         details: 'Test Details',
-        presentationId: 1
+        presentations: [
+            {
+                id: 1,
+                title: 'Test Presentation',
+                description: 'Test Description',
+                start: new Date(),
+                end: new Date(),
+                questionsRoom: true
+            }
+        ]
     };
 
     beforeEach(() => {
@@ -21,6 +30,7 @@ describe('People Module', () => {
 
             const result = await getPeople();
             expect(result).toHaveLength(1);
+            expect(result[0].presentations).toHaveLength(1);
         });
     });
 }); 

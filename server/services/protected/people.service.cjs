@@ -9,16 +9,15 @@ const createPerson = async (data) => {
     }
 
     try {
-        let presentationId = null;
+        let presentation = null;
         if (data.presentationId) {
-            const presentation = await prisma.presentation.findUnique({
+            presentation = await prisma.presentation.findUnique({
                 where: { id: parseInt(data.presentationId, 10) }
             });
 
             if (!presentation) {
                 throw createError('Presentation not found', 404);
             }
-            presentationId = parseInt(data.presentationId, 10);
         }
 
         const person = await prisma.presenter.create({
@@ -27,7 +26,11 @@ const createPerson = async (data) => {
                 role: data.role || '',
                 imageURL: data.imageURL || '',
                 details: data.details || '',
-                presentationId: presentationId
+                ...(presentation && {
+                    presentations: {
+                        connect: { id: presentation.id }
+                    }
+                })
             }
         });
 
@@ -66,6 +69,17 @@ const updatePerson = async (id, data) => {
             throw createError('Person not found', 404);
         }
 
+        let presentation = null;
+        if (data.presentationId) {
+            presentation = await prisma.presentation.findUnique({
+                where: { id: parseInt(data.presentationId, 10) }
+            });
+
+            if (!presentation) {
+                throw createError('Presentation not found', 404);
+            }
+        }
+
         await prisma.presenter.update({
             where: { id: personId },
             data: {
@@ -73,7 +87,11 @@ const updatePerson = async (id, data) => {
                 role: data.role,
                 imageURL: data.imageURL,
                 details: data.details,
-                presentationId: data.presentationId ? parseInt(data.presentationId, 10) : undefined
+                ...(presentation && {
+                    presentations: {
+                        set: [{ id: presentation.id }]
+                    }
+                })
             }
         });
 

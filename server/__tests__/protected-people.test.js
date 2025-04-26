@@ -9,7 +9,16 @@ describe('Protected People Module', () => {
         role: 'Test Role',
         imageURL: 'test.jpg',
         details: 'Test Details',
-        presentationId: 1
+        presentations: [
+            {
+                id: 1,
+                title: 'Test Presentation',
+                description: 'Test Description',
+                start: new Date(),
+                end: new Date(),
+                questionsRoom: true
+            }
+        ]
     };
 
     const mockPresenters = [
@@ -20,7 +29,16 @@ describe('Protected People Module', () => {
             role: 'Another Role',
             imageURL: 'another.jpg',
             details: 'Another Details',
-            presentationId: 2
+            presentations: [
+                {
+                    id: 2,
+                    title: 'Another Presentation',
+                    description: 'Another Description',
+                    start: new Date(),
+                    end: new Date(),
+                    questionsRoom: true
+                }
+            ]
         }
     ];
 
@@ -79,6 +97,27 @@ describe('Protected People Module', () => {
         it('should throw error for non-existent person', async () => {
             prisma.presenter.findUnique.mockResolvedValue(null);
             await expect(updatePerson('1', { name: 'Test' })).rejects.toThrow('Person not found');
+        });
+
+        it('should update person with new presentation', async () => {
+            prisma.presenter.findUnique.mockResolvedValue(mockPerson);
+            prisma.presentation.findUnique.mockResolvedValue({ id: 2 });
+            prisma.presenter.update.mockResolvedValue({
+                ...mockPerson,
+                presentations: [{ id: 2 }]
+            });
+            prisma.presenter.findMany.mockResolvedValue(mockPresenters);
+
+            const result = await updatePerson('1', { presentationId: 2 });
+            expect(result).toEqual(mockPresenters);
+            expect(prisma.presenter.update).toHaveBeenCalledWith({
+                where: { id: 1 },
+                data: expect.objectContaining({
+                    presentations: {
+                        set: [{ id: 2 }]
+                    }
+                })
+            });
         });
     });
 

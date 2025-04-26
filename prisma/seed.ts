@@ -64,17 +64,29 @@ async function main() {
     'Petr Sáha',
   ];
 
-  for (const name of plenaryPresenters) {
-    await prisma.presenter.create({
-      data: {
-        name,
-        role: 'Panelista',
-        imageURL: '', // Můžeš později doplnit obrázky
-        details: 'Účastník diskuse na plenárním zasedání',
-        presentation: { connect: { id: plenaryPresentation.id } },
-      },
-    });
-  }
+  // Create presenters first
+  const createdPresenters = await Promise.all(
+    plenaryPresenters.map(name =>
+      prisma.presenter.create({
+        data: {
+          name,
+          role: 'Panelista',
+          imageURL: '', // Můžeš později doplnit obrázky
+          details: 'Účastník diskuse na plenárním zasedání',
+        },
+      })
+    )
+  );
+
+  // Connect presenters to the plenary presentation
+  await prisma.presentation.update({
+    where: { id: plenaryPresentation.id },
+    data: {
+      presenters: {
+        connect: createdPresenters.map(presenter => ({ id: presenter.id }))
+      }
+    }
+  });
 
   const blocksData = [
     {
@@ -136,17 +148,29 @@ async function main() {
       },
     });
 
-    for (const name of block.presenter) {
-      await prisma.presenter.create({
-        data: {
-          name,
-          role: 'Lektor',
-          imageURL: '',
-          details: 'Workshopový lektor',
-          presentation: { connect: { id: presentation.id } },
-        },
-      });
-    }
+    // Create presenters for this workshop
+    const workshopPresenters = await Promise.all(
+      block.presenter.map(name =>
+        prisma.presenter.create({
+          data: {
+            name,
+            role: 'Lektor',
+            imageURL: '',
+            details: 'Workshopový lektor',
+          },
+        })
+      )
+    );
+
+    // Connect presenters to the workshop presentation
+    await prisma.presentation.update({
+      where: { id: presentation.id },
+      data: {
+        presenters: {
+          connect: workshopPresenters.map(presenter => ({ id: presenter.id }))
+        }
+      }
+    });
   }
 
   console.log('Database seeded successfully with real data!');

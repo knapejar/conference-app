@@ -35,7 +35,16 @@ model Presentation {
   block           Block      @relation(fields: [blockId], references: [id])
   questionsRoom   Boolean
   questions       Question[]
-  presenters      Presenter[]
+  presenters      Presenter[] @relation("PresentationPresenters")
+}
+
+model Presenter {
+  id             Int    @id @default(autoincrement())
+  name           String
+  role           String
+  imageURL       String
+  details        String
+  presentations  Presentation[] @relation("PresentationPresenters")
 }
 
 enum QuestionState {
@@ -53,16 +62,6 @@ model Question {
   likes          Int
   presentationId Int
   presentation   Presentation @relation(fields: [presentationId], references: [id])
-}
-
-model Presenter {
-  id             Int    @id @default(autoincrement())
-  name           String
-  role           String
-  imageURL       String
-  details        String
-  presentationId Int?
-  presentation   Presentation? @relation(fields: [presentationId], references: [id])
 }
 
 model Conference {
