@@ -11,6 +11,7 @@
 	
 <script>
 import { mapActions } from 'vuex';
+import { requestNotificationPermission } from '@/utils/notifications';
 
 export default {
 	props: {
@@ -22,6 +23,10 @@ export default {
 	},
 	methods: {
 		...mapActions('announcements', ['markAsRead'])
+	},
+	async mounted() {
+		// Request notification permission when viewing announcements
+		await requestNotificationPermission();
 	}
 }
 </script>
