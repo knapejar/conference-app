@@ -17,7 +17,7 @@
           </ion-text>
 
           <ion-list>
-            <ion-item v-for="presenter in presentation.presenters" :key="presenter.id" @click="openModal(presenter)">
+            <ion-item v-for="presenter in presentation.presenters" :key="presenter.id" @click="openPersonDetail(presenter)">
               <ion-avatar slot="start">
                 <img :src="presenter.imageURL" :alt="presenter.name" />
               </ion-avatar>
@@ -39,35 +39,21 @@
           </ion-button>
         </ion-card-content>
       </ion-card>
-
-      <ion-modal 
-        :is-open="isModalVisible" 
-        @didDismiss="closeModal" 
-        :swipeToClose="true" 
-        :presenting-element="presentingElement"
-      >
-        <PersonModal 
-          :person="selectedPerson" 
-          @close="closeModal" 
-        />
-      </ion-modal>
     </ion-content>
   </BaseLayout>
 </template>
 
 <script>
-import { computed, ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { computed } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
 export default {
   name: 'PresentationDetail',
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const store = useStore();
-    const selectedPerson = ref(null);
-    const isModalVisible = ref(false);
-    const presentingElement = ref(null);
 
     const presentation = computed(() => {
       return store.getters['presentations/getPresentationById'](parseInt(route.params.id));
@@ -77,27 +63,14 @@ export default {
       return presentation.value ? presentation.value.title : '';
     });
 
-    const openModal = (person) => {
-      selectedPerson.value = person;
-      isModalVisible.value = true;
+    const openPersonDetail = (person) => {
+      router.push(`/people/${person.id}`);
     };
-
-    const closeModal = () => {
-      isModalVisible.value = false;
-    };
-
-    onMounted(() => {
-      presentingElement.value = document.querySelector('ion-content');
-    });
 
     return {
       presentation,
       presentationTitle,
-      selectedPerson,
-      isModalVisible,
-      openModal,
-      closeModal,
-      presentingElement
+      openPersonDetail
     };
   }
 }

@@ -84,6 +84,7 @@ declare module 'vue' {
     OfflineWarning: typeof import('./src/components/toasts/OfflineWarning.vue')['default']
     PeopleList: typeof import('./src/components/people/PeopleList.vue')['default']
     PeopleListItem: typeof import('./src/components/people/PeopleListItem.vue')['default']
+    PersonDetail: typeof import('./src/components/people/PersonDetail.vue')['default']
     PersonModal: typeof import('./src/components/people/PersonModal.vue')['default']
     PresentationBlock: typeof import('./src/components/presentations/PresentationBlock.vue')['default']
     PresentationBlocks: typeof import('./src/components/presentations/PresentationBlocks.vue')['default']

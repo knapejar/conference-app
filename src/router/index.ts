@@ -13,6 +13,7 @@ import ConferenceBlockEditor from '@/components/admin/ConferenceBlockEditor.vue'
 import PresentationEditor from '@/components/admin/PresentationEditor.vue';
 import PresenterEditor from '@/components/admin/PresenterEditor.vue';
 import AdminQuestionsView from '@/components/admin/AdminQuestionsView.vue';
+import PersonDetail from '@/components/people/PersonDetail.vue';
 
 const routes: Array<RouteRecordRaw> = [
   {
@@ -42,6 +43,10 @@ const routes: Array<RouteRecordRaw> = [
     path: '/people',
     name: 'People',
     component: People
+  }, {
+    path: '/people/:id',
+    name: 'PersonDetail',
+    component: PersonDetail
   }, {
     path: '/registration',
     name: 'Registration',
