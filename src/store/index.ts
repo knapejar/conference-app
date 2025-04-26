@@ -1,24 +1,16 @@
 import { createStore } from 'vuex'
-// @ts-ignore
+import { RootState } from './types'
 import questions from './modules/questions'
-// @ts-ignore
 import settings from './modules/settings'
-// @ts-ignore
 import conference from './modules/conference'
-// @ts-ignore
 import presentations from './modules/presentations'
-// @ts-ignore
 import people from './modules/people'
-// @ts-ignore
 import announcements from './modules/announcements'
-// @ts-ignore
 import admin from './modules/admin'
-// @ts-ignore
-import toast from './toast'
-// @ts-ignore
+import toast from './modules/toast'
 import notifications from './modules/notifications'
 
-export default createStore({
+export default createStore<RootState>({
   modules: {
     questions,
     settings,

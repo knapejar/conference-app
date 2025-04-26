@@ -23,6 +23,9 @@ const getQuestions = async (presentationId) => {
             where: { 
                 presentationId: presId,
                 state: "CREATED"
+            },
+            orderBy: {
+                id: 'asc'
             }
         });
         return questions.map(({ state, ...rest }) => rest);

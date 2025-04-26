@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { Module } from 'vuex';
 import { 
     getQuestions, 
     createQuestion, 
@@ -6,26 +6,8 @@ import {
     unlikeQuestion, 
     deleteQuestion 
 } from '@/api';
-import { Module } from 'vuex';
-
-interface Question {
-    id: string;
-    presentationId: string;
-    content: string;
-    author: string;
-    authorToken: string;
-    likes: number;
-    createdAt: string;
-    isLiked?: boolean;
-    owned?: boolean;
-}
-
-interface QuestionsState {
-    likedQuestions: Set<string>;
-    questions: { [key: string]: Question[] };
-    currentPresentationId: string | null;
-    myQuestions: Set<string>;
-}
+import { Question } from '@/types/api';
+import { QuestionsState, RootState } from '@/store/types';
 
 function loadQuestions(): { [key: string]: Question[] } {
     const stored = localStorage.getItem('questions');
@@ -42,7 +24,7 @@ function loadMyQuestions(): Set<string> {
     return stored ? new Set(JSON.parse(stored)) : new Set();
 }
 
-const questionsModule: Module<QuestionsState, any> = {
+const questionsModule: Module<QuestionsState, RootState> = {
     namespaced: true,
     state: {
         likedQuestions: loadLikedQuestions(),

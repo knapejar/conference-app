@@ -1,5 +1,6 @@
 import { getPresentations } from '@/api';
 import { Module } from 'vuex';
+import { PresentationsState, RootState } from '@/store/types';
 
 interface Block {
     id: string;
@@ -18,14 +19,6 @@ interface Presentation {
     blockName?: string;
 }
 
-interface PresentationsState {
-    blocks: Block[];
-    presentations: Presentation[];
-    starredPresentations: Set<string>;
-    loading: boolean;
-    error: string | null;
-}
-
 function loadStarredPresentations(): Set<string> {
     const stored = localStorage.getItem('starredPresentations');
     return stored ? new Set(JSON.parse(stored)) : new Set();
@@ -41,7 +34,7 @@ function loadBlocks(): Block[] {
     return stored ? JSON.parse(stored) : [];
 }
 
-const presentationsModule: Module<PresentationsState, any> = {
+const presentationsModule: Module<PresentationsState, RootState> = {
     namespaced: true,
     state: {
         blocks: loadBlocks(),

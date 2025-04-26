@@ -1,5 +1,7 @@
-import { ActionContext } from 'vuex';
+import { ActionContext, Module } from 'vuex';
 import axios from 'axios';
+import { AnnouncementsState, RootState } from '@/store/types';
+import { Announcement } from '@/types/api';
 
 function loadAnnouncements() {
   const stored = localStorage.getItem('announcements');
@@ -11,25 +13,9 @@ function loadReadNotifications() {
   return stored ? JSON.parse(stored) : [];
 }
 
-interface Announcement {
-  id: number;
-  title: string;
-  message: string;
-  date: string;
-  category: string;
-  type: string;
-}
+type AnnouncementsContext = ActionContext<AnnouncementsState, RootState>;
 
-interface AnnouncementsState {
-  announcements: Announcement[];
-  readNotifications: number[];
-  loading: boolean;
-  error: string | null;
-}
-
-type AnnouncementsContext = ActionContext<AnnouncementsState, any>;
-
-export default {
+const announcementsModule: Module<AnnouncementsState, RootState> = {
   namespaced: true,
   state: {
     announcements: loadAnnouncements(),
@@ -52,7 +38,7 @@ export default {
         state.error = null;
       }
     },
-    markAnnouncementAsRead(state: AnnouncementsState, announcementId: number) {
+    markAnnouncementAsRead(state: AnnouncementsState, announcementId: string) {
       if (!state.readNotifications.includes(announcementId)) {
         state.readNotifications.push(announcementId);
         localStorage.setItem('readNotifications', JSON.stringify(state.readNotifications));
@@ -84,7 +70,7 @@ export default {
               dispatch('notifications/showNotification', {
                 title: announcement.title,
                 options: {
-                  body: announcement.message,
+                  body: announcement.content,
                   data: { announcementId: announcement.id },
                   icon: '/icons/icon-192x192.png',
                   badge: '/icons/icon-192x192.png',
@@ -111,7 +97,7 @@ export default {
         commit('setLoading', false);
       }
     },
-    markAsRead({ commit }: AnnouncementsContext, announcementId: number) {
+    markAsRead({ commit }: AnnouncementsContext, announcementId: string) {
       commit('markAnnouncementAsRead', announcementId);
     }
   },
@@ -122,4 +108,6 @@ export default {
     isLoading: (state: AnnouncementsState) => state.loading,
     getError: (state: AnnouncementsState) => state.error
   }
-}; 
+};
+
+export default announcementsModule; 

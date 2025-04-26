@@ -1,14 +1,8 @@
 import { verifyAdminAccess } from '@/api/admin';
 import { Module } from 'vuex';
+import { AdminState, RootState } from '@/store/types';
 
-interface AdminState {
-    isAuthenticated: boolean;
-    password: string | null;
-    loading: boolean;
-    error: string | null;
-}
-
-const adminModule: Module<AdminState, any> = {
+const adminModule: Module<AdminState, RootState> = {
     namespaced: true,
     state: {
         isAuthenticated: false,

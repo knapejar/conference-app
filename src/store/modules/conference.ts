@@ -1,22 +1,13 @@
 import { getConference } from '@/api';
 import { Module } from 'vuex';
-
-interface ConferenceState {
-    name: string;
-    description: string;
-    welcomeImage: string;
-    isLoggedIn: boolean;
-    userId: string | null;
-    loading: boolean;
-    error: string | null;
-}
+import { ConferenceState, RootState } from '@/store/types';
 
 interface LoginState {
     isLoggedIn: boolean;
     userId: string | null;
 }
 
-const conferenceModule: Module<ConferenceState, any> = {
+const conferenceModule: Module<ConferenceState, RootState> = {
     namespaced: true,
     state: {
         name: 'Conference App',

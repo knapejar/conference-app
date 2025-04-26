@@ -1,5 +1,6 @@
 import { getPeople } from '@/api';
 import { Module } from 'vuex';
+import { PeopleState, RootState } from '@/store/types';
 
 interface Person {
     id: string;
@@ -16,18 +17,12 @@ interface Person {
     };
 }
 
-interface PeopleState {
-    people: Person[];
-    loading: boolean;
-    error: string | null;
-}
-
 function loadPeople(): Person[] {
     const stored = localStorage.getItem('people');
     return stored ? JSON.parse(stored) : [];
 }
 
-const peopleModule: Module<PeopleState, any> = {
+const peopleModule: Module<PeopleState, RootState> = {
     namespaced: true,
     state: {
         people: loadPeople(),

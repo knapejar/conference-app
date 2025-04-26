@@ -1,44 +1,43 @@
 import { requestNotificationPermission, showNotification, setupNotificationListener, isNotificationSupported } from '@/utils/notifications';
+import { Module } from 'vuex';
+import { NotificationsState, RootState, NotificationPayload } from '@/store/types';
 
-interface NotificationState {
-  permission: NotificationPermission;
-  notifications: Array<{
-    title: string;
-    options: NotificationOptions;
-    timestamp: Date;
-  }>;
-  isEnabled: boolean;
-}
-
-interface NotificationPayload {
-  title: string;
-  options: NotificationOptions;
-}
-
-export default {
+const notificationsModule: Module<NotificationsState, RootState> = {
   namespaced: true,
   state: {
     permission: isNotificationSupported() ? Notification.permission : 'denied',
     notifications: [],
-    isEnabled: false
-  } as NotificationState,
+    isEnabled: false,
+    deviceToken: null,
+    loading: false,
+    error: null
+  } as NotificationsState,
   mutations: {
-    setPermission(state: NotificationState, permission: NotificationPermission) {
+    setPermission(state: NotificationsState, permission: NotificationPermission) {
       state.permission = permission;
     },
-    addNotification(state: NotificationState, notification: NotificationPayload & { timestamp: Date }) {
+    addNotification(state: NotificationsState, notification: NotificationPayload & { timestamp: Date }) {
       state.notifications.push(notification);
       // Keep only last 50 notifications
       if (state.notifications.length > 50) {
         state.notifications.shift();
       }
     },
-    setEnabled(state: NotificationState, enabled: boolean) {
+    setEnabled(state: NotificationsState, enabled: boolean) {
       state.isEnabled = enabled;
+    },
+    setDeviceToken(state: NotificationsState, token: string | null) {
+      state.deviceToken = token;
+    },
+    setLoading(state: NotificationsState, loading: boolean) {
+      state.loading = loading;
+    },
+    setError(state: NotificationsState, error: string | null) {
+      state.error = error;
     }
   },
   actions: {
-    async requestPermission({ commit }: { commit: Function }) {
+    async requestPermission({ commit }) {
       if (!isNotificationSupported()) {
         commit('setPermission', 'denied');
         commit('setEnabled', false);
@@ -50,13 +49,13 @@ export default {
       commit('setEnabled', granted);
       return granted;
     },
-    showNotification({ commit }: { commit: Function }, { title, options }: NotificationPayload) {
+    showNotification({ commit }, { title, options }: NotificationPayload) {
       if (isNotificationSupported()) {
         showNotification(title, options);
         commit('addNotification', { title, options, timestamp: new Date() });
       }
     },
-    setupNotifications({ commit }: { commit: Function }) {
+    setupNotifications({ commit }) {
       if (isNotificationSupported()) {
         setupNotificationListener();
         commit('setEnabled', Notification.permission === 'granted');
@@ -66,8 +65,10 @@ export default {
     }
   },
   getters: {
-    hasPermission: (state: NotificationState) => state.permission === 'granted',
-    isEnabled: (state: NotificationState) => state.isEnabled,
-    recentNotifications: (state: NotificationState) => [...state.notifications].reverse()
+    hasPermission: (state: NotificationsState) => state.permission === 'granted',
+    isEnabled: (state: NotificationsState) => state.isEnabled,
+    recentNotifications: (state: NotificationsState) => [...state.notifications].reverse()
   }
-}; 
+};
+
+export default notificationsModule; 
