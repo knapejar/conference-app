@@ -34,7 +34,6 @@ const userName = ref('')
 const completeSetup = async () => {
   if (userName.value) {
     await store.dispatch('settings/updateUserSetting', { key: 'name', value: userName.value })
-    // Request notification permission after profile setup
     await requestNotificationPermission()
     router.replace('/') // Replace current history entry instead of adding a new one
   }

@@ -1,4 +1,5 @@
 import { registerSW, RegisterSWOptions } from 'virtual:pwa-register';
+import { isNotificationSupported } from './notifications';
 
 export const registerServiceWorker = () => {
   const options: RegisterSWOptions = {
@@ -25,19 +26,25 @@ export const registerServiceWorker = () => {
           console.log('Service Worker is controlling the page');
         }
 
-        // Setup message listener for notifications
-        navigator.serviceWorker.addEventListener('message', (event) => {
-          if (event.data && event.data.type === 'NOTIFICATION') {
-            const { title, options } = event.data;
-            if (Notification.permission === 'granted') {
-              registration.showNotification(title, {
-                icon: '/icons/icon-192x192.png',
-                badge: '/icons/icon-192x192.png',
-                ...options
-              });
-            }
+        // Setup message listener for notifications only if supported
+        if (isNotificationSupported() && 'serviceWorker' in navigator) {
+          try {
+            navigator.serviceWorker.addEventListener('message', (event) => {
+              if (event.data && event.data.type === 'NOTIFICATION') {
+                const { title, options } = event.data;
+                if (Notification.permission === 'granted') {
+                  registration.showNotification(title, {
+                    icon: '/icons/icon-192x192.png',
+                    badge: '/icons/icon-192x192.png',
+                    ...options
+                  });
+                }
+              }
+            });
+          } catch (error) {
+            console.error('Error setting up service worker message listener:', error);
           }
-        });
+        }
       }
     },
     onRegisterError(error) {

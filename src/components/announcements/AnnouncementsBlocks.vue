@@ -25,7 +25,6 @@ export default {
 		...mapActions('announcements', ['markAsRead'])
 	},
 	async mounted() {
-		// Request notification permission when viewing announcements
 		await requestNotificationPermission();
 	}
 }

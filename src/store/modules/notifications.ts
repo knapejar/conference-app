@@ -1,4 +1,4 @@
-import { requestNotificationPermission, showNotification, setupNotificationListener } from '@/utils/notifications';
+import { requestNotificationPermission, showNotification, setupNotificationListener, isNotificationSupported } from '@/utils/notifications';
 
 interface NotificationState {
   permission: NotificationPermission;
@@ -18,7 +18,7 @@ interface NotificationPayload {
 export default {
   namespaced: true,
   state: {
-    permission: Notification.permission,
+    permission: isNotificationSupported() ? Notification.permission : 'denied',
     notifications: [],
     isEnabled: false
   } as NotificationState,
@@ -39,18 +39,30 @@ export default {
   },
   actions: {
     async requestPermission({ commit }: { commit: Function }) {
+      if (!isNotificationSupported()) {
+        commit('setPermission', 'denied');
+        commit('setEnabled', false);
+        return false;
+      }
+
       const granted = await requestNotificationPermission();
       commit('setPermission', Notification.permission);
       commit('setEnabled', granted);
       return granted;
     },
     showNotification({ commit }: { commit: Function }, { title, options }: NotificationPayload) {
-      showNotification(title, options);
-      commit('addNotification', { title, options, timestamp: new Date() });
+      if (isNotificationSupported()) {
+        showNotification(title, options);
+        commit('addNotification', { title, options, timestamp: new Date() });
+      }
     },
     setupNotifications({ commit }: { commit: Function }) {
-      setupNotificationListener();
-      commit('setEnabled', Notification.permission === 'granted');
+      if (isNotificationSupported()) {
+        setupNotificationListener();
+        commit('setEnabled', Notification.permission === 'granted');
+      } else {
+        commit('setEnabled', false);
+      }
     }
   },
   getters: {
