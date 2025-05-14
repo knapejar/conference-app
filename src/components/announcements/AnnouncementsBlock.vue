@@ -5,8 +5,6 @@
 				<ion-icon :icon="getNotificationIcon" :color="getIconColor" size="large"></ion-icon>
 				<span>{{ block.title }}</span>
 			</ion-card-title>
-			<ion-icon icon="close" @click="markAsRead" color="primary"
-				class="mark-as-read-icon"></ion-icon>
 		</ion-card-header>
 
 		<ion-card-content>
