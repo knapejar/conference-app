@@ -1,20 +1,31 @@
 <template>
-	<ion-list :inset="true">
+	<div>
 		<AnnouncementsBlock
 			v-for="(block, index) in blocks"
 			:key="index"
 			:block="block"
+			@mark-read="markAsRead"
 		/>
-	</ion-list>
+	</div>
 </template>
 	
 <script>
-	export default {
-		props: {
-			blocks: {
-				type: Array,
-				required: true
-			}
+import { mapActions } from 'vuex';
+import { requestNotificationPermission } from '@/utils/notifications';
+
+export default {
+	props: {
+		blocks: {
+			type: Array,
+			required: false,
+			default: () => []
 		}
+	},
+	methods: {
+		...mapActions('announcements', ['markAsRead'])
+	},
+	async mounted() {
+		await requestNotificationPermission();
 	}
+}
 </script>

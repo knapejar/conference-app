@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Announcement {
+  id       Int      @id @default(autoincrement())
+  title    String
+  message  String
+  date     DateTime
+  category String
+  type     String
+  read     Boolean
+}
+
+model Block {
+  id            Int            @id @default(autoincrement())
+  blockName     String
+  start         DateTime
+  end           DateTime
+  presentations Presentation[]
+}
+
+model Presentation {
+  id              Int       @id @default(autoincrement())
+  title           String
+  description     String
+  start           DateTime
+  end             DateTime
+  blockId         Int
+  block           Block      @relation(fields: [blockId], references: [id])
+  questionsRoom   Boolean
+  questions       Question[]
+  presenters      Presenter[] @relation("PresentationPresenters")
+}
+
+model Presenter {
+  id             Int    @id @default(autoincrement())
+  name           String
+  role           String
+  imageURL       String
+  details        String
+  presentations  Presentation[] @relation("PresentationPresenters")
+}
+
+enum QuestionState {
+  CREATED
+  ANSWERED
+  DELETED
+}
+
+model Question {
+  id             Int       @id @default(autoincrement())
+  state          QuestionState @default(CREATED)
+  content        String
+  author         String
+  authorToken    String
+  likes          Int
+  presentationId Int
+  presentation   Presentation @relation(fields: [presentationId], references: [id])
+}
+
+model Conference {
+  id             Int    @id @default(autoincrement())
+  name           String
+  description    String
+  welcomeImage   String
+}
+
+model Image {
+  id        Int      @id @default(autoincrement())
+  filename  String
+  mimeType  String
+  size      Int
+  createdAt DateTime @default(now())
+  data      Bytes    // This will store the actual image data
+}

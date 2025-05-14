@@ -1,22 +1,20 @@
 <template>
     <BaseLayout :pageTitle="pageTitle">
+        <MainLayoutRefresher />
         <slot />
         <template v-slot:footer>
             <MenuLayoutFooterToolbar />
         </template>
         <template v-slot:header>
             <MainLayoutHeaderToolbarBell />
+            <MainLayoutHeaderToolbarSettings />
         </template>
     </BaseLayout>
 </template>
 
 <script>
-import BaseLayout from './BaseLayout.vue';
 
 export default {
-    components: {
-        BaseLayout
-    },
     props: {
         pageTitle: {
             type: String,

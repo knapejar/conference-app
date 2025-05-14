@@ -1,72 +1,35 @@
 <template>
-	<ion-item :class="{ 'ion-item-unread': !block.read }" class="ion-margin-vertical">
-		<ion-avatar slot="start">
-			<ion-icon
-				:icon="getNotificationIcon"
-				:color="getIconColor"
-				class="ion-padding-small"
-				size="large"
-			></ion-icon>
-		</ion-avatar>
+	<ion-card class="notification-card" :class="{ unread: !block.read }">
+		<ion-card-header class="card-header">
+			<ion-card-title class="ion-text-wrap">
+				<ion-icon :icon="getNotificationIcon" :color="getIconColor" size="large"></ion-icon>
+				<span>{{ block.title }}</span>
+			</ion-card-title>
+			<ion-icon icon="close" @click="markAsRead" color="primary"
+				class="mark-as-read-icon"></ion-icon>
+		</ion-card-header>
 
-		<ion-label class="ion-text-wrap">
-			<ion-grid class="ion-no-padding">
-				<ion-row class="ion-align-items-center ion-justify-content-between">
-					<ion-col size="auto">
-						<h2 class="ion-text-wrap ion-text-medium">{{ block.title }}</h2>
-					</ion-col>
-					<ion-col size="auto">
-						<ion-badge v-if="!block.read" color="primary">New</ion-badge>
-					</ion-col>
-				</ion-row>
+		<ion-card-content>
+			<div class="notification-details">
+				<div class="notification-meta">
+					<ion-note color="medium">
+						{{ getRelativeTime }}</ion-note>
+					<ion-chip v-if="block.category" :color="getCategoryColor" outline size="small">
+						<ion-label>{{ block.category }}</ion-label>
+					</ion-chip>
+				</div>
+			</div>
 
-				<ion-row>
-					<ion-col>
-						<ion-text color="medium">
-							<p class="ion-text-wrap">{{ block.message }}</p>
-						</ion-text>
-					</ion-col>
-				</ion-row>
-
-				<ion-row class="ion-align-items-center">
-					<ion-col size="auto">
-						<ion-note color="medium">{{ getRelativeTime }}</ion-note>
-					</ion-col>
-					<ion-col size="auto">
-						<ion-chip 
-							v-if="block.category" 
-							:color="getCategoryColor" 
-							outline
-							size="small"
-						>
-							<ion-label>{{ block.category }}</ion-label>
-						</ion-chip>
-					</ion-col>
-				</ion-row>
-			</ion-grid>
-		</ion-label>
-
-		<ion-button 
-			v-if="!block.read"
-			fill="clear"
-			slot="end"
-			@click="markAsRead"
-		>
-			<ion-icon 
-				slot="icon-only" 
-				:icon="checkmarkCircleOutline"
-				color="primary"
-			></ion-icon>
-		</ion-button>
-	</ion-item>
+			<p class="notification-message">{{ block.message }}</p>
+		</ion-card-content>
+	</ion-card>
 </template>
 
 <script>
-import { 
-	alertCircleOutline, 
-	checkmarkCircleOutline,
+import {
 	informationCircleOutline,
-	warningOutline
+	warningOutline,
+	alertCircleOutline
 } from 'ionicons/icons';
 
 export default {
@@ -75,17 +38,14 @@ export default {
 		block: {
 			type: Object,
 			required: true,
-			validator: (obj) => {
-				return obj.hasOwnProperty('date') && 
-							 obj.hasOwnProperty('message') &&
-							 obj.hasOwnProperty('title');
+			validator(obj) {
+				return (
+					obj.hasOwnProperty('date') &&
+					obj.hasOwnProperty('message') &&
+					obj.hasOwnProperty('title')
+				);
 			}
 		}
-	},
-	data() {
-		return {
-			checkmarkCircleOutline
-		};
 	},
 	computed: {
 		getNotificationIcon() {
@@ -138,5 +98,24 @@ export default {
 			this.$emit('mark-read', this.block.id);
 		}
 	}
-}
+};
 </script>
+
+<style scoped>
+.notification-card {
+	margin: 1rem 0;
+	border-left: 4px solid var(--ion-color-primary);
+}
+
+.card-header {
+	position: relative;
+}
+
+.mark-as-read-icon {
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+	cursor: pointer;
+	font-size: 1.5rem;
+}
+</style>

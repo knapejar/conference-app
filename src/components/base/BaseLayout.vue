@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import MainLayoutNotificationsMenu from '../MainLayout/notificationsMenu/MainLayoutNotificationsMenu.vue';
 
 export default {
     props: {

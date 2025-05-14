@@ -1,0 +1,9 @@
+Soubor,Modul,Testovací skupina,Test case,Typ testu,Co testuje
+announcements.test.js,Announcements Module,getAnnouncements,should return all announcements,Unit test,Načítání seznamu oznámení
+conference.test.js,Conference Module,getConference,should return conference data,Unit test,Načítání dat konference
+conference.test.js,Conference Module,getConference,should throw error when no conference exists,Unit test,Ošetření chyby při neexistenci konference
+conference.test.js,Conference Module,updateConference,should update conference successfully,Unit test,Aktualizace dat konference
+conference.test.js,Conference Module,updateConference,should throw error for invalid conference ID,Unit test,Ošetření chyby při neplatném ID
+conference.test.js,Conference Module,updateConference,should create conference if it does not exist,Unit test,Vytvoření konference pokud neexistuje
+conference.test.js,Conference Module,updateConference,should throw error for missing required fields,Unit test,Ošetření chyby při chybějících povinných polích
+people.test.js,People Module,getPeople,should return all people,Unit test,Načítání seznamu lidí s jejich prezentacemi 

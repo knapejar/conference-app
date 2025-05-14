@@ -29,9 +29,12 @@ export default {
   },
   methods: {
     blockTime(block) {
-      const startTime = block.presentations[0]?.start || '';
-      const endTime = block.presentations[block.presentations.length - 1]?.end || '';
-      return `${new Date(startTime).toLocaleTimeString()} - ${new Date(endTime).toLocaleTimeString()}`;
+      const options = { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: false 
+      };
+      return `${new Date(block.start).toLocaleTimeString('cs-CZ', options)} - ${new Date(block.end).toLocaleTimeString('cs-CZ', options)}`;
     }
   }
 }

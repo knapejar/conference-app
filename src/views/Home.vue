@@ -1,32 +1,43 @@
 <template>
-    <MainLayout :pageTitle="store.state.conferenceName">
-        <ion-img :src="store.state.welcomeImage" class="image-responsive" />
+    <MainLayout :pageTitle="conference.name">
+        <ion-img :src="conference.welcomeImage" class="image-responsive" />
         <ion-card>
             <ion-card-header>
-                <ion-card-title>Welcome to {{ store.state.conferenceName }}</ion-card-title>
+                <ion-card-title>{{ conference.name }}</ion-card-title>
             </ion-card-header>
             <ion-card-content>
-                <p class="justified-content">{{ store.state.conferenceDescription }}</p>
+                <p class="justified-content">{{ conference.description }}</p>
             </ion-card-content>
         </ion-card>
 
-        <PromptUserToInstallButton />
+        <StarredPresentations />
 
         <div class="ion-padding"></div>
     </MainLayout>
 </template>
 
 <script lang="ts">
-import PromptUserToInstallButton from '@/pwa/PromptUserToInstallButton.vue';
-import { defineComponent } from 'vue';
-import { useStore } from 'vuex';
+import { defineComponent, onMounted, computed } from 'vue';
+// @ts-ignore
+import { useStore } from '@/composables/useVuexStore.js';
+import { useRoute } from 'vue-router';
 
 export default defineComponent({
   setup() {
     const store = useStore();
+    const route = useRoute();
+    
+    const conference = computed(() => store.state.conference);
+    
+    onMounted(() => {
+      if (route.query.i) {
+        store.dispatch('conference/login', route.query.i as string);
+      }
+    });
 
     return {
       store,
+      conference
     };
   },
 });

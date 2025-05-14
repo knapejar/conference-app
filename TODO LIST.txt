@@ -1,0 +1,71 @@
+TODO LIST
+
+IMAGE bucket
+ADMIN
+
+
+APP
+
+Při instalaci My Ionic PWA se nemění název podle názvu konference - konfigurovat vite.config.ts podle env variable
+Neumí rozpoznat stav aplikace je již nainstalována
+Nepřeskočit úvodní okno dokud se nenainstaluje aplikace
+Otázky se někdy aktualizují i po zavřnení okna
+
+Normální ukázková data v aplikaci, aby se to dalo použít
+Dodělat notifikace
+Bonus: Sdílet můj profil qr kódem?
+
+SERVER
+Přidat API na vše
+Přidat testy☻
+Zdokumentovat
+
+Conference - GET, SET
+Annoucements - CRUD
+Presentation - 
+People - CRUD
+QUESTIONS - CRUD
+
+
+
+ADMIN
+
+Statistic nic nedělá...
+Image bucket
+Rozchodit hlavní menu - změna názvu, popisu a obrázku konference
+Vyřešit odesílání notifikací
+Vyřešit následné příjmutí notifikací a push na klientu
+Tabule otázek pro jednotlivé prezentace
+
+Admin - modifikace prezentačních bloků, prezentací a prezentujících
+
+
+CODE
+e2e testy v pupeteeru
+Vytvořit hyrearchii komponentů - umí to něco? Hezké grafy do prezentace
+
+
+HOTOVO
+Vyřešit .env načítání v developmentu
+Obnovit seznam otázek při příchodu na stránku
+Mazání mých otázek
+Detail prezentujícího - vyhodit dotazy na prezentujícího
+Vyřešit automatické obnovování třeba co 10 sekund
+Hezký popup když chybí internetové připojení
+Přidat detail prezentace
+Prezentující by se měli ukazovat u prezentací
+
+HOTOVO ADMIN:
+Hash password before storing it
+
+
+PWA
+
+Uvítací obrazovka s tlačítkem nainstalovat
+Druhá uvítací obrazovka s nastavením profilu
+
+
+Funktionality:
+
+ion-toast - Notifikace když něco nefunguje, Components/helpers
+ion-refresher - Obnovení MainLayout a Questions online
