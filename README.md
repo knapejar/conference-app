@@ -2,6 +2,8 @@
 
 A modern conference management application built with Vue.js, Ionic, and Node.js. This application provides a platform for managing conference events, sessions, and attendees.
 
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/knapejar/conference-app)
+
 ## Features
 
 - Modern UI built with Ionic Vue

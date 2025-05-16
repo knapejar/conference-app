@@ -13,7 +13,9 @@ RUN npm install
 # Copy the full app
 COPY . .
 
-# Build the client
+# Build the client with environment variables
+ARG VITE_API_BASE
+ENV VITE_API_BASE=${VITE_API_BASE}
 RUN npm run build
 
 # Generate Prisma Client

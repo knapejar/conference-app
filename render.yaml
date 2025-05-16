@@ -2,7 +2,7 @@ services:
   - type: web
     name: conference-app
     runtime: docker
-    plan: starter
+    plan: free
     region: oregon
     envVars:
       - key: DATABASE_URL
@@ -10,21 +10,30 @@ services:
           name: conference-db
           property: connectionString
       - key: VITE_API_BASE
-        value: https://${SERVICE_NAME}.onrender.com/server
+        value: /server
       - key: PORT
-        value: 3000
+        value: 80
+    buildFilter:
+      paths:
+        - src/**/*
+        - public/**/*
+        - package*.json
+        - vite.config.ts
+        - tsconfig.json
+        - Dockerfile
+        - nginx.conf
+        - supervisord.conf
+        - prisma/**/*
     healthCheckPath: /
     autoDeploy: true
-    disk:
-      name: data
-      mountPath: /data
-      sizeGB: 1
+    buildCommand: |
+      npm install
+      npm run build
+      npx prisma generate
+      npx prisma migrate dev --name init
 
 databases:
   - name: conference-db
     databaseName: conference
-    plan: starter
-    ipAllowList: []
-    migrations:
-      - type: prisma
-        command: npx prisma migrate deploy 
+    plan: free
+    ipAllowList: [] 
