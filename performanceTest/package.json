@@ -1,0 +1,11 @@
+{
+  "name": "conference-app-performance-test",
+  "version": "1.0.0",
+  "description": "Performance testing for conference application",
+  "scripts": {
+    "test": "node runTest.js"
+  },
+  "dependencies": {
+    "k6": "^0.0.0"
+  }
+} 

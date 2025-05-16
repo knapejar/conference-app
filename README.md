@@ -95,6 +95,25 @@ run_docker.bat
 
 3. Specify environment variables in .env file or pass them directly
 
+#### Deploying to Render
+
+1. Create a Render account at https://render.com if you haven't already
+
+2. Fork or push this repository to your GitHub account
+
+3. In Render Dashboard:
+   - Click "New +" and select "Blueprint"
+   - Connect your GitHub repository
+   - Render will automatically:
+     - Create a PostgreSQL database
+     - Run Prisma migrations
+     - Deploy your application
+     - Set up all necessary environment variables
+
+4. After deployment, your app will be available at `https://conference-app.onrender.com`
+
+Note: The first deployment might take a few minutes as Render sets up the database and runs migrations.
+
 ## Available Scripts
 
 - `npm run dev` - Start development server
