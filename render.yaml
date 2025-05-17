@@ -15,6 +15,10 @@ services:
         value: 80
       - key: INITIAL_MIGRATION
         value: true
+      - key: ADMIN_PASSWORD
+        sync: false
+        required: true
+        description: Admin password
     buildFilter:
       paths:
         - src/**/*
