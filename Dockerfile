@@ -16,10 +16,19 @@ COPY . .
 # Build the client with environment variables
 ARG VITE_API_BASE
 ENV VITE_API_BASE=${VITE_API_BASE}
+
+# Add database URL for migrations
+ARG DATABASE_URL
+ENV DATABASE_URL=${DATABASE_URL}
+
 RUN npm run build
 
 # Generate Prisma Client
 RUN npx prisma generate
+
+# Run initial migration if INITIAL_MIGRATION is set to true
+ARG INITIAL_MIGRATION
+RUN if [ "$INITIAL_MIGRATION" = "true" ] ; then npx prisma migrate dev --name init && npx prisma db seed ; fi
 
 # Step 2: Final image with Node.js server + Nginx
 FROM node:18-alpine

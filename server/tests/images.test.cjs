@@ -3,7 +3,7 @@ const crypto = require('crypto');
 
 test('Upload and retrieve image', async ({ request }) => {
     // Compute admin token hash
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'default_admin_password';
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'test_admin_password';
     const ADMIN_PASSWORD_HASH = crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex');
 
     // Create a test image file

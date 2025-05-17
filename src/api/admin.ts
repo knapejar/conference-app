@@ -31,7 +31,7 @@ interface AnnouncementData {
 
 export const verifyAdminAccess = async (hashedPassword: string): Promise<any> => {
     try {
-        const response = await axios.get(`${API_BASE}/admin/test`, {
+        const response = await axios.get('/admin/test', {
             headers: {
                 Authorization: `Bearer ${hashedPassword}`
             }
@@ -44,7 +44,7 @@ export const verifyAdminAccess = async (hashedPassword: string): Promise<any> =>
 
 export const getConference = async (): Promise<any> => {
     try {
-        const response = await axios.get(`${API_BASE}/conference`);
+        const response = await axios.get('/conference');
         return response.data;
     } catch (error) {
         throw error;
@@ -74,7 +74,7 @@ export const updateConference = async (conferenceData: ConferenceData, adminPass
             hasImageUrl: !!conferenceData.welcomeImageUrl
         });
 
-        const response = await axios.put(`${API_BASE}/admin/conference`, formData, {
+        const response = await axios.put('/admin/conference', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${adminPassword}`
@@ -93,7 +93,7 @@ export const createBlock = async (blockData: BlockData, adminPassword: string): 
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.post(`${API_BASE}/admin/presentations/blocks`, blockData, {
+        const response = await axios.post('/admin/presentations/blocks', blockData, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }
@@ -111,7 +111,7 @@ export const updateBlock = async (blockId: string, blockData: BlockData, adminPa
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.put(`${API_BASE}/admin/presentations/blocks/${blockId}`, blockData, {
+        const response = await axios.put(`/admin/presentations/blocks/${blockId}`, blockData, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }
@@ -129,7 +129,7 @@ export const deleteBlock = async (blockId: string, adminPassword: string): Promi
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.delete(`${API_BASE}/admin/presentations/blocks/${blockId}`, {
+        const response = await axios.delete(`/admin/presentations/blocks/${blockId}`, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }
@@ -147,7 +147,7 @@ export const createPresentation = async (presentationData: PresentationData, adm
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.post(`${API_BASE}/admin/presentations`, presentationData, {
+        const response = await axios.post('/admin/presentations', presentationData, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }
@@ -165,7 +165,7 @@ export const updatePresentation = async (presentationId: string, presentationDat
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.put(`${API_BASE}/admin/presentations/${presentationId}`, presentationData, {
+        const response = await axios.put(`/admin/presentations/${presentationId}`, presentationData, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }
@@ -183,7 +183,7 @@ export const deletePresentation = async (presentationId: string, adminPassword: 
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.delete(`${API_BASE}/admin/presentations/${presentationId}`, {
+        const response = await axios.delete(`/admin/presentations/${presentationId}`, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }
@@ -201,7 +201,7 @@ export const createPresenter = async (presenterData: PresenterData, adminPasswor
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.post(`${API_BASE}/admin/people`, presenterData, {
+        const response = await axios.post('/admin/people', presenterData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${adminPassword}`
@@ -220,7 +220,7 @@ export const updatePresenter = async (presenterId: string, presenterData: Presen
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.put(`${API_BASE}/admin/people/${presenterId}`, presenterData, {
+        const response = await axios.put(`/admin/people/${presenterId}`, presenterData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
                 'Authorization': `Bearer ${adminPassword}`
@@ -239,7 +239,7 @@ export const deletePresenter = async (presenterId: string, adminPassword: string
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.delete(`${API_BASE}/admin/people/${presenterId}`, {
+        const response = await axios.delete(`/admin/people/${presenterId}`, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }
@@ -257,7 +257,7 @@ export const deleteQuestion = async (questionId: string, adminPassword: string):
             throw new Error('Admin password not found');
         }
 
-        const response = await axios.delete(`${API_BASE}/admin/questions/${questionId}`, {
+        const response = await axios.delete(`/admin/questions/${questionId}`, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }
@@ -274,7 +274,7 @@ export const updateQuestion = async (questionId: string, data: any, adminPasswor
         throw new Error('Admin password is required');
     }
     try {
-        const response = await axios.put(`${API_BASE}/admin/questions/${questionId}`, data, {
+        const response = await axios.put(`/admin/questions/${questionId}`, data, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }
@@ -291,7 +291,7 @@ export const createAnnouncement = async (announcementData: AnnouncementData, adm
         throw new Error('Admin password is required');
     }
     try {
-        const response = await axios.post(`${API_BASE}/admin/announcements`, announcementData, {
+        const response = await axios.post('/admin/announcements', announcementData, {
             headers: {
                 'Authorization': `Bearer ${adminPassword}`
             }

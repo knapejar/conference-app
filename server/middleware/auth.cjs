@@ -13,7 +13,7 @@ const requireAdmin = (req, res, next) => {
     }
 
     // Get current admin password and compute its hash
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'default_admin_password';
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'test_admin_password';
     const ADMIN_PASSWORD_HASH = crypto.createHash('sha256').update(ADMIN_PASSWORD).digest('hex');
 
     // Compare received hash with stored hash

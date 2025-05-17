@@ -13,6 +13,8 @@ services:
         value: /server
       - key: PORT
         value: 80
+      - key: INITIAL_MIGRATION
+        value: true
     buildFilter:
       paths:
         - src/**/*
@@ -26,11 +28,6 @@ services:
         - prisma/**/*
     healthCheckPath: /
     autoDeploy: true
-    buildCommand: |
-      npm install
-      npm run build
-      npx prisma generate
-      npx prisma migrate dev --name init
 
 databases:
   - name: conference-db
